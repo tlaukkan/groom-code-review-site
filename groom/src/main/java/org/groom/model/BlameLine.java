@@ -8,47 +8,37 @@ package org.groom.model;
  * To change this template use File | Settings | File Templates.
  */
 public class BlameLine {
-    public String hash;
-    public int originalLine;
-    public String authorName;
-    public String line;
+    private String hash;
+    private int originalLine;
+    private String authorName;
+    private String line;
+    private LineChangeType type;
 
-    public BlameLine(String hash, int originalLine, String authorName, String line) {
+    public BlameLine(String hash, int originalLine, String authorName, String line, LineChangeType type) {
         this.hash = hash;
         this.originalLine = originalLine;
         this.authorName = authorName;
         this.line = line;
+        this.type = type;
     }
 
     public String getHash() {
         return hash;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
     public int getOriginalLine() {
         return originalLine;
-    }
-
-    public void setOriginalLine(int originalLine) {
-        this.originalLine = originalLine;
     }
 
     public String getAuthorName() {
         return authorName;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
-    }
-
     public String getLine() {
         return line;
     }
 
-    public void setLine(String line) {
-        this.line = line;
+    public LineChangeType getType() {
+        return type;
     }
 }

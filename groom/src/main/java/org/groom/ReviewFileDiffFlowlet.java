@@ -20,8 +20,13 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.groom.model.BlameLine;
+import org.groom.model.LineChangeType;
 import org.groom.model.Review;
 import org.vaadin.aceeditor.AceEditor;
+import org.vaadin.aceeditor.AceMode;
+import org.vaadin.aceeditor.client.AceAnnotation;
+import org.vaadin.aceeditor.client.AceMarker;
+import org.vaadin.aceeditor.client.AceRange;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
@@ -53,6 +58,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     private String sinceHash;
 
     private String untilHash;
+    private AceEditor editor;
 
     @Override
     public String getFlowletKey() {
@@ -71,8 +77,9 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     @Override
     public void initialize() {
-        AceEditor editor = new AceEditor();
-        editor.setValue("Hello world!");
+        editor = new AceEditor();
+        editor.setSizeFull();
+        editor.setReadOnly(true);
         setViewContent(editor);
     }
 
@@ -80,12 +87,84 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     public void enter() {
     }
 
-    public void setFileDiff(final String path, final String sinceHash, final String untilHash) {
+    public void setFileDiff(final String path, final String sinceHash, final String untilHash, final boolean added) {
         this.path = path;
         this.sinceHash = sinceHash;
         this.untilHash = untilHash;
 
         final List<BlameLine> forwardBlames = BlameReader.read(path, sinceHash, untilHash, false);
-        final List<BlameLine> reverseBlames = BlameReader.read(path, sinceHash, untilHash, true);
+        final List<BlameLine> reverseBlames;
+        if (added) {
+            reverseBlames = new ArrayList<BlameLine>();
+        } else {
+            reverseBlames = BlameReader.read(path, sinceHash, untilHash, true);
+        }
+
+        // Inserting deletes among forward blames
+        for (final BlameLine reverseBlame : reverseBlames) {
+            if (reverseBlame.getType() == LineChangeType.DELETED) {
+                boolean inserted = false;
+                for (int i = 0; i < forwardBlames.size(); i++) {
+                    final BlameLine forwardBlame = forwardBlames.get(i);
+                    if ((forwardBlame.getType() == LineChangeType.NONE || forwardBlame.getType() == LineChangeType.DELETED)
+                            && forwardBlame.getOriginalLine() >= reverseBlame.getOriginalLine()) {
+                        forwardBlames.add(i, reverseBlame);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    forwardBlames.add(reverseBlame);
+                }
+            }
+        }
+
+        if (path.endsWith(".java")) {
+            editor.setMode(AceMode.java);
+        } else if (path.endsWith(".xml")) {
+            editor.setMode(AceMode.xml);
+        } else if (path.endsWith(".js")) {
+            editor.setMode(AceMode.javascript);
+        } else if (path.endsWith(".css")) {
+            editor.setMode(AceMode.css);
+        } else if (path.endsWith(".jsp")) {
+            editor.setMode(AceMode.jsp);
+        } else {
+            editor.setMode(AceMode.asciidoc);
+        }
+
+        final StringBuilder builder = new StringBuilder();
+        for (final BlameLine line : forwardBlames) {
+            if (builder.length() > 0) {
+                builder.append('\n');
+            }
+            builder.append(line.getLine());
+        }
+
+        editor.clearRowAnnotations();
+        editor.clearMarkers();
+        editor.setReadOnly(false);
+        editor.setValue(builder.toString());
+        editor.setReadOnly(true);
+        for (int i = 0; i < forwardBlames.size(); i++) {
+            final BlameLine blameLine = forwardBlames.get(i);
+            if (blameLine.getType() == LineChangeType.ADDED) {
+                editor.addRowAnnotation(new AceAnnotation(
+                        "Author: " + blameLine.getAuthorName()
+                        + " Commit: " + blameLine.getHash(),
+                        AceAnnotation.Type.info) , i);
+                editor.addMarker(new AceRange(i, 0, i + 1, 0),
+                        "marker-line-added", AceMarker.Type.line, false, AceMarker.OnTextChange.ADJUST);
+            }
+            if (blameLine.getType() == LineChangeType.DELETED) {
+                editor.addRowAnnotation(new AceAnnotation(
+                        "Author: " + blameLine.getAuthorName()
+                        + " Commit: " + blameLine.getHash(),
+                        AceAnnotation.Type.info) , i);
+                editor.addMarker(new AceRange(i, 0, i + 1, 0),
+                        "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.ADJUST);
+            }
+
+        }
     }
 }

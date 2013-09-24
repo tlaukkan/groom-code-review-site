@@ -16,6 +16,7 @@
 package org.groom;
 
 import com.vaadin.data.Property;
+import org.groom.model.FileDiff;
 import org.groom.model.Review;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.And;
@@ -29,6 +30,7 @@ import com.vaadin.ui.Table;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
 import org.vaadin.addons.sitekit.grid.FilterDescriptor;
@@ -152,12 +154,15 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 final String selectedPath = (String) table.getValue();
 
-                final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash());
+                final char status = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean().getStatus();
+                if (status == 'A' || status == 'M') {
+                    final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                    view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash(), status == 'A');
+                }
             }
         });
 
-                gridLayout.addComponent(table, 1, 0);
+        gridLayout.addComponent(table, 1, 0);
 
         saveButton = new Button("Save");
         saveButton.setImmediate(true);

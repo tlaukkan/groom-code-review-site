@@ -16,3 +16,15 @@ h1 {
 .white .v-panel .v-panel-content {
     background: rgb(249,249,249);
 }
+
+
+.marker-line-added {
+    background-color: rgba(100,255,100,0.5);
+    position: absolute;
+}
+
+.marker-line-deleted {
+    background-color: rgba(255,100,100,0.5);
+    position: absolute;
+}
+
