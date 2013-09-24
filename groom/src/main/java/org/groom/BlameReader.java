@@ -3,10 +3,7 @@ package org.groom;
 import org.groom.model.BlameLine;
 import org.groom.model.LineChangeType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +17,7 @@ public class BlameReader {
         final Map<String, String> hashAuthorMap = new HashMap<String, String>();
         final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
                 + " --p " + sinceHash + ".." + untilHash + " -- " + path );
-        String boundaryHash = "";
+        final Set<String> boundaryHashes = new HashSet<String>();
 
         final List<BlameLine> blameLines = new ArrayList<BlameLine>();
         final String[] lines = result.split("\n");
@@ -33,15 +30,15 @@ public class BlameReader {
                 hashAuthorMap.put(hash, authorName);
             }
             while (lines[i].charAt(0) != '\t') {
-                if (lines[i].equals("boundary") && !hash.equals(sinceHash) && !hash.equals(untilHash)) {
-                    boundaryHash = hash;
+                if (lines[i].equals("boundary")) {
+                    boundaryHashes.add(hash);
                 }
                 i++;
             }
             final LineChangeType type;
             if (reverse && !hash.equals(untilHash)) {
                 type = LineChangeType.DELETED;
-            } else if (!reverse && !hash.equals(boundaryHash)) {
+            } else if (!reverse && !boundaryHashes.contains(hash)) {
                 type = LineChangeType.ADDED;
             } else {
                 type = LineChangeType.NONE;

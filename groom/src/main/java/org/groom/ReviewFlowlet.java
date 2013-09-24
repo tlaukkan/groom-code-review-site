@@ -154,10 +154,12 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 final String selectedPath = (String) table.getValue();
 
-                final char status = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean().getStatus();
-                if (status == 'A' || status == 'M') {
-                    final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                    view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash(), status == 'A');
+                if (selectedPath != null) {
+                    final char status = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean().getStatus();
+                    if (status == 'A' || status == 'M') {
+                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                        view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash(), status == 'A');
+                    }
                 }
             }
         });
