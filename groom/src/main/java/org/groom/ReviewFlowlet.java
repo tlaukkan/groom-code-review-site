@@ -15,6 +15,7 @@
  */
 package org.groom;
 
+import com.vaadin.data.Property;
 import org.groom.model.Review;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.And;
@@ -25,7 +26,9 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
+import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
 import org.vaadin.addons.sitekit.grid.FilterDescriptor;
@@ -36,6 +39,7 @@ import org.vaadin.addons.sitekit.grid.ValidatingEditorStateListener;
 import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +65,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private Button saveButton;
     /** The discard button. */
     private Button discardButton;
+    private LazyQueryContainer container;
 
     @Override
     public String getFlowletKey() {
@@ -81,21 +86,78 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(1, 2);
+        final GridLayout gridLayout = new GridLayout(2, 2);
         gridLayout.setSizeFull();
         gridLayout.setMargin(false);
         gridLayout.setSpacing(true);
-        gridLayout.setRowExpandRatio(2, 1f);
+        gridLayout.setRowExpandRatio(0, 1f);
+        gridLayout.setColumnExpandRatio(1, 1f);
         setViewContent(gridLayout);
 
         reviewEditor = new ValidatingEditor(GroomFields.getFieldDescriptors(Review.class));
         reviewEditor.setCaption("Review");
         reviewEditor.addListener((ValidatingEditorStateListener) this);
+        reviewEditor.setWidth(400, Unit.PIXELS);
         gridLayout.addComponent(reviewEditor, 0, 0);
 
         final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         gridLayout.addComponent(buttonLayout, 0, 1);
+
+        final BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory =
+                new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
+
+        container = new LazyQueryContainer(beanQueryFactory,"path",
+                20, false);
+
+        container.addContainerProperty("status", Character.class, null, true, false);
+        container.addContainerProperty("path", String.class, null, true, false);
+
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final Table table = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId,
+                                                 Property property) {
+                Object v = property.getValue();
+                if (v instanceof Date) {
+                    Date dateValue = (Date) v;
+                    return format.format(v);
+                }
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+
+        table.setSizeFull();
+        table.setContainerDataSource(container);
+        table.setVisibleColumns(new Object[] {
+                "status",
+                "path"
+        });
+
+        table.setColumnWidth("status", 20);
+        //table.setColumnWidth("path", 500);
+
+        table.setColumnHeaders(new String[]{
+                getSite().localize("field-status"),
+                getSite().localize("field-path")
+        });
+
+        table.setColumnCollapsingAllowed(false);
+        table.setSelectable(true);
+        table.setMultiSelect(false);
+        table.setImmediate(true);
+
+        table.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                final String selectedPath = (String) table.getValue();
+
+                final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash());
+            }
+        });
+
+                gridLayout.addComponent(table, 1, 0);
 
         saveButton = new Button("Save");
         saveButton.setImmediate(true);
@@ -147,6 +209,9 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
      */
     public void edit(final Review entity, final boolean newEntity) {
         this.entity = entity;
+        container.addContainerFilter(new Compare.Equal("range", entity.getSinceHash() + ".." + entity.getUntilHash()));
+        container.refresh();
+        entity.setDiffCount(container.size());
         reviewEditor.setItem(new BeanItem<Review>(entity), newEntity);
     }
 

@@ -22,12 +22,18 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.groom.model.Commit;
+import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
+import org.vaadin.addons.sitekit.model.Company;
+import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Entry list Flowlet.
@@ -110,7 +116,6 @@ public final class LogFlowlet extends AbstractFlowlet {
                 20, false);
 
         container.addContainerFilter(new Compare.Equal("branch", since.getValue()));
-
         container.addContainerProperty("hash", String.class, null, true, false);
         container.addContainerProperty("committerDate", Date.class, null, true, false);
         container.addContainerProperty("committer", String.class, null, true, false);
@@ -164,6 +169,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         table.setColumnCollapsed("author", true);
         table.setSelectable(true);
         table.setMultiSelect(true);
+        table.setImmediate(true);
 
         gridLayout.addComponent(table, 0, 2);
 
@@ -187,6 +193,51 @@ public final class LogFlowlet extends AbstractFlowlet {
                     container.addContainerFilter(new Compare.Equal("range", range.toString()));
                     container.refresh();
                 }
+            }
+        });
+
+        final Button addReviewButton = getSite().getButton("add-review");
+        addReviewButton.setEnabled(false);
+        buttonLayout.addComponent(addReviewButton);
+        addReviewButton.addClickListener(new ClickListener() {
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                final Object[] selection = ((Set) table.getValue()).toArray();
+                final String hashOne = (String) selection[0];
+                final String hashTwo = (String) selection[1];
+                final Commit commitOne = ((NestingBeanItem<Commit>)container.getItem(hashOne)).getBean();
+                final Commit commitTwo = ((NestingBeanItem<Commit>)container.getItem(hashTwo)).getBean();
+
+                final Commit sinceCommit;
+                final Commit untilCommit;
+                if (commitOne.getCommitterDate().getTime() > commitTwo.getCommitterDate().getTime()) {
+                    sinceCommit = commitTwo;
+                    untilCommit = commitOne;
+                } else {
+                    sinceCommit = commitOne;
+                    untilCommit = commitTwo;
+                }
+
+                final Review review = new Review();
+                review.setCreated(new Date());
+                review.setModified(review.getCreated());
+                review.setPath(PropertiesUtil.getProperty("groom", "repository-path"));
+                review.setSinceHash(sinceCommit.getHash());
+                review.setUntilHash(untilCommit.getHash());
+                review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
+                final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+                reviewView.edit(review, true);
+            }
+        });
+
+        table.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                final Set selection = (Set) table.getValue();
+                addReviewButton.setEnabled(selection != null && selection.size() == 2);
             }
         });
 

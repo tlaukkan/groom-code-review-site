@@ -114,17 +114,17 @@ public final class GroomFields {
                 "path", "Path",
                 TextField.class, null,
                 250, null, String.class, "",
-                false, true, true));
+                true, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "sinceHash", "Since Hash",
                 TextField.class, null,
                 70, null, String.class, "",
-                false, true, true));
+                true, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "untilHash", "Until Hash",
                 TextField.class, null,
                 70, null, String.class, "",
-                false, true, true));
+                true, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "title", "Title",
                 TextField.class, null,

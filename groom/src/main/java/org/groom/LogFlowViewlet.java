@@ -34,6 +34,8 @@ public final class LogFlowViewlet extends AbstractFlowViewlet {
     protected void addFlowlets() {
         final Flowlet logFlowlet = new LogFlowlet();
         addFlowlet(logFlowlet);
+        final Flowlet reviewView = new ReviewFlowlet();
+        addFlowlet(reviewView);
         setRootFlowlet(logFlowlet);
     }
 

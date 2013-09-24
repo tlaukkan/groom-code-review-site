@@ -34,8 +34,10 @@ public final class ReviewFlowViewlet extends AbstractFlowViewlet {
     protected void addFlowlets() {
         final Flowlet entriesView = new ReviewsFlowlet();
         addFlowlet(entriesView);
-        final Flowlet entryView = new ReviewFlowlet();
-        addFlowlet(entryView);
+        final Flowlet reviewView = new ReviewFlowlet();
+        addFlowlet(reviewView);
+        final Flowlet reviewFileDiffView = new ReviewFileDiffFlowlet();
+        addFlowlet(reviewFileDiffView);
         setRootFlowlet(entriesView);
     }
 
