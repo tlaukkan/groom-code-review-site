@@ -21,6 +21,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.groom.model.BlameLine;
 import org.groom.model.Review;
+import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
@@ -70,7 +71,9 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     @Override
     public void initialize() {
-
+        AceEditor editor = new AceEditor();
+        editor.setValue("Hello world!");
+        setViewContent(editor);
     }
 
     @Override
