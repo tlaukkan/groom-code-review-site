@@ -15,14 +15,20 @@
  */
 package org.groom;
 
+import com.vaadin.ui.CheckBox;
 import org.groom.model.Entry;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import org.groom.model.Review;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
+import org.vaadin.addons.sitekit.grid.field.GroupField;
 import org.vaadin.addons.sitekit.grid.field.TimestampField;
 import org.vaadin.addons.sitekit.grid.formatter.TimestampFormatter;
+import org.vaadin.addons.sitekit.model.Customer;
+import org.vaadin.addons.sitekit.model.Group;
 import org.vaadin.addons.sitekit.site.LocalizationProvider;
+import org.vaadin.addons.sitekit.web.BareSiteFields;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,54 +105,50 @@ public final class GroomFields {
         }
         initialized = true;
 
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "entryId", "Entry ID",
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "reviewId", "Review ID",
                 TextField.class, null,
                 100, null, String.class, null,
                 true, false, false));
-
-        GroomFields.add(Entry.class, new FieldDescriptor(
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "path", "Path",
                 TextField.class, null,
                 250, null, String.class, "",
-                true, true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "basename", "Basename",
-                TextField.class, null,
-                200, null, String.class, "",
-                true, true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "language", "Language",
-                TextField.class, null,
-                25, null, String.class, "",
-                true, true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "country", "Country",
-                TextField.class, null,
-                25, null, String.class, "",
-                true, true, false));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "key", "Key",
-                TextField.class, null,
-                -1, null, String.class, "",
-                true, true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "value", "Value",
-                TextArea.class, null,
-                400, null, String.class, "",
                 false, true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
-                "author", "Author",
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "sinceHash", "Since Hash",
                 TextField.class, null,
-                150, null, String.class, "",
+                70, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "untilHash", "Until Hash",
+                TextField.class, null,
+                70, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "title", "Title",
+                TextField.class, null,
+                250, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "diffCount", "Diffs",
+                TextField.class, null,
+                50, null, Integer.class, "",
                 true, true, false));
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "completed", "Completed",
+                CheckBox.class, null,
+                70, null, Boolean.class, false,
+                false, true, false));
+        GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 100, null, Group.class,
+                null, false, true, false));
 
-        GroomFields.add(Entry.class, new FieldDescriptor(
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, TimestampFormatter.class,
                 150, null, Date.class, null, true,
                 true, true));
-        GroomFields.add(Entry.class, new FieldDescriptor(
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "modified", "Modified",
                 TimestampField.class, TimestampFormatter.class,
                 150, null, Date.class, null,

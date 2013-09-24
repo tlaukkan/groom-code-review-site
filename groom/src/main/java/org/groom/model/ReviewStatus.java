@@ -29,7 +29,7 @@ import java.util.Date;
  * @author Tommi S.E. Laukkanen
  */
 @Entity
-@Table(name = "review")
+@Table(name = "review_status")
 public final class ReviewStatus implements Serializable {
     /** Java serialization version UID. */
     private static final long serialVersionUID = 1L;

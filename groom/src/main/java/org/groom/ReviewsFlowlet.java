@@ -15,7 +15,7 @@
  */
 package org.groom;
 
-import org.groom.model.Entry;
+import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -39,22 +39,22 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Entry list Flowlet.
+ * Review list Flowlet.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class EntriesFlowlet extends AbstractFlowlet {
+public final class ReviewsFlowlet extends AbstractFlowlet {
 
     /** Serial version UID. */
     private static final long serialVersionUID = 1L;
     /** The container. */
-    private LazyEntityContainer<Entry> container;
+    private LazyEntityContainer<Review> container;
     /** The grid. */
     private Grid grid;
 
     @Override
     public String getFlowletKey() {
-        return "entries";
+        return "reviews";
     }
 
     @Override
@@ -69,26 +69,17 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
     @Override
     public void initialize() {
-        final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(Entry.class);
+        final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(Review.class);
 
         final List<FilterDescriptor> filterDefinitions = new ArrayList<FilterDescriptor>();
 
-        filterDefinitions.add(new FilterDescriptor("basename", "basename", "Basename", new TextField(),
-                200, "like", String.class, ""));
-
-        filterDefinitions.add(new FilterDescriptor("language", "language", "Language", new TextField(),
-                30, "=", String.class, ""));
-
-        filterDefinitions.add(new FilterDescriptor("country", "country", "Country", new TextField(),
-                30, "=", String.class, ""));
-
-        filterDefinitions.add(new FilterDescriptor("key", "key", "Key", new TextField(),
+        filterDefinitions.add(new FilterDescriptor("title", "title", "Title", new TextField(),
                 200, "like", String.class, ""));
 
         final EntityManager entityManager = getSite().getSiteContext().getObject(EntityManager.class);
-        container = new LazyEntityContainer<Entry>(entityManager, true, true, false, Entry.class, 1000,
-                new String[] {"basename", "key", "language", "country"},
-                new boolean[] {true, true, true, true}, "entryId");
+        container = new LazyEntityContainer<Review>(entityManager, true, true, false, Review.class, 1000,
+                new String[] {"created"},
+                new boolean[] {true}, "reviewId");
 
         ContainerUtil.addContainerProperties(container, fieldDescriptors);
 
@@ -109,10 +100,8 @@ public final class EntriesFlowlet extends AbstractFlowlet {
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
 
-        table.setColumnCollapsed("entryId", true);
-        table.setColumnCollapsed("path", true);
-        table.setColumnCollapsed("created", true);
-        table.setColumnCollapsed("modified", true);
+        table.setColumnCollapsed("reviewId", true);
+
         gridLayout.addComponent(grid, 0, 1);
 
         final Button addButton = getSite().getButton("add");
@@ -123,12 +112,12 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                final Entry entry = new Entry();
-                entry.setCreated(new Date());
-                entry.setModified(entry.getCreated());
-                entry.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
-                final EntryFlowlet entryView = getViewSheet().forward(EntryFlowlet.class);
-                entryView.edit(entry, true);
+                final Review review = new Review();
+                review.setCreated(new Date());
+                review.setModified(review.getCreated());
+                review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
+                final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+                reviewView.edit(review, true);
             }
         });
 
@@ -140,9 +129,9 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                final Entry entity = container.getEntity(grid.getSelectedItemId());
-                final EntryFlowlet entryView = getViewSheet().forward(EntryFlowlet.class);
-                entryView.edit(entity, false);
+                final Review entity = container.getEntity(grid.getSelectedItemId());
+                final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+                reviewView.edit(entity, false);
             }
         });
 

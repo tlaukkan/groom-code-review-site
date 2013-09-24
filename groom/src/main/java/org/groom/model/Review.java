@@ -61,12 +61,16 @@ public final class Review implements Serializable {
     private String untilHash;
 
     /** Until hash. */
-    @Column(length = 7, nullable = false)
+    @Column(length = 128, nullable = false)
     private String title;
 
     /** Until hash. */
     @Column(nullable = false)
     private int diffCount;
+
+    /** Completed. */
+    @Column(nullable = false)
+    private boolean completed;
 
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
@@ -168,6 +172,14 @@ public final class Review implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     /**

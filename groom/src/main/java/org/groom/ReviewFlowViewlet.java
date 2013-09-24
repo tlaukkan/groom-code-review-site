@@ -19,11 +19,11 @@ import org.vaadin.addons.sitekit.flow.AbstractFlowViewlet;
 import org.vaadin.addons.sitekit.flow.Flowlet;
 
 /**
- * Entry management Flow.
+ * Revie management Flow.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class EntryFlowViewlet extends AbstractFlowViewlet {
+public final class ReviewFlowViewlet extends AbstractFlowViewlet {
 
     /**
      * Serial version UID.
@@ -32,9 +32,9 @@ public final class EntryFlowViewlet extends AbstractFlowViewlet {
 
     @Override
     protected void addFlowlets() {
-        final Flowlet entriesView = new EntriesFlowlet();
+        final Flowlet entriesView = new ReviewsFlowlet();
         addFlowlet(entriesView);
-        final Flowlet entryView = new EntryFlowlet();
+        final Flowlet entryView = new ReviewFlowlet();
         addFlowlet(entryView);
         setRootFlowlet(entriesView);
     }

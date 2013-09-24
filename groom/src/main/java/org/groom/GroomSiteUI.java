@@ -140,7 +140,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
         final List<ViewDescriptor> viewDescriptors = new ArrayList<ViewDescriptor>();
 
         viewDescriptors.add(new ViewDescriptor("master", null, null, new ViewVersion(0, null, "Master", "",
-                "This is a master view.", FixedWidthView.class.getCanonicalName(), new String[]{"admin"},
+                "This is a master view.", FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(
                         new ViewletDescriptor("logo", "Logo", "This is logo.", "logo.png",
                                 ImageViewlet.class.getCanonicalName()),
@@ -153,17 +153,17 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("default", null, null, new ViewVersion(0, "master", "Log", "",
-                "This is log view.", GroomView.class.getCanonicalName(), new String[]{"translator", "administrator"},
+                "This is log view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Log Viewlet", "This is Log viewlet.", null,
                         LogFlowViewlet.class.getCanonicalName())
                 ))));
 
-        viewDescriptors.add(new ViewDescriptor("entries", null, null, new ViewVersion(0, "master", "Entries", "",
-                "This is entries view.", FixedWidthView.class.getCanonicalName(), new String[]{"translator", "administrator"},
+        viewDescriptors.add(new ViewDescriptor("reviews", null, null, new ViewVersion(0, "master", "Reviews", "",
+                "This is reviews view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
-                        "content", "Entries Viewlet", "This is Entries viewlet.", null,
-                        EntryFlowViewlet.class.getCanonicalName())
+                        "content", "Reviews Viewlet", "This is Reviews viewlet.", null,
+                        ReviewFlowViewlet.class.getCanonicalName())
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("users", null, null, new ViewVersion(
@@ -213,7 +213,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
-                new NavigationVersion(0, "default", "default;entries;users;groups;companies;login", true));
+                new NavigationVersion(0, "default", "default;reviews;users;groups;companies;login", true));
 
         return new SiteDescriptor("Test site.", "test site", "This is a test site.",
                 navigationDescriptor, viewDescriptors);

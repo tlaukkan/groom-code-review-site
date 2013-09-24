@@ -15,7 +15,7 @@
  */
 package org.groom;
 
-import org.groom.model.Entry;
+import org.groom.model.Review;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.And;
 import com.vaadin.data.util.filter.Compare;
@@ -41,59 +41,57 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Entry edit flow.
+ * Review edit flow.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class EntryFlowlet extends AbstractFlowlet implements ValidatingEditorStateListener {
+public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEditorStateListener {
 
     /** Serial version UID. */
     private static final long serialVersionUID = 1L;
 
     /** The entity manager. */
     private EntityManager entityManager;
-    /** The entry flow. */
-    private Entry entity;
+    /** The review flow. */
+    private Review entity;
 
     /** The entity form. */
-    private ValidatingEditor entryEditor;
+    private ValidatingEditor reviewEditor;
     /** The save button. */
     private Button saveButton;
     /** The discard button. */
     private Button discardButton;
-    /** The other language keys container. */
-    private LazyEntityContainer container;
 
     @Override
     public String getFlowletKey() {
-        return "entry";
+        return "review";
     }
 
     @Override
     public boolean isDirty() {
-        return entryEditor.isModified();
+        return reviewEditor.isModified();
     }
 
     @Override
     public boolean isValid() {
-        return entryEditor.isValid();
+        return reviewEditor.isValid();
     }
 
     @Override
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(1, 3);
+        final GridLayout gridLayout = new GridLayout(1, 2);
         gridLayout.setSizeFull();
         gridLayout.setMargin(false);
         gridLayout.setSpacing(true);
         gridLayout.setRowExpandRatio(2, 1f);
         setViewContent(gridLayout);
 
-        entryEditor = new ValidatingEditor(GroomFields.getFieldDescriptors(Entry.class));
-        entryEditor.setCaption("Entry");
-        entryEditor.addListener((ValidatingEditorStateListener) this);
-        gridLayout.addComponent(entryEditor, 0, 0);
+        reviewEditor = new ValidatingEditor(GroomFields.getFieldDescriptors(Review.class));
+        reviewEditor.setCaption("Review");
+        reviewEditor.addListener((ValidatingEditorStateListener) this);
+        gridLayout.addComponent(reviewEditor, 0, 0);
 
         final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
@@ -108,17 +106,16 @@ public final class EntryFlowlet extends AbstractFlowlet implements ValidatingEdi
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                entryEditor.commit();
+                reviewEditor.commit();
                 entityManager.getTransaction().begin();
                 try {
                     entity = entityManager.merge(entity);
-                    entity.setAuthor(getSite().getSecurityProvider().getUser());
+                    //entity.setAuthor(getSite().getSecurityProvider().getUser());
                     entity.setModified(new Date());
                     entityManager.persist(entity);
                     entityManager.getTransaction().commit();
                     entityManager.detach(entity);
-                    entryEditor.discard();
-                    container.refresh();
+                    reviewEditor.discard();
                 } catch (final Throwable t) {
                     if (entityManager.getTransaction().isActive()) {
                         entityManager.getTransaction().rollback();
@@ -137,51 +134,20 @@ public final class EntryFlowlet extends AbstractFlowlet implements ValidatingEdi
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                entryEditor.discard();
+                reviewEditor.discard();
             }
         });
-
-        final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(Entry.class);
-
-        final List<FilterDescriptor> filterDefinitions = new ArrayList<FilterDescriptor>();
-
-        container = new LazyEntityContainer<Entry>(entityManager, true, true, false, Entry.class, 1000,
-        new String[] {"basename", "key", "language", "country"},
-        new boolean[] {true, true, true, true}, "entryId");
-        container.getQueryView().getQueryDefinition().setMaxQuerySize(1);
-
-        ContainerUtil.addContainerProperties(container, fieldDescriptors);
-
-        final Table table = new FormattingTable();
-        final Grid grid = new Grid(table, container);
-        grid.setCaption("All Translations");
-        grid.setSizeFull();
-        grid.setFields(fieldDescriptors);
-        grid.setFilters(filterDefinitions);
-
-        table.setColumnCollapsed("entryId", true);
-        table.setColumnCollapsed("path", true);
-        table.setColumnCollapsed("created", true);
-        table.setColumnCollapsed("modified", true);
-        gridLayout.addComponent(grid, 0, 2);
 
     }
 
     /**
-     * Edit an existing entry.
+     * Edit an existing review.
      * @param entity entity to be edited.
      * @param newEntity true if entity to be edited is new.
      */
-    public void edit(final Entry entity, final boolean newEntity) {
+    public void edit(final Review entity, final boolean newEntity) {
         this.entity = entity;
-        entryEditor.setItem(new BeanItem<Entry>(entity), newEntity);
-        container.getQueryView().getQueryDefinition().setMaxQuerySize(20);
-        container.removeAllContainerFilters();
-        container.getQueryView().addFilter(new And(
-                new Compare.Equal("path", entity.getPath()),
-                new Compare.Equal("basename", entity.getBasename()),
-                new Compare.Equal("key", entity.getKey())));
-        container.refresh();
+        reviewEditor.setItem(new BeanItem<Review>(entity), newEntity);
     }
 
     @Override
