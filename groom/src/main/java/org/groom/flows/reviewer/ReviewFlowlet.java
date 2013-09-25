@@ -64,10 +64,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     /** The review form. */
     private ValidatingEditor reviewEditor;
-    /** The save button. */
-    private Button saveButton;
-    /** The discard button. */
-    private Button discardButton;
     private LazyQueryContainer container;
     private BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory;
     private ReviewStatus reviewStatus;
@@ -228,56 +224,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                         view.setFileDiff(review, fileDiff, comment.getDiffLine());
                     }
 
-                    /*final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean();
-                    fileDiff.setReviewed(true);
-                    ReviewDao.saveReviewStatus(entityManager, reviewStatus);
-                    final char status = fileDiff.getStatus();
-                    if (status == 'A' || status == 'M') {
-                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                        view.setFileDiff(review, fileDiff);
-                    }*/
                 }
-            }
-        });
-
-        saveButton = new Button("Save");
-        saveButton.setImmediate(true);
-        buttonLayout.addComponent(saveButton);
-        saveButton.addListener(new ClickListener() {
-            /** Serial version UID. */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                reviewEditor.commit();
-                entityManager.getTransaction().begin();
-                try {
-                    review = entityManager.merge(review);
-                    //review.setAuthor(getSite().getSecurityProvider().getUser());
-                    review.setModified(new Date());
-                    entityManager.persist(review);
-                    entityManager.getTransaction().commit();
-                    entityManager.detach(review);
-                    reviewEditor.discard();
-                } catch (final Throwable t) {
-                    if (entityManager.getTransaction().isActive()) {
-                        entityManager.getTransaction().rollback();
-                    }
-                    throw new RuntimeException("Failed to save review: " + review, t);
-                }
-            }
-        });
-
-        discardButton = new Button("Discard");
-        discardButton.setImmediate(true);
-        buttonLayout.addComponent(discardButton);
-        discardButton.addListener(new ClickListener() {
-            /** Serial version UID. */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                reviewEditor.discard();
             }
         });
 
@@ -390,17 +337,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     @Override
     public void editorStateChanged(final ValidatingEditor source) {
-        if (isDirty()) {
-            if (isValid()) {
-                saveButton.setEnabled(true);
-            } else {
-                saveButton.setEnabled(false);
-            }
-            discardButton.setEnabled(true);
-        } else {
-            saveButton.setEnabled(false);
-            discardButton.setEnabled(false);
-        }
     }
 
     @Override

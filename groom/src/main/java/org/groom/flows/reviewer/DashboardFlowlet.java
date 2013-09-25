@@ -101,17 +101,17 @@ public final class DashboardFlowlet extends AbstractFlowlet {
 
         final Table table = new FormattingTable();
         grid = new Grid(table, container);
-        grid.setWidth(550, Unit.PIXELS);
+        //grid.setWidth(550, Unit.PIXELS);
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
 
         table.setColumnCollapsed("modified", true);
         table.setColumnCollapsed("reviewId", true);
-        table.setColumnCollapsed("path", true);
-        table.setColumnCollapsed("sinceHash", true);
-        table.setColumnCollapsed("untilHash", true);
+        //table.setColumnCollapsed("path", true);
+        //table.setColumnCollapsed("sinceHash", true);
+        //table.setColumnCollapsed("untilHash", true);
         table.setColumnCollapsed("completed", true);
-        table.setColumnCollapsed("reviewGroup", true);
+        //table.setColumnCollapsed("reviewGroup", true);
 
         gridLayout.addComponent(grid, 0, 1);
 
@@ -133,6 +133,8 @@ public final class DashboardFlowlet extends AbstractFlowlet {
         container.removeDefaultFilters();
         container.addDefaultFilter(
                 new Compare.Equal("owner.companyId", company.getCompanyId()));
+        container.addDefaultFilter(
+                new Compare.Equal("completed", false));
         final List<Group> groups = UserDao.getUserGroups(entityManager, company, user);
 
         Container.Filter groupsFilter = null;
