@@ -18,15 +18,13 @@ package org.groom.flows.reviewer;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
 import org.groom.FileDiffBeanQuery;
 import org.groom.GroomFields;
 import org.groom.dao.ReviewDao;
+import org.groom.flows.CommentDialog;
 import org.groom.flows.ReviewFileDiffFlowlet;
 import org.groom.model.Comment;
 import org.groom.model.FileDiff;
@@ -76,6 +74,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private LazyEntityContainer<ReviewStatus> reviewStatusContainer;
     private LazyEntityContainer<Comment> commentContainer;
     private Table fileDiffTable;
+    private Button completeButton;
+    private Button reopenButton;
 
     @Override
     public String getFlowletKey() {
@@ -193,6 +193,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         grid.setFields(fieldDescriptors);
         reviewerStatusesTable.setColumnCollapsed("reviewStatusId", true);
         reviewerStatusesTable.setColumnCollapsed("created", true);
+        reviewerStatusesTable.setColumnCollapsed("modified", true);
+        reviewerStatusesTable.setSelectable(false);
         gridLayout.addComponent(grid, 0, 1);
 
         commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 1000,
@@ -225,6 +227,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                         final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
                         view.setFileDiff(review, fileDiff, comment.getDiffLine());
                     }
+
                     /*final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean();
                     fileDiff.setReviewed(true);
                     ReviewDao.saveReviewStatus(entityManager, reviewStatus);
@@ -278,6 +281,48 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         });
 
+        completeButton = getSite().getButton("complete");
+        completeButton.setImmediate(true);
+        buttonLayout.addComponent(completeButton);
+        completeButton.addListener(new ClickListener() {
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
+                    @Override
+                    public void onOk(final String message) {
+                        reviewStatus.setComment(message);
+                        reviewStatus.setCompleted(true);
+                        ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+                        enter();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+                commentDialog.setCaption("Please enter final comment.");
+                UI.getCurrent().addWindow(commentDialog);
+                commentDialog.getTextArea().focus();
+            }
+        });
+
+        reopenButton = getSite().getButton("reopen");
+        reopenButton.setImmediate(true);
+        buttonLayout.addComponent(reopenButton);
+        reopenButton.addListener(new ClickListener() {
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                reviewStatus.setCompleted(false);
+                ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+                enter();
+            }
+        });
     }
 
     public void next() {
@@ -328,6 +373,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             final Date created = new Date();
             reviewStatus = new ReviewStatus(review, user, "", false, coverage, created, created);
             ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+            reviewStatusContainer.refresh();
         }
 
         final Map<String, Object> queryConfiguration = new HashMap<String, Object>();
@@ -338,6 +384,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         container.refresh();
         this.review.setDiffCount(container.size());
         reviewEditor.setItem(new BeanItem<Review>(this.review), newEntity);
+
+        enter();
     }
 
     @Override
@@ -359,6 +407,9 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     public void enter() {
         reviewStatusContainer.refresh();
         commentContainer.refresh();
+        entityManager.refresh(reviewStatus);
+        completeButton.setEnabled(!reviewStatus.isCompleted() && reviewStatus.getProgress() == 100);
+        reopenButton.setEnabled(reviewStatus.isCompleted());
     }
 
 }

@@ -175,19 +175,23 @@ public final class GroomFields {
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "reviewer", "Reviewer",
                 TextField.class, null,
-                50, null, User.class, null,
+                100, null, User.class, null,
                 true, true, false));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "progress", "Progress",
                 TextField.class, null,
-                50, null, Integer.class, null,
+                40, null, Integer.class, null,
                 true, true, false));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "completed", "Completed",
                 CheckBox.class, null,
-                70, null, Boolean.class, false,
+                40, null, Boolean.class, false,
                 false, true, false));
-
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "comment", "Message",
+                TextField.class, null,
+                -1, null, String.class, "",
+                false, true, true));
 
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "created", "Created",
