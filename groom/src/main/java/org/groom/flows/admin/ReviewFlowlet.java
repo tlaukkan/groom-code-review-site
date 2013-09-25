@@ -65,7 +65,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     @Override
     public String getFlowletKey() {
-        return "review";
+        return "review-configuration";
     }
 
     @Override

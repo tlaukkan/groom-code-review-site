@@ -175,7 +175,7 @@ public final class LogFlowlet extends AbstractFlowlet {
 
         gridLayout.addComponent(table, 0, 2);
 
-        final Button refreshButton = getSite().getButton("refresh");
+        final Button refreshButton = new Button(getSite().localize("button-refresh"));
         buttonLayout.addComponent(refreshButton);
         refreshButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         refreshButton.addStyleName("default");

@@ -142,7 +142,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         buttonLayout.setSpacing(true);
         gridLayout.addComponent(buttonLayout, 0, 1);
 
-        final Button previousButton = getSite().getButton("previous");
+        final Button previousButton = new Button(getSite().localize("button-previous"));
         buttonLayout.addComponent(previousButton);
         previousButton.addClickListener(new Button.ClickListener() {
             @Override
@@ -153,7 +153,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             }
         });
 
-        final Button nextButton = getSite().getButton("next");
+        final Button nextButton = new Button(getSite().localize("button-next"));
         buttonLayout.addComponent(nextButton);
         nextButton.addClickListener(new Button.ClickListener() {
             @Override
@@ -232,6 +232,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             builder.append(line.getLine());
         }
 
+        editor.setCaption(fileDiff.getPath());
         editor.clearRowAnnotations();
         editor.clearMarkers();
         editor.setReadOnly(false);

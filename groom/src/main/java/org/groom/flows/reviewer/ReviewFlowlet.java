@@ -228,7 +228,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         });
 
-        completeButton = getSite().getButton("complete");
+        completeButton = new Button(getSite().localize("button-complete"));
         completeButton.setImmediate(true);
         buttonLayout.addComponent(completeButton);
         completeButton.addListener(new ClickListener() {
@@ -256,7 +256,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         });
 
-        reopenButton = getSite().getButton("reopen");
+        reopenButton = new Button(getSite().localize("button-reopen"));
         reopenButton.setImmediate(true);
         buttonLayout.addComponent(reopenButton);
         reopenButton.addListener(new ClickListener() {

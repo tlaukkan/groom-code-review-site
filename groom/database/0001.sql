@@ -586,5 +586,7 @@ WITH (
 ALTER TABLE entry
   OWNER TO groom;
 
-INSERT INTO schemaversion VALUES (NOW(), 'translation', '0001');
+ALTER TABLE entry ADD COLUMN author character varying(1024);
+
+INSERT INTO schemaversion VALUES (NOW(), 'groom', '0001');
 

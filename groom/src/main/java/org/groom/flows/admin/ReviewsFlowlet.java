@@ -55,7 +55,7 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
 
     @Override
     public String getFlowletKey() {
-        return "reviews";
+        return "reviews-management";
     }
 
     @Override
