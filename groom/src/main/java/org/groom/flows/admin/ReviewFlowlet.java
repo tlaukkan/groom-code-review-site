@@ -153,7 +153,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                     final char status = fileDiff.getStatus();
                     if (status == 'A' || status == 'M') {
                         final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                        view.setFileDiff(entity, fileDiff);
+                        view.setFileDiff(entity, fileDiff, 0);
                     }
                 }
             }

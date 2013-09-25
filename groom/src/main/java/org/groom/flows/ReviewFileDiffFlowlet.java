@@ -18,6 +18,7 @@ package org.groom.flows;
 import com.vaadin.ui.*;
 import org.groom.BlameReader;
 import org.groom.dao.ReviewDao;
+import org.groom.flows.reviewer.ReviewFlowlet;
 import org.groom.model.*;
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
@@ -85,7 +86,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(1,1);
+        final GridLayout gridLayout = new GridLayout(1,2);
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(0, 1f);
         gridLayout.setRowExpandRatio(0, 1f);
@@ -137,6 +138,32 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.addSelectionChangeListener(selectionChangeListener);
         gridLayout.addComponent(editor, 0, 0);
 
+        final HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        gridLayout.addComponent(buttonLayout, 0, 1);
+
+        final Button previousButton = getSite().getButton("previous");
+        buttonLayout.addComponent(previousButton);
+        previousButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                getViewSheet().back();
+                view.previous();
+            }
+        });
+
+        final Button nextButton = getSite().getButton("next");
+        buttonLayout.addComponent(nextButton);
+        nextButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                getViewSheet().back();
+                view.next();
+            }
+        });
+
     }
 
     private void addComment(Comment comment) {
@@ -151,7 +178,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     public void enter() {
     }
 
-    public void setFileDiff(final Review review, final FileDiff fileDiff) {
+    public void setFileDiff(final Review review, final FileDiff fileDiff, final int toLine) {
         this.review = review;
         this.fileDiff = fileDiff;
         this.path = fileDiff.getPath();
@@ -210,6 +237,10 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.setReadOnly(false);
         editor.setValue(builder.toString());
         editor.setCursorPosition(0);
+        if (toLine != 0) {
+            editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
+        }
+        lastCursor = editor.getCursorPosition();
         editor.setReadOnly(true);
         for (int i = 0; i < blames.size(); i++) {
             final BlameLine blameLine = blames.get(i);

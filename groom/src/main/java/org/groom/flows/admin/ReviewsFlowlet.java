@@ -106,10 +106,9 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
 
         gridLayout.addComponent(grid, 0, 1);
 
-        final Button addButton = getSite().getButton("add");
+        /*final Button addButton = getSite().getButton("add");
         buttonLayout.addComponent(addButton);
         addButton.addClickListener(new ClickListener() {
-            /** Serial version UID. */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -121,7 +120,7 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
                 final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
                 reviewView.edit(review, true);
             }
-        });
+        });*/
 
         final Button editButton = getSite().getButton("edit");
         buttonLayout.addComponent(editButton);

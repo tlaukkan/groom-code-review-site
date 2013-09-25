@@ -28,6 +28,7 @@ import org.groom.FileDiffBeanQuery;
 import org.groom.GroomFields;
 import org.groom.dao.ReviewDao;
 import org.groom.flows.ReviewFileDiffFlowlet;
+import org.groom.model.Comment;
 import org.groom.model.FileDiff;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
@@ -73,6 +74,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory;
     private ReviewStatus reviewStatus;
     private LazyEntityContainer<ReviewStatus> reviewStatusContainer;
+    private LazyEntityContainer<Comment> commentContainer;
+    private Table fileDiffTable;
 
     @Override
     public String getFlowletKey() {
@@ -93,7 +96,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(2, 3);
+        final GridLayout gridLayout = new GridLayout(2, 4);
         gridLayout.setSizeFull();
         gridLayout.setMargin(false);
         gridLayout.setSpacing(true);
@@ -112,7 +115,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-        gridLayout.addComponent(buttonLayout, 0, 2);
+        gridLayout.addComponent(buttonLayout, 0, 3);
 
 
         beanQueryFactory = new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
@@ -125,7 +128,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         container.addContainerProperty("reviewed", String.class, null, true, false);
 
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final Table table = new Table() {
+        fileDiffTable = new Table() {
             @Override
             protected String formatPropertyValue(Object rowId, Object colId,
                                                  Property property) {
@@ -138,47 +141,47 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         };
 
-        table.setSizeFull();
-        table.setContainerDataSource(container);
-        table.setVisibleColumns(new Object[] {
+        fileDiffTable.setSizeFull();
+        fileDiffTable.setContainerDataSource(container);
+        fileDiffTable.setVisibleColumns(new Object[]{
                 "status",
                 "path",
                 "reviewed"
         });
 
-        table.setColumnWidth("status", 20);
+        fileDiffTable.setColumnWidth("status", 20);
         //table.setColumnWidth("path", 500);
 
-        table.setColumnHeaders(new String[]{
+        fileDiffTable.setColumnHeaders(new String[]{
                 getSite().localize("field-status"),
                 getSite().localize("field-path"),
                 getSite().localize("field-reviewed")
         });
 
-        table.setColumnCollapsingAllowed(false);
-        table.setSelectable(true);
-        table.setMultiSelect(false);
-        table.setImmediate(true);
+        fileDiffTable.setColumnCollapsingAllowed(false);
+        fileDiffTable.setSelectable(true);
+        fileDiffTable.setMultiSelect(false);
+        fileDiffTable.setImmediate(true);
 
-        table.addValueChangeListener(new Property.ValueChangeListener() {
+        fileDiffTable.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                final String selectedPath = (String) table.getValue();
+                final String selectedPath = (String) fileDiffTable.getValue();
 
                 if (selectedPath != null) {
-                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean();
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) fileDiffTable.getItem(selectedPath)).getBean();
                     fileDiff.setReviewed(true);
                     ReviewDao.saveReviewStatus(entityManager, reviewStatus);
                     final char status = fileDiff.getStatus();
                     if (status == 'A' || status == 'M') {
                         final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                        view.setFileDiff(review, fileDiff);
+                        view.setFileDiff(review, fileDiff, 0);
                     }
                 }
             }
         });
 
-        gridLayout.addComponent(table, 1, 0, 1, 1);
+        gridLayout.addComponent(fileDiffTable, 1, 0, 1, 1);
 
         reviewStatusContainer = new LazyEntityContainer<ReviewStatus>(entityManager, true, false, false, ReviewStatus.class, 1000,
         new String[] {"reviewer.emailAddress"},
@@ -191,6 +194,48 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         reviewerStatusesTable.setColumnCollapsed("reviewStatusId", true);
         reviewerStatusesTable.setColumnCollapsed("created", true);
         gridLayout.addComponent(grid, 0, 1);
+
+        commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 1000,
+                new String[] {"path", "line"},
+                new boolean[] {true, true}, "commentId");
+        final List<FieldDescriptor> commentFieldDescriptors = GroomFields.getFieldDescriptors(Comment.class);
+        ContainerUtil.addContainerProperties(commentContainer, commentFieldDescriptors);
+        final Table commentTable = new FormattingTable();
+        Grid commentGrid = new Grid(commentTable, commentContainer);
+        commentGrid.setHeight(200, Unit.PIXELS);
+        commentGrid.setFields(commentFieldDescriptors);
+        commentTable.setImmediate(true);
+        commentTable.setColumnCollapsed("commentId", false);
+        commentTable.setColumnCollapsed("created", true);
+        commentTable.setColumnCollapsed("committer", true);
+        gridLayout.addComponent(commentGrid, 0, 2, 1, 2);
+
+        commentTable.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
+                final String commentId = (String) commentTable.getValue();
+
+                if (commentId != null) {
+                    final Comment comment = ((NestingBeanItem<Comment>) commentTable.getItem(commentId)).getBean();
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) fileDiffTable.getItem(comment.getPath())).getBean();
+                    fileDiff.setReviewed(true);
+                    ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+                    final char status = fileDiff.getStatus();
+                    if (status == 'A' || status == 'M') {
+                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                        view.setFileDiff(review, fileDiff, comment.getDiffLine());
+                    }
+                    /*final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean();
+                    fileDiff.setReviewed(true);
+                    ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+                    final char status = fileDiff.getStatus();
+                    if (status == 'A' || status == 'M') {
+                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                        view.setFileDiff(review, fileDiff);
+                    }*/
+                }
+            }
+        });
 
         saveButton = new Button("Save");
         saveButton.setImmediate(true);
@@ -235,6 +280,22 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     }
 
+    public void next() {
+        final String selectedPath = (String) fileDiffTable.getValue();
+        final String nextPath = (String) fileDiffTable.nextItemId(selectedPath);
+        if (nextPath != null) {
+            fileDiffTable.select(nextPath);
+        }
+    }
+
+    public void previous() {
+        final String selectedPath = (String) fileDiffTable.getValue();
+        final String prevPath = (String) fileDiffTable.prevItemId(selectedPath);
+        if (prevPath != null) {
+            fileDiffTable.select(prevPath);
+        }
+    }
+
     /**
      * Edit an existing review.
      * @param review review to be edited.
@@ -246,6 +307,10 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         reviewStatusContainer.removeDefaultFilters();
         reviewStatusContainer.addDefaultFilter(new Compare.Equal("review", review));
         reviewStatusContainer.refresh();
+
+        commentContainer.removeDefaultFilters();
+        commentContainer.addDefaultFilter(new Compare.Equal("review", review));
+        commentContainer.refresh();
 
         final User user = ((SecurityProviderSessionImpl)
                 getSite().getSecurityProvider()).getUserFromSession();
@@ -293,6 +358,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     @Override
     public void enter() {
         reviewStatusContainer.refresh();
+        commentContainer.refresh();
     }
 
 }

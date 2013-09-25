@@ -16,6 +16,7 @@
 package org.groom;
 
 import com.vaadin.ui.CheckBox;
+import org.groom.model.Comment;
 import org.groom.model.Entry;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextArea;
@@ -186,5 +187,58 @@ public final class GroomFields {
                 CheckBox.class, null,
                 70, null, Boolean.class, false,
                 false, true, false));
+
+
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "created", "Created",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null, true,
+                true, true));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "modified", "Modified",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null,
+                true, true, true));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "commentId", "Comment ID",
+                TextField.class, null,
+                100, null, String.class, null,
+                true, false, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "reviewer", "Reviewer",
+                TextField.class, null,
+                100, null, User.class, null,
+                true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "author", "Author",
+                TextField.class, null,
+                50, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "committer", "Committer",
+                TextField.class, null,
+                50, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "hash", "Hash",
+                TextField.class, null,
+                50, null, String.class, null,
+                true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "path", "path",
+                TextField.class, null,
+                400, null, String.class, "",
+                false, true, true));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "line", "Line",
+                TextField.class, null,
+                30, null, Integer.class, null,
+                true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "message", "Message",
+                TextField.class, null,
+                -1, null, String.class, "",
+                false, true, true));
+
     }
 }
