@@ -106,6 +106,16 @@ public final class GroomFields {
         initialized = true;
 
         GroomFields.add(Review.class, new FieldDescriptor(
+                "created", "Created",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null, true,
+                true, true));
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "modified", "Modified",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null,
+                true, true, true));
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "reviewId", "Review ID",
                 TextField.class, null,
                 100, null, String.class, null,
@@ -128,7 +138,7 @@ public final class GroomFields {
         GroomFields.add(Review.class, new FieldDescriptor(
                 "title", "Title",
                 TextField.class, null,
-                250, null, String.class, "",
+                -1, null, String.class, "",
                 false, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "diffCount", "Diffs",
@@ -143,16 +153,6 @@ public final class GroomFields {
         GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 100, null, Group.class,
                 null, false, true, false));
 
-        GroomFields.add(Review.class, new FieldDescriptor(
-                "created", "Created",
-                TimestampField.class, TimestampFormatter.class,
-                150, null, Date.class, null, true,
-                true, true));
-        GroomFields.add(Review.class, new FieldDescriptor(
-                "modified", "Modified",
-                TimestampField.class, TimestampFormatter.class,
-                150, null, Date.class, null,
-                true, true, true));
 
     }
 }

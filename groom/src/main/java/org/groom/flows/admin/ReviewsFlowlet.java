@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.flows.admin;
 
+import org.groom.GroomFields;
 import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.Button;

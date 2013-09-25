@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.flows;
 
+import org.groom.flows.admin.ReviewFlowlet;
 import org.vaadin.addons.sitekit.flow.AbstractFlowViewlet;
 import org.vaadin.addons.sitekit.flow.Flowlet;
 
 /**
- * Revie management Flow.
+ * Entry management Flow.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class ReviewFlowViewlet extends AbstractFlowViewlet {
+public final class LogFlowViewlet extends AbstractFlowViewlet {
 
     /**
      * Serial version UID.
@@ -32,13 +33,11 @@ public final class ReviewFlowViewlet extends AbstractFlowViewlet {
 
     @Override
     protected void addFlowlets() {
-        final Flowlet entriesView = new ReviewsFlowlet();
-        addFlowlet(entriesView);
+        final Flowlet logFlowlet = new LogFlowlet();
+        addFlowlet(logFlowlet);
         final Flowlet reviewView = new ReviewFlowlet();
         addFlowlet(reviewView);
-        final Flowlet reviewFileDiffView = new ReviewFileDiffFlowlet();
-        addFlowlet(reviewFileDiffView);
-        setRootFlowlet(entriesView);
+        setRootFlowlet(logFlowlet);
     }
 
 }

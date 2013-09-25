@@ -23,6 +23,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.groom.flows.LogFlowViewlet;
+import org.groom.flows.admin.ReviewFlowViewlet;
+import org.groom.flows.reviewer.DashboardViewlet;
 import org.vaadin.addons.sitekit.dao.CompanyDao;
 import org.vaadin.addons.sitekit.model.Company;
 import org.vaadin.addons.sitekit.site.AbstractSiteUI;
@@ -152,7 +155,14 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                                 CompanyFooterViewlet.class.getCanonicalName())
                 ))));
 
-        viewDescriptors.add(new ViewDescriptor("default", null, null, new ViewVersion(0, "master", "Log", "",
+        viewDescriptors.add(new ViewDescriptor("dashboard", null, null, new ViewVersion(0, "master", "Dashboard", "",
+                "This is dashboard view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
+                Arrays.asList(new ViewletDescriptor(
+                        "content", "Dashboard Viewlet", "This is Dashboard viewlet.", null,
+                        DashboardViewlet.class.getCanonicalName())
+                ))));
+
+        viewDescriptors.add(new ViewDescriptor("log", null, null, new ViewVersion(0, "master", "Log", "",
                 "This is log view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Log Viewlet", "This is Log viewlet.", null,
@@ -213,7 +223,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
-                new NavigationVersion(0, "default", "default;reviews;users;groups;companies;login", true));
+                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;users;groups;companies;login", true));
 
         return new SiteDescriptor("Test site.", "test site", "This is a test site.",
                 navigationDescriptor, viewDescriptors);

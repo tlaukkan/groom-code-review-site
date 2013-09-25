@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.flows;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
@@ -22,6 +22,8 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.groom.CommitBeanQuery;
+import org.groom.flows.admin.ReviewFlowlet;
 import org.groom.model.Commit;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
