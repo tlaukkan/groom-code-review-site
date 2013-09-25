@@ -15,8 +15,7 @@
  */
 package org.groom.model;
 
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.Group;
+import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import org.vaadin.addons.sitekit.model.User;
 
 import javax.persistence.*;
@@ -58,8 +57,11 @@ public final class ReviewStatus implements Serializable {
     private boolean completed;
 
     /** Coverage of the review. */
+    @Lob
     @Column(nullable=false)
-    private byte[] coverage;
+    private String coverage;
+
+    private byte[] coverageCache = null;
 
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
@@ -83,7 +85,7 @@ public final class ReviewStatus implements Serializable {
         this.reviewer = reviewer;
         this.comment = comment;
         this.completed = completed;
-        this.coverage = coverage;
+        this.coverage = HexBin.encode(coverage);
         this.created = created;
         this.modified = modified;
     }
@@ -113,11 +115,15 @@ public final class ReviewStatus implements Serializable {
     }
 
     public byte[] getCoverage() {
-        return coverage;
+        if (coverageCache == null) {
+            coverageCache = HexBin.decode(coverage);
+        }
+        return coverageCache;
     }
 
     public void setCoverage(byte[] coverage) {
-        this.coverage = coverage;
+        coverageCache = coverage;
+        this.coverage = HexBin.encode(coverage);
     }
 
     /**

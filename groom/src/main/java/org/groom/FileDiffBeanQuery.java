@@ -4,6 +4,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
 import org.groom.model.Commit;
 import org.groom.model.FileDiff;
+import org.groom.model.ReviewStatus;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -73,7 +74,8 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
                 continue;
             }
             final String path = line.substring(40);
-            final FileDiff fileDiff = new FileDiff(status, path);
+            final FileDiff fileDiff = new FileDiff(status, path, i,
+                    (ReviewStatus) getQueryConfiguration().get("status"));
             fileDiffs.add(fileDiff);
         }
         return fileDiffs;

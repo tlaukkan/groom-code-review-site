@@ -122,6 +122,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
                     final Review entity = container.getEntity(grid.getSelectedItemId());
                     final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
                     reviewView.edit(entity, false);
+                    table.setValue(null);
                 }
             }
         });

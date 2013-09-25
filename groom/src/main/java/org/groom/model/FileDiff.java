@@ -10,10 +10,14 @@ package org.groom.model;
 public class FileDiff {
     private char status;
     private String path;
+    private int index;
+    private ReviewStatus reviewStatus;
 
-    public FileDiff(char status, String path) {
+    public FileDiff(char status, String path, int index, ReviewStatus reviewStatus) {
         this.status = status;
         this.path = path;
+        this.index = index;
+        this.reviewStatus = reviewStatus;
     }
 
     public char getStatus() {
@@ -30,5 +34,41 @@ public class FileDiff {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public ReviewStatus getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
+    public boolean isReviewed() {
+        if (reviewStatus != null) {
+            int byteIndex = index / 8;
+            int bitIndex = index % 8;
+            return ((reviewStatus.getCoverage()[byteIndex] >> bitIndex) & 1) > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public void setReviewed(final boolean reviewed) {
+        if (reviewStatus != null) {
+            int byteIndex = index / 8;
+            int bitIndex = index % 8;
+            byte[] coverage = reviewStatus.getCoverage();
+            coverage[byteIndex] = (byte) (coverage[byteIndex] | (1 << bitIndex));
+            reviewStatus.setCoverage(coverage);
+        }
     }
 }
