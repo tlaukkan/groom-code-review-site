@@ -60,6 +60,10 @@ public final class Comment implements Serializable {
     @Column(nullable = false)
     private int line;
 
+    /** Diff Line. */
+    @Column(nullable = false)
+    private int diffLine;
+
     /** Severity. */
     @Column(nullable = false)
     private int severity;
@@ -93,13 +97,15 @@ public final class Comment implements Serializable {
         super();
     }
 
-    public Comment(Review review, User reviewer, String hash, String path, int line, int severity, String message,
+    public Comment(Review review, User reviewer, String hash, String path, int line, int diffLine,
+                   int severity, String message,
                    String author, String committer, Date created, Date modified) {
         this.review = review;
         this.reviewer = reviewer;
         this.hash = hash;
         this.path = path;
         this.line = line;
+        this.diffLine = diffLine;
         this.severity = severity;
         this.message = message;
         this.author = author;
@@ -160,6 +166,14 @@ public final class Comment implements Serializable {
 
     public void setLine(int line) {
         this.line = line;
+    }
+
+    public int getDiffLine() {
+        return diffLine;
+    }
+
+    public void setDiffLine(int diffLine) {
+        this.diffLine = diffLine;
     }
 
     public int getSeverity() {

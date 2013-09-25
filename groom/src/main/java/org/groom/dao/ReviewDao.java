@@ -1,5 +1,6 @@
 package org.groom.dao;
 
+import org.groom.model.Comment;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
 import org.vaadin.addons.sitekit.model.User;
@@ -38,4 +39,23 @@ public class ReviewDao {
         }
         return reviewStatuses.get(0);
     }
+
+    public static void saveComment(final EntityManager entityManager, final Comment comment) {
+        entityManager.getTransaction().begin();
+        try {
+            entityManager.persist(comment);
+        } catch (final RuntimeException t) {
+            entityManager.getTransaction().rollback();
+            throw t;
+        }
+        entityManager.getTransaction().commit();
+    }
+
+    public static List<Comment> getComments(final EntityManager entityManager, final Review review) {
+        final Query query =
+                entityManager.createQuery("select e from Comment as e where e.review=:review order by e.line");
+        query.setParameter("review", review);
+        return query.getResultList();
+    }
+
 }

@@ -13,8 +13,10 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class BlameReader {
-    public static final List<BlameLine> read(final String path, final String sinceHash, final String untilHash, boolean reverse) {
+    public static final List<BlameLine> read(final String path, final String sinceHash,
+                                             final String untilHash, boolean reverse) {
         final Map<String, String> hashAuthorMap = new HashMap<String, String>();
+        final Map<String, String> hashCommitterMap = new HashMap<String, String>();
         final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
                 + " --p " + sinceHash + ".." + untilHash + " -- " + path );
         final Set<String> boundaryHashes = new HashSet<String>();
@@ -25,9 +27,12 @@ public class BlameReader {
             String[] parts = lines[i].split(" ");
             final String hash = parts[0].substring(0, 7);
             final int originalLineNumber = Integer.parseInt(parts[1]);
+            final int finalLineNumber = Integer.parseInt(parts[2]);
             if (parts.length == 4 && !hashAuthorMap.containsKey(hash)) {
                 final String authorName = lines[i + 1].split(" ")[1];
+                final String committerName = lines[i + 5].split(" ")[1];
                 hashAuthorMap.put(hash, authorName);
+                hashCommitterMap.put(hash, committerName);
             }
             while (lines[i].charAt(0) != '\t') {
                 if (lines[i].equals("boundary")) {
@@ -43,7 +48,8 @@ public class BlameReader {
             } else {
                 type = LineChangeType.NONE;
             }
-            blameLines.add(new BlameLine(hash, originalLineNumber, hashAuthorMap.get(hash), lines[i].substring(1), type));
+            blameLines.add(new BlameLine(hash, originalLineNumber, finalLineNumber,
+                    hashAuthorMap.get(hash), hashCommitterMap.get(hash), lines[i].substring(1), type));
         }
 
         return blameLines;

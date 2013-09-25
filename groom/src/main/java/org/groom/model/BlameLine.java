@@ -10,14 +10,19 @@ package org.groom.model;
 public class BlameLine {
     private String hash;
     private int originalLine;
+    private int finalLine;
     private String authorName;
+    private String committerName;
     private String line;
     private LineChangeType type;
 
-    public BlameLine(String hash, int originalLine, String authorName, String line, LineChangeType type) {
+    public BlameLine(String hash, int originalLine, int finalLine, String authorName, final String committerName,
+                     String line, LineChangeType type) {
         this.hash = hash;
         this.originalLine = originalLine;
+        this.finalLine = finalLine;
         this.authorName = authorName;
+        this.committerName = committerName;
         this.line = line;
         this.type = type;
     }
@@ -30,8 +35,16 @@ public class BlameLine {
         return originalLine;
     }
 
+    public int getFinalLine() {
+        return finalLine;
+    }
+
     public String getAuthorName() {
         return authorName;
+    }
+
+    public String getCommitterName() {
+        return committerName;
     }
 
     public String getLine() {

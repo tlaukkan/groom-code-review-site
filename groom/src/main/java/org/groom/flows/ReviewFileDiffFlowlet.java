@@ -15,27 +15,18 @@
  */
 package org.groom.flows;
 
-import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import org.groom.BlameReader;
-import org.groom.model.BlameLine;
-import org.groom.model.LineChangeType;
-import org.groom.model.Review;
+import org.groom.dao.ReviewDao;
+import org.groom.model.*;
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.client.AceAnnotation;
 import org.vaadin.aceeditor.client.AceMarker;
 import org.vaadin.aceeditor.client.AceRange;
-import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.FieldDescriptor;
-import org.vaadin.addons.sitekit.grid.FilterDescriptor;
-import org.vaadin.addons.sitekit.grid.FormattingTable;
 import org.vaadin.addons.sitekit.grid.Grid;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.util.ContainerUtil;
+import org.vaadin.addons.sitekit.model.User;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -56,10 +47,12 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     private String path;
 
-    private String sinceHash;
-
-    private String untilHash;
     private AceEditor editor;
+    private List<BlameLine> blames;
+    private FileDiff fileDiff;
+    private EntityManager entityManager;
+    private Review review;
+    private AceEditor.SelectionChangeListener selectionChangeListener;
 
     @Override
     public String getFlowletKey() {
@@ -76,46 +69,116 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         return true;
     }
 
+    private static int findLine(final String value, final int index) {
+        int line = 0;
+        for( int i=0; i<index; i++ ) {
+            if( value.charAt(i) == '\n' ) {
+                line++;
+            }
+        }
+        return line;
+    }
+
+    int lastCursor = 0;
+
     @Override
     public void initialize() {
+        entityManager = getSite().getSiteContext().getObject(EntityManager.class);
+
+        final GridLayout gridLayout = new GridLayout(1,1);
+        gridLayout.setSizeFull();
+        gridLayout.setColumnExpandRatio(0, 1f);
+        gridLayout.setRowExpandRatio(0, 1f);
+        setViewContent(gridLayout);
         editor = new AceEditor();
         editor.setSizeFull();
         editor.setReadOnly(true);
-        setViewContent(editor);
+        editor.setImmediate(true);
+        selectionChangeListener = new AceEditor.SelectionChangeListener() {
+            @Override
+            public void selectionChanged(AceEditor.SelectionChangeEvent e) {
+                int cursor = e.getSelection().getCursorPosition();
+                if (lastCursor != cursor && fileDiff.getReviewStatus() != null) {
+                    lastCursor = cursor;
+                    final int cursorLine = findLine(editor.getValue(), cursor);
+                    final BlameLine blame = blames.get(cursorLine);
+                    if (blame.getType() != LineChangeType.NONE) {
+                        final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
+                            @Override
+                            public void onOk(final String message) {
+                                final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
+                                final Review review = reviewStatus.getReview();
+                                final Date date = new Date();
+                                if (message.trim().length() > 0) {
+                                    final Comment comment = new Comment(review, reviewStatus.getReviewer(),
+                                            blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
+                                            0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
+                                    ReviewDao.saveComment(entityManager, comment);
+                                    addComment(comment);
+                                }
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                //To change body of implemented methods use File | Settings | File Templates.
+                            }
+                        });
+                        int cursorPosition = editor.getCursorPosition();
+                        commentDialog.setCaption("Please enter groom text for " + blame.getAuthorName()
+                                + " at line: " + (cursorLine + 1));
+                        UI.getCurrent().addWindow(commentDialog);
+                        commentDialog.getTextArea().focus();
+
+                    }
+                }
+            }
+        };
+
+        editor.addSelectionChangeListener(selectionChangeListener);
+        gridLayout.addComponent(editor, 0, 0);
+
+    }
+
+    private void addComment(Comment comment) {
+        editor.addRowAnnotation(new AceAnnotation(
+                "Groomed by reviewer: " + comment.getReviewer().getFirstName()
+                        + " - " + comment.getReviewer().getLastName()
+                        + " Message: " + comment.getMessage(),
+                AceAnnotation.Type.warning) , comment.getDiffLine());
     }
 
     @Override
     public void enter() {
     }
 
-    public void setFileDiff(final String path, final String sinceHash, final String untilHash, final boolean added) {
-        this.path = path;
-        this.sinceHash = sinceHash;
-        this.untilHash = untilHash;
+    public void setFileDiff(final Review review, final FileDiff fileDiff) {
+        this.review = review;
+        this.fileDiff = fileDiff;
+        this.path = fileDiff.getPath();
 
-        final List<BlameLine> forwardBlames = BlameReader.read(path, sinceHash, untilHash, false);
+        blames = BlameReader.read(path, review.getSinceHash(), review.getUntilHash(), false);
         final List<BlameLine> reverseBlames;
-        if (added) {
+        if (fileDiff.getStatus() == 'A') {
             reverseBlames = new ArrayList<BlameLine>();
         } else {
-            reverseBlames = BlameReader.read(path, sinceHash, untilHash, true);
+            reverseBlames = BlameReader.read(path, review.getSinceHash(), review.getUntilHash(), true);
         }
 
         // Inserting deletes among forward blames
         for (final BlameLine reverseBlame : reverseBlames) {
             if (reverseBlame.getType() == LineChangeType.DELETED) {
                 boolean inserted = false;
-                for (int i = 0; i < forwardBlames.size(); i++) {
-                    final BlameLine forwardBlame = forwardBlames.get(i);
+                for (int i = 0; i < blames.size(); i++) {
+                    final BlameLine forwardBlame = blames.get(i);
                     if ((forwardBlame.getType() == LineChangeType.NONE || forwardBlame.getType() == LineChangeType.DELETED)
                             && forwardBlame.getOriginalLine() >= reverseBlame.getOriginalLine()) {
-                        forwardBlames.add(i, reverseBlame);
+                        blames.add(i, reverseBlame);
                         inserted = true;
                         break;
                     }
                 }
                 if (!inserted) {
-                    forwardBlames.add(reverseBlame);
+                    blames.add(reverseBlame);
                 }
             }
         }
@@ -135,7 +198,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (final BlameLine line : forwardBlames) {
+        for (final BlameLine line : blames) {
             if (builder.length() > 0) {
                 builder.append('\n');
             }
@@ -146,12 +209,13 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.clearMarkers();
         editor.setReadOnly(false);
         editor.setValue(builder.toString());
+        editor.setCursorPosition(0);
         editor.setReadOnly(true);
-        for (int i = 0; i < forwardBlames.size(); i++) {
-            final BlameLine blameLine = forwardBlames.get(i);
+        for (int i = 0; i < blames.size(); i++) {
+            final BlameLine blameLine = blames.get(i);
             if (blameLine.getType() == LineChangeType.ADDED) {
                 editor.addRowAnnotation(new AceAnnotation(
-                        "Author: " + blameLine.getAuthorName()
+                        "Added by author: " + blameLine.getAuthorName()
                         + " Commit: " + blameLine.getHash(),
                         AceAnnotation.Type.info) , i);
                 editor.addMarker(new AceRange(i, 0, i + 1, 0),
@@ -159,13 +223,20 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             }
             if (blameLine.getType() == LineChangeType.DELETED) {
                 editor.addRowAnnotation(new AceAnnotation(
-                        "Author: " + blameLine.getAuthorName()
+                        "Deleted by author: " + blameLine.getAuthorName()
                         + " Commit: " + blameLine.getHash(),
                         AceAnnotation.Type.info) , i);
                 editor.addMarker(new AceRange(i, 0, i + 1, 0),
                         "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.ADJUST);
             }
 
+        }
+
+        final List<Comment> comments = ReviewDao.getComments(entityManager, review);
+        for (final Comment comment : comments) {
+            if (comment.getPath().equals(fileDiff.getPath())) {
+                addComment(comment);
+            }
         }
     }
 }
