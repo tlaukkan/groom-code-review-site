@@ -32,18 +32,20 @@ import org.groom.model.FileDiff;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
+import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.ValidatingEditor;
-import org.vaadin.addons.sitekit.grid.ValidatingEditorStateListener;
+import org.vaadin.addons.sitekit.grid.*;
 import org.vaadin.addons.sitekit.model.User;
 import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
+import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +72,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private LazyQueryContainer container;
     private BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory;
     private ReviewStatus reviewStatus;
+    private LazyEntityContainer<ReviewStatus> reviewStatusContainer;
 
     @Override
     public String getFlowletKey() {
@@ -90,11 +93,12 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(2, 2);
+        final GridLayout gridLayout = new GridLayout(2, 3);
         gridLayout.setSizeFull();
         gridLayout.setMargin(false);
         gridLayout.setSpacing(true);
-        gridLayout.setRowExpandRatio(0, 1f);
+        //gridLayout.setRowExpandRatio(0, 0.5f);
+        gridLayout.setRowExpandRatio(1, 1f);
         gridLayout.setColumnExpandRatio(1, 1f);
         setViewContent(gridLayout);
 
@@ -108,7 +112,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
-        gridLayout.addComponent(buttonLayout, 0, 1);
+        gridLayout.addComponent(buttonLayout, 0, 2);
 
 
         beanQueryFactory = new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
@@ -174,7 +178,19 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         });
 
-        gridLayout.addComponent(table, 1, 0);
+        gridLayout.addComponent(table, 1, 0, 1, 1);
+
+        reviewStatusContainer = new LazyEntityContainer<ReviewStatus>(entityManager, true, false, false, ReviewStatus.class, 1000,
+        new String[] {"reviewer.emailAddress"},
+        new boolean[] {true}, "reviewStatusId");
+        final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(ReviewStatus.class);
+        ContainerUtil.addContainerProperties(reviewStatusContainer, fieldDescriptors);
+        final Table reviewerStatusesTable = new FormattingTable();
+        Grid grid = new Grid(reviewerStatusesTable, reviewStatusContainer);
+        grid.setFields(fieldDescriptors);
+        reviewerStatusesTable.setColumnCollapsed("reviewStatusId", true);
+        reviewerStatusesTable.setColumnCollapsed("created", true);
+        gridLayout.addComponent(grid, 0, 1);
 
         saveButton = new Button("Save");
         saveButton.setImmediate(true);
@@ -227,6 +243,10 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     public void edit(final Review review, final boolean newEntity) {
         this.review = review;
 
+        reviewStatusContainer.removeDefaultFilters();
+        reviewStatusContainer.addDefaultFilter(new Compare.Equal("review", review));
+        reviewStatusContainer.refresh();
+
         final User user = ((SecurityProviderSessionImpl)
                 getSite().getSecurityProvider()).getUserFromSession();
 
@@ -272,6 +292,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     @Override
     public void enter() {
+        reviewStatusContainer.refresh();
     }
 
 }

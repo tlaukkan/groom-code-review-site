@@ -21,12 +21,15 @@ import com.vaadin.data.Validator;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import org.groom.model.Review;
+import org.groom.model.ReviewStatus;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
 import org.vaadin.addons.sitekit.grid.field.GroupField;
 import org.vaadin.addons.sitekit.grid.field.TimestampField;
+import org.vaadin.addons.sitekit.grid.formatter.ObjectToStringFormatter;
 import org.vaadin.addons.sitekit.grid.formatter.TimestampFormatter;
 import org.vaadin.addons.sitekit.model.Customer;
 import org.vaadin.addons.sitekit.model.Group;
+import org.vaadin.addons.sitekit.model.User;
 import org.vaadin.addons.sitekit.site.LocalizationProvider;
 import org.vaadin.addons.sitekit.web.BareSiteFields;
 
@@ -153,6 +156,35 @@ public final class GroomFields {
         GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 100, null, Group.class,
                 null, false, true, false));
 
-
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "created", "Created",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null, true,
+                true, true));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "modified", "Modified",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null,
+                true, true, true));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "reviewStatusId", "Review Status ID",
+                TextField.class, null,
+                100, null, String.class, null,
+                true, false, false));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "reviewer", "Reviewer",
+                TextField.class, null,
+                50, null, User.class, null,
+                true, true, false));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "progress", "Progress",
+                TextField.class, null,
+                50, null, Integer.class, null,
+                true, true, false));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "completed", "Completed",
+                CheckBox.class, null,
+                70, null, Boolean.class, false,
+                false, true, false));
     }
 }

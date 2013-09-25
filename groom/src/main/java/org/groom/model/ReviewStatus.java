@@ -61,7 +61,11 @@ public final class ReviewStatus implements Serializable {
     @Column(nullable=false)
     private String coverage;
 
+    @Transient
     private byte[] coverageCache = null;
+
+    @Column(nullable=false)
+    private int progress;
 
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
@@ -88,6 +92,22 @@ public final class ReviewStatus implements Serializable {
         this.coverage = HexBin.encode(coverage);
         this.created = created;
         this.modified = modified;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    public User getReviewer() {
+        return reviewer;
+    }
+
+    public void setReviewer(User reviewer) {
+        this.reviewer = reviewer;
     }
 
     public String getReviewStatusId() {
@@ -124,6 +144,14 @@ public final class ReviewStatus implements Serializable {
     public void setCoverage(byte[] coverage) {
         coverageCache = coverage;
         this.coverage = HexBin.encode(coverage);
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     /**

@@ -74,8 +74,13 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
                 continue;
             }
             final String path = line.substring(40);
-            final FileDiff fileDiff = new FileDiff(status, path, i,
-                    (ReviewStatus) getQueryConfiguration().get("status"));
+            final ReviewStatus reviewStatus;
+            if (getQueryConfiguration() != null) {
+                reviewStatus = (ReviewStatus) getQueryConfiguration().get("status");
+            } else {
+                reviewStatus = null;
+            }
+            final FileDiff fileDiff = new FileDiff(status, path, i, reviewStatus);
             fileDiffs.add(fileDiff);
         }
         return fileDiffs;

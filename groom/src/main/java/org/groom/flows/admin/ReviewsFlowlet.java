@@ -77,12 +77,6 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
         filterDefinitions.add(new FilterDescriptor("title", "title", "Title", new TextField(),
                 200, "like", String.class, ""));
 
-        final EntityManager entityManager = getSite().getSiteContext().getObject(EntityManager.class);
-        container = new LazyEntityContainer<Review>(entityManager, true, true, false, Review.class, 1000,
-                new String[] {"created"},
-                new boolean[] {true}, "reviewId");
-
-        ContainerUtil.addContainerProperties(container, fieldDescriptors);
 
         final GridLayout gridLayout = new GridLayout(1, 2);
         gridLayout.setSizeFull();
@@ -95,6 +89,13 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
         buttonLayout.setSpacing(true);
         buttonLayout.setSizeUndefined();
         gridLayout.addComponent(buttonLayout, 0, 0);
+
+        final EntityManager entityManager = getSite().getSiteContext().getObject(EntityManager.class);
+        container = new LazyEntityContainer<Review>(entityManager, true, true, false, Review.class, 1000,
+                new String[] {"created"},
+                new boolean[] {true}, "reviewId");
+
+        ContainerUtil.addContainerProperties(container, fieldDescriptors);
 
         final Table table = new FormattingTable();
         grid = new Grid(table, container);

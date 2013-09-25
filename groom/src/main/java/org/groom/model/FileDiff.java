@@ -1,5 +1,7 @@
 package org.groom.model;
 
+import javax.persistence.Column;
+
 /**
  * Created with IntelliJ IDEA.
  * User: tlaukkan
@@ -69,6 +71,19 @@ public class FileDiff {
             byte[] coverage = reviewStatus.getCoverage();
             coverage[byteIndex] = (byte) (coverage[byteIndex] | (1 << bitIndex));
             reviewStatus.setCoverage(coverage);
+            updateProgress();
         }
+    }
+
+    private void updateProgress() {
+        int reviewed = 0;
+        for (int i = 0; i < reviewStatus.getReview().getDiffCount(); i++) {
+            int byteIndex = i / 8;
+            int bitIndex = i % 8;
+            if (((reviewStatus.getCoverage()[byteIndex] >> bitIndex) & 1) > 0) {
+                reviewed ++;
+            }
+        }
+        reviewStatus.setProgress(100 * reviewed / reviewStatus.getReview().getDiffCount());
     }
 }
