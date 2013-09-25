@@ -57,6 +57,10 @@ public final class ReviewStatus implements Serializable {
     @Column(nullable = false)
     private boolean completed;
 
+    /** Coverage of the review. */
+    @Column(nullable=false)
+    private byte[] coverage;
+
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -74,10 +78,12 @@ public final class ReviewStatus implements Serializable {
         super();
     }
 
-    public ReviewStatus(String reviewStatusId, Review review, User reviewer, Date created, Date modified) {
-        this.reviewStatusId = reviewStatusId;
+    public ReviewStatus(Review review, User reviewer, String comment, boolean completed, byte[] coverage, Date created, Date modified) {
         this.review = review;
         this.reviewer = reviewer;
+        this.comment = comment;
+        this.completed = completed;
+        this.coverage = coverage;
         this.created = created;
         this.modified = modified;
     }
@@ -104,6 +110,14 @@ public final class ReviewStatus implements Serializable {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public byte[] getCoverage() {
+        return coverage;
+    }
+
+    public void setCoverage(byte[] coverage) {
+        this.coverage = coverage;
     }
 
     /**

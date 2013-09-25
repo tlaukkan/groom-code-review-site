@@ -26,15 +26,19 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import org.groom.FileDiffBeanQuery;
 import org.groom.GroomFields;
+import org.groom.dao.ReviewDao;
 import org.groom.flows.ReviewFileDiffFlowlet;
 import org.groom.model.FileDiff;
 import org.groom.model.Review;
+import org.groom.model.ReviewStatus;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.ValidatingEditor;
 import org.vaadin.addons.sitekit.grid.ValidatingEditorStateListener;
+import org.vaadin.addons.sitekit.model.User;
+import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
@@ -50,12 +54,12 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     /** Serial version UID. */
     private static final long serialVersionUID = 1L;
 
-    /** The entity manager. */
+    /** The review manager. */
     private EntityManager entityManager;
     /** The review flow. */
-    private Review entity;
+    private Review review;
 
-    /** The entity form. */
+    /** The review form. */
     private ValidatingEditor reviewEditor;
     /** The save button. */
     private Button saveButton;
@@ -152,7 +156,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                     final char status = ((NestingBeanItem<FileDiff>) table.getItem(selectedPath)).getBean().getStatus();
                     if (status == 'A' || status == 'M') {
                         final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                        view.setFileDiff(selectedPath, entity.getSinceHash(), entity.getUntilHash(), status == 'A');
+                        view.setFileDiff(selectedPath, review.getSinceHash(), review.getUntilHash(), status == 'A');
                     }
                 }
             }
@@ -172,18 +176,18 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                 reviewEditor.commit();
                 entityManager.getTransaction().begin();
                 try {
-                    entity = entityManager.merge(entity);
-                    //entity.setAuthor(getSite().getSecurityProvider().getUser());
-                    entity.setModified(new Date());
-                    entityManager.persist(entity);
+                    review = entityManager.merge(review);
+                    //review.setAuthor(getSite().getSecurityProvider().getUser());
+                    review.setModified(new Date());
+                    entityManager.persist(review);
                     entityManager.getTransaction().commit();
-                    entityManager.detach(entity);
+                    entityManager.detach(review);
                     reviewEditor.discard();
                 } catch (final Throwable t) {
                     if (entityManager.getTransaction().isActive()) {
                         entityManager.getTransaction().rollback();
                     }
-                    throw new RuntimeException("Failed to save entity: " + entity, t);
+                    throw new RuntimeException("Failed to save review: " + review, t);
                 }
             }
         });
@@ -205,16 +209,31 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     /**
      * Edit an existing review.
-     * @param entity entity to be edited.
-     * @param newEntity true if entity to be edited is new.
+     * @param review review to be edited.
+     * @param newEntity true if review to be edited is new.
      */
-    public void edit(final Review entity, final boolean newEntity) {
-        this.entity = entity;
-        container.addContainerFilter(new Compare.Equal("range", entity.getSinceHash() + ".." + entity.getUntilHash()));
+    public void edit(final Review review, final boolean newEntity) {
+        this.review = review;
+        container.addContainerFilter(new Compare.Equal("range", this.review.getSinceHash() + ".." + this.review.getUntilHash()));
         container.refresh();
-        entity.setDiffCount(container.size());
+        this.review.setDiffCount(container.size());
         reviewEditor.setReadOnly(true);
-        reviewEditor.setItem(new BeanItem<Review>(entity), newEntity);
+        reviewEditor.setItem(new BeanItem<Review>(this.review), newEntity);
+
+        final User user = ((SecurityProviderSessionImpl)
+                getSite().getSecurityProvider()).getUserFromSession();
+
+        ReviewStatus reviewStatus = ReviewDao.getReviewStatus(entityManager, user, this.review);
+        if (reviewStatus == null) {
+            int coverageSize = review.getDiffCount() / 8;
+            if (review.getDiffCount() % 8 > 0) {
+                coverageSize++;
+            }
+            final Date created = new Date();
+            reviewStatus = new ReviewStatus(review, user, "", false, new byte[coverageSize], created, created);
+            ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+        }
+
         //reviewEditor.setReadOnly(true);
     }
 
