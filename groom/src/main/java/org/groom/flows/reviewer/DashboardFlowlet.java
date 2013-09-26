@@ -107,7 +107,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
 
         table.setColumnCollapsed("modified", true);
         table.setColumnCollapsed("reviewId", true);
-        //table.setColumnCollapsed("path", true);
+        table.setColumnCollapsed("path", true);
         //table.setColumnCollapsed("sinceHash", true);
         //table.setColumnCollapsed("untilHash", true);
         table.setColumnCollapsed("completed", true);
