@@ -87,6 +87,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
         final GridLayout gridLayout = new GridLayout(1,2);
+        gridLayout.setSpacing(true);
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(0, 1f);
         gridLayout.setRowExpandRatio(0, 1f);

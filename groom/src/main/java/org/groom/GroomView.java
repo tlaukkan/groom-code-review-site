@@ -54,6 +54,8 @@ public final class GroomView extends AbstractSiteView {
         final int rowCount = 3;
 
         final GridLayout layout = this;
+        layout.setMargin(true);
+        layout.setSpacing(true);
         layout.setColumns(columnCount);
         layout.setRows(rowCount);
         //layout.setColumnExpandRatio(0, MARGIN_COLUMN_EXPAND_RATIO);
@@ -61,8 +63,6 @@ public final class GroomView extends AbstractSiteView {
         layout.setRowExpandRatio(1, 1.0f);
         layout.setColumnExpandRatio(2, 1.0f);
         layout.setSizeFull();
-        layout.setMargin(false);
-        layout.setSpacing(true);
 
         final AbstractComponent logoComponent = getComponent("logo");
         logoComponent.setWidth(NAVIGATION_COLUMN_WIDTH, Unit.PIXELS);
