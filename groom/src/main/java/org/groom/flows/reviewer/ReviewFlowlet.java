@@ -244,7 +244,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
                 if (commentId != null) {
                     final Comment comment = ((NestingBeanItem<Comment>) commentTable.getItem(commentId)).getBean();
-                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) fileDiffTable.getItem(comment.getPath())).getBean();
+                    final String path = comment.getPath();
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) fileDiffTable.getItem(path)).getBean();
                     fileDiff.setReviewed(true);
                     ReviewDao.saveReviewStatus(entityManager, reviewStatus);
                     final char status = fileDiff.getStatus();

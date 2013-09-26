@@ -72,8 +72,8 @@ public class Shell {
             if (stdout == null) {
                 return "";
             }
-            LOGGER.debug(stdout.toString());
-            LOGGER.debug("Executed shell command: " + cmd);
+            //LOGGER.debug(stdout.toString());
+            //LOGGER.debug("Executed shell command: " + cmd);
             return stdout.toString();
         } catch (final Throwable t) {
             LOGGER.error("Error executing shell command: " + cmd, t);

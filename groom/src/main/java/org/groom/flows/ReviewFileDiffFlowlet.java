@@ -57,6 +57,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     private EntityManager entityManager;
     private Review review;
     private AceEditor.SelectionChangeListener selectionChangeListener;
+    private GridLayout gridLayout;
 
     @Override
     public String getFlowletKey() {
@@ -89,16 +90,13 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
-        final GridLayout gridLayout = new GridLayout(1,2);
+        gridLayout = new GridLayout(1,2);
         gridLayout.setSpacing(true);
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(0, 1f);
         gridLayout.setRowExpandRatio(0, 1f);
         setViewContent(gridLayout);
-        editor = new AceEditor();
-        editor.setSizeFull();
-        editor.setReadOnly(true);
-        editor.setImmediate(true);
+
         selectionChangeListener = new AceEditor.SelectionChangeListener() {
             @Override
             public void selectionChanged(AceEditor.SelectionChangeEvent e) {
@@ -107,58 +105,56 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     lastCursor = cursor;
                     final int cursorLine = findLine(editor.getValue(), cursor);
                     final BlameLine blame = blames.get(cursorLine);
-                    if (blame.getType() != LineChangeType.NONE) {
-                        final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
-                            @Override
-                            public void onOk(final String message) {
-                                final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
-                                final Review review = reviewStatus.getReview();
-                                final Date date = new Date();
-                                if (message.trim().length() > 0) {
-                                    final Comment comment = new Comment(review, reviewStatus.getReviewer(),
-                                            blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
-                                            0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
-                                    ReviewDao.saveComment(entityManager, comment);
-                                    addComment(comment);
-                                    final Company company = getSite().getSiteContext().getObject(Company.class);
-                                    final Thread emailThread = new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
-                                                    blame.getAuthorEmail(), company.getSupportEmailAddress(),
-                                                    "You received comment on review '" + review.getTitle() + "'",
-                                                    "Reviewer: " + reviewStatus.getReviewer().getFirstName()
-                                                            + " " + reviewStatus.getReviewer().getLastName() + "\n" +
-                                                            "Commit: " + blame.getHash() + "\n" +
-                                                            "File: " + fileDiff.getPath() + "\n" +
-                                                            "Original Line: " + blame.getOriginalLine() + "\n" +
-                                                            "Diff line: " + cursorLine + "\n" +
-                                                            blame.getType() + ":" + blame.getLine() + "\n" +
-                                                            "Message: " + message);
-                                        }
-                                    });
-                                    emailThread.start();
-                                }
-                            }
 
-                            @Override
-                            public void onCancel() {
-                                //To change body of implemented methods use File | Settings | File Templates.
+                    final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
+                        @Override
+                        public void onOk(final String message) {
+                            final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
+                            final Review review = reviewStatus.getReview();
+                            final Date date = new Date();
+                            if (message.trim().length() > 0) {
+                                final Comment comment = new Comment(review, reviewStatus.getReviewer(),
+                                        blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
+                                        0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
+                                ReviewDao.saveComment(entityManager, comment);
+                                addComment(comment);
+                                final Company company = getSite().getSiteContext().getObject(Company.class);
+                                final Thread emailThread = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
+                                                blame.getAuthorEmail(), company.getSupportEmailAddress(),
+                                                "You received comment on review '" + review.getTitle() + "'",
+                                                "Reviewer: " + reviewStatus.getReviewer().getFirstName()
+                                                        + " " + reviewStatus.getReviewer().getLastName() + "\n" +
+                                                        "Commit: " + blame.getHash() + "\n" +
+                                                        "File: " + fileDiff.getPath() + "\n" +
+                                                        "Original Line: " + blame.getOriginalLine() + "\n" +
+                                                        "Diff line: " + cursorLine + "\n" +
+                                                        blame.getType() + ":" + blame.getLine() + "\n" +
+                                                        "Message: " + message);
+                                    }
+                                });
+                                emailThread.start();
                             }
-                        });
-                        int cursorPosition = editor.getCursorPosition();
-                        commentDialog.setCaption("Please enter groom text for " + blame.getAuthorName()
-                                + " at line: " + (cursorLine + 1));
-                        UI.getCurrent().addWindow(commentDialog);
-                        commentDialog.getTextArea().focus();
+                        }
 
-                    }
+                        @Override
+                        public void onCancel() {
+                            //To change body of implemented methods use File | Settings | File Templates.
+                        }
+                    });
+                    int cursorPosition = editor.getCursorPosition();
+                    commentDialog.setCaption("Please enter groom text for " + blame.getAuthorName()
+                            + " at line: " + (cursorLine + 1));
+                    UI.getCurrent().addWindow(commentDialog);
+                    commentDialog.getTextArea().focus();
+
                 }
             }
         };
 
-        editor.addSelectionChangeListener(selectionChangeListener);
-        gridLayout.addComponent(editor, 0, 0);
+        //gridLayout.addComponent(editor, 0, 0);
 
         if (getViewSheet().getFlowlet(ReviewFlowlet.class) != null) {
             final HorizontalLayout buttonLayout = new HorizontalLayout();
@@ -200,6 +196,16 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     }
 
     public void setFileDiff(final Review review, final FileDiff fileDiff, final int toLine) {
+
+        if (editor != null) {
+            gridLayout.removeComponent(editor);
+        }
+
+        editor = new AceEditor();
+        editor.setSizeFull();
+        editor.setImmediate(true);
+        editor.addSelectionChangeListener(selectionChangeListener);
+
         this.review = review;
         this.fileDiff = fileDiff;
         this.path = fileDiff.getPath();
@@ -254,35 +260,57 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
         editor.setCaption(fileDiff.getPath());
-        editor.clearRowAnnotations();
-        editor.clearMarkers();
-        editor.setReadOnly(false);
         editor.setValue(builder.toString());
-        editor.setCursorPosition(0);
-        if (toLine != 0) {
-            editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
-        }
-        lastCursor = editor.getCursorPosition();
         editor.setReadOnly(true);
+        BlameLine lastLine = null;
+        int lastIndex = -1;
         for (int i = 0; i < blames.size(); i++) {
             final BlameLine blameLine = blames.get(i);
-            if (blameLine.getType() == LineChangeType.ADDED) {
-                editor.addRowAnnotation(new AceAnnotation(
-                        "Added by author: " + blameLine.getAuthorName()
-                        + " Commit: " + blameLine.getHash()
-                        + " Summary: " + blameLine.getSummary(),
-                        AceAnnotation.Type.info) , i);
-                editor.addMarker(new AceRange(i, 0, i + 1, 0),
-                        "marker-line-added", AceMarker.Type.line, false, AceMarker.OnTextChange.ADJUST);
+            if (lastLine != null
+                    && (!blameLine.getHash().equals(lastLine.getHash())
+                    || !blameLine.getType().equals(lastLine.getType()))) {
+
+                if (lastLine.getType() == LineChangeType.ADDED) {
+                    editor.addMarker(new AceRange(lastIndex, 0, i, 0),
+                            "marker-line-added", AceMarker.Type.line, false,  AceMarker.OnTextChange.REMOVE);
+                } else if (lastLine.getType() == LineChangeType.DELETED) {
+                    editor.addMarker(new AceRange(lastIndex, 0, i, 0),
+                            "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.REMOVE);
+                }
+
+                lastLine = null;
+                lastIndex = -1;
             }
-            if (blameLine.getType() == LineChangeType.DELETED) {
-                editor.addRowAnnotation(new AceAnnotation(
-                        "Deleted by author: " + blameLine.getAuthorName()
-                        + " Commit: " + blameLine.getHash()
-                        + " Summary: " + blameLine.getSummary(),
+            if (lastLine == null
+                    && (blameLine.getType() == LineChangeType.ADDED
+                    || blameLine.getType() == LineChangeType.DELETED)) {
+                lastLine = blameLine;
+                lastIndex = i;
+
+                if (blameLine.getType() == LineChangeType.ADDED) {
+                    editor.addRowAnnotation(new AceAnnotation(
+                            "Added by author: " + blameLine.getAuthorName()
+                                + " Commit: " + blameLine.getHash()
+                                + " Summary: " + blameLine.getSummary(),
                         AceAnnotation.Type.info) , i);
-                editor.addMarker(new AceRange(i, 0, i + 1, 0),
-                        "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.ADJUST);
+                } else if (blameLine.getType() == LineChangeType.DELETED) {
+                    editor.addRowAnnotation(new AceAnnotation(
+                            "Deleted by author: " + blameLine.getAuthorName()
+                                    + " Commit: " + blameLine.getHash()
+                                    + " Summary: " + blameLine.getSummary(),
+                            AceAnnotation.Type.info) , i);
+                }
+            }
+        }
+
+        if (lastLine != null) {
+
+            if (lastLine.getType() == LineChangeType.ADDED) {
+                editor.addMarker(new AceRange(lastIndex, 0, blames.size(), 0),
+                        "marker-line-added", AceMarker.Type.line, false,  AceMarker.OnTextChange.REMOVE);
+            } else if (lastLine.getType() == LineChangeType.DELETED) {
+                editor.addMarker(new AceRange(lastIndex, 0, blames.size(), 0),
+                        "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.REMOVE);
             }
 
         }
@@ -293,5 +321,15 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                 addComment(comment);
             }
         }
+
+        if (toLine != 0) {
+            editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
+        }
+        gridLayout.addComponent(editor, 0, 0);
+        if (toLine != 0) {
+            editor.scrollToRow(toLine);
+        }
+        lastCursor = editor.getCursorPosition();
+
     }
 }

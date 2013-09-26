@@ -86,7 +86,6 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
      */
     public static void main(final String[] args) throws Exception {
         DOMConfigurator.configure("./log4j.xml");
-
         entityManagerFactory = PersistenceUtil.getEntityManagerFactory(PERSISTENCE_UNIT, PROPERTIES_CATEGORY);
 
         final String webappUrl = GroomSiteUI.class.getClassLoader()
@@ -111,7 +110,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
 
     @Override
     protected Site constructSite(final VaadinRequest request) {
-
+        setPollInterval(150);
         final ContentProvider contentProvider = this;
 
         final LocalizationProvider localizationProvider =
