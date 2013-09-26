@@ -8,6 +8,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
+import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +48,12 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
     @Override
     public int size() {
         // "git rev-list --count master"
-        final String result = Shell.execute("git rev-list " + range + " -- | wc -l");
+        final String result;
+        if (PropertiesUtil.getProperty("groom", "os").equals("windows")) {
+            result = Shell.execute("git rev-list --count " + range + " --");
+        } else {
+            result = Shell.execute("git rev-list " + range + " -- | wc -l");
+        }
         if (result.length() == 0) {
             return 0;
         }

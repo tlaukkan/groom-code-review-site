@@ -62,14 +62,16 @@ public class Shell {
             }
 
             SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
-            commandExecutor.executeCommand();
+            int resultCode = commandExecutor.executeCommand();
 
-            StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
             StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
             if (stderr.length() > 0) {
                 LOGGER.error(stderr);
             }
-
+            StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+            if (stdout == null) {
+                return "";
+            }
             LOGGER.debug(stdout.toString());
             LOGGER.debug("Executed shell command: " + cmd);
             return stdout.toString();
