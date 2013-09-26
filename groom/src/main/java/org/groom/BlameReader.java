@@ -19,6 +19,7 @@ public class BlameReader {
         final Map<String, String> hashAuthorEmailMap = new HashMap<String, String>();
         final Map<String, String> hashCommitterNameMap = new HashMap<String, String>();
         final Map<String, String> hashCommitterEmailMap = new HashMap<String, String>();
+        final Map<String, String> hashSummaryMap = new HashMap<String, String>();
         final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
                 + " --p " + sinceHash + ".." + untilHash + " -- " + path );
         final Set<String> boundaryHashes = new HashSet<String>();
@@ -31,14 +32,16 @@ public class BlameReader {
             final int originalLineNumber = Integer.parseInt(parts[1]);
             final int finalLineNumber = Integer.parseInt(parts[2]);
             if (parts.length == 4 && !hashAuthorNameMap.containsKey(hash)) {
-                final String authorName = lines[i + 1].split(" ")[1];
-                final String authorEmail = lines[i + 2].split(" ")[1].replace("<","").replace(">","");
-                final String committerName = lines[i + 5].split(" ")[1];
-                final String committerEmail = lines[i + 6].split(" ")[1].replace("<","").replace(">","");
+                final String authorName = lines[i + 1].substring("author ".length());
+                final String authorEmail = lines[i + 2].substring("author-mail ".length()).replace("<","").replace(">","");
+                final String committerName = lines[i + 5].substring("committer ".length());
+                final String committerEmail = lines[i + 6].substring("committer-mail ".length()).replace("<","").replace(">","");
+                final String summary = lines[i + 9].substring("summary ".length());
                 hashAuthorNameMap.put(hash, authorName);
                 hashAuthorEmailMap.put(hash, authorEmail);
                 hashCommitterNameMap.put(hash, committerName);
                 hashCommitterEmailMap.put(hash, committerEmail);
+                hashSummaryMap.put(hash, summary);
             }
             while (lines[i].charAt(0) != '\t') {
                 if (lines[i].equals("boundary")) {
@@ -56,7 +59,8 @@ public class BlameReader {
             }
             blameLines.add(new BlameLine(hash, originalLineNumber, finalLineNumber,
                     hashAuthorNameMap.get(hash), hashAuthorEmailMap.get(hash),
-                    hashCommitterNameMap.get(hash), hashCommitterEmailMap.get(hash),lines[i].substring(1), type));
+                    hashCommitterNameMap.get(hash), hashCommitterEmailMap.get(hash),lines[i].substring(1),
+                    hashSummaryMap.get(hash), type));
         }
 
         return blameLines;

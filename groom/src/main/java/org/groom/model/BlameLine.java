@@ -16,11 +16,12 @@ public class BlameLine {
     private String committerName;
     private String committerEmail;
     private String line;
+    private String summary;
     private LineChangeType type;
 
     public BlameLine(String hash, int originalLine, int finalLine, String authorName, String authorEmail,
                      final String committerName, String committerEmail,
-                     String line, LineChangeType type) {
+                     String line, String summary, LineChangeType type) {
         this.hash = hash;
         this.originalLine = originalLine;
         this.finalLine = finalLine;
@@ -29,6 +30,7 @@ public class BlameLine {
         this.committerName = committerName;
         this.committerEmail = committerEmail;
         this.line = line;
+        this.summary = summary;
         this.type = type;
     }
 
@@ -62,6 +64,10 @@ public class BlameLine {
 
     public String getLine() {
         return line;
+    }
+
+    public String getSummary() {
+        return summary;
     }
 
     public LineChangeType getType() {

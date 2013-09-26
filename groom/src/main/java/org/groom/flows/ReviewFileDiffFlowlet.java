@@ -269,7 +269,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             if (blameLine.getType() == LineChangeType.ADDED) {
                 editor.addRowAnnotation(new AceAnnotation(
                         "Added by author: " + blameLine.getAuthorName()
-                        + " Commit: " + blameLine.getHash(),
+                        + " Commit: " + blameLine.getHash()
+                        + " Summary: " + blameLine.getSummary(),
                         AceAnnotation.Type.info) , i);
                 editor.addMarker(new AceRange(i, 0, i + 1, 0),
                         "marker-line-added", AceMarker.Type.line, false, AceMarker.OnTextChange.ADJUST);
@@ -277,7 +278,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             if (blameLine.getType() == LineChangeType.DELETED) {
                 editor.addRowAnnotation(new AceAnnotation(
                         "Deleted by author: " + blameLine.getAuthorName()
-                        + " Commit: " + blameLine.getHash(),
+                        + " Commit: " + blameLine.getHash()
+                        + " Summary: " + blameLine.getSummary(),
                         AceAnnotation.Type.info) , i);
                 editor.addMarker(new AceRange(i, 0, i + 1, 0),
                         "marker-line-deleted", AceMarker.Type.line, false,  AceMarker.OnTextChange.ADJUST);

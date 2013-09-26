@@ -70,10 +70,10 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
                 continue;
             }
             final char status = line.charAt(37);
-            if (line.length() < 41) {
+            if (line.length() < 40) {
                 continue;
             }
-            final String path = line.substring(40);
+            final String path = line.substring(39);
             final ReviewStatus reviewStatus;
             if (getQueryConfiguration() != null) {
                 reviewStatus = (ReviewStatus) getQueryConfiguration().get("status");

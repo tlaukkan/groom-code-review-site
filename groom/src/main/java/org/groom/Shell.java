@@ -51,9 +51,15 @@ public class Shell {
         try {
 
             List<String> commands = new ArrayList<String>();
-            commands.add("cmd");
-            commands.add("/c");
-            commands.add(cmd);
+            if (PropertiesUtil.getProperty("groom", "os").equals("windows")) {
+                commands.add("cmd");
+                commands.add("/c");
+                commands.add(cmd);
+            } else {
+                commands.add("/bin/sh");
+                commands.add("-c");
+                commands.add(cmd);
+            }
 
             SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
             commandExecutor.executeCommand();
