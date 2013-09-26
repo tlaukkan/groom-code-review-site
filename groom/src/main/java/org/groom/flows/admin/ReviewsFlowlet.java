@@ -91,7 +91,7 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
         gridLayout.addComponent(buttonLayout, 0, 0);
 
         final EntityManager entityManager = getSite().getSiteContext().getObject(EntityManager.class);
-        container = new LazyEntityContainer<Review>(entityManager, true, true, false, Review.class, 1000,
+        container = new LazyEntityContainer<Review>(entityManager, true, false, false, Review.class, 1000,
                 new String[] {"created"},
                 new boolean[] {true}, "reviewId");
 

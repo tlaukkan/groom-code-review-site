@@ -49,6 +49,9 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
     public int size() {
         // "git rev-list --count master"
         final String result;
+        if (range == null) {
+            return 0;
+        }
         if (PropertiesUtil.getProperty("groom", "os").equals("windows")) {
             result = Shell.execute("git rev-list --count " + range + " --");
         } else {

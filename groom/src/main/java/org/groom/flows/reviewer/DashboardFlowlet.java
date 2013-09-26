@@ -81,7 +81,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
                 200, "like", String.class, ""));
 
         final EntityManager entityManager = getSite().getSiteContext().getObject(EntityManager.class);
-        container = new LazyEntityContainer<Review>(entityManager, true, true, false, Review.class, 1000,
+        container = new LazyEntityContainer<Review>(entityManager, true, false, false, Review.class, 0,
                 new String[] {"created"},
                 new boolean[] {true}, "reviewId");
 
@@ -120,8 +120,9 @@ public final class DashboardFlowlet extends AbstractFlowlet {
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 if (grid.getSelectedItemId() != null) {
                     final Review entity = container.getEntity(grid.getSelectedItemId());
-                    final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+                    final ReviewFlowlet reviewView = getViewSheet().getFlowlet(ReviewFlowlet.class);
                     reviewView.edit(entity, false);
+                    getViewSheet().forward(ReviewFlowlet.class);
                     table.setValue(null);
                 }
             }
@@ -155,6 +156,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
 
     @Override
     public void enter() {
+        container.getQueryView().getQueryDefinition().setBatchSize(100);
         container.refresh();
     }
 

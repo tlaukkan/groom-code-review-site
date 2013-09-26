@@ -196,7 +196,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         gridLayout.addComponent(fileDiffPanel, 1, 0, 1, 1);
 
-        reviewStatusContainer = new LazyEntityContainer<ReviewStatus>(entityManager, true, false, false, ReviewStatus.class, 1000,
+        reviewStatusContainer = new LazyEntityContainer<ReviewStatus>(entityManager, true, false, false, ReviewStatus.class, 0,
         new String[] {"reviewer.emailAddress"},
         new boolean[] {true}, "reviewStatusId");
         final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(ReviewStatus.class);
@@ -216,7 +216,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         gridLayout.addComponent(reviewerPanel, 0, 1);
 
-        commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 1000,
+        commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 0,
                 new String[] {"path", "line"},
                 new boolean[] {true, true}, "commentId");
         final List<FieldDescriptor> commentFieldDescriptors = GroomFields.getFieldDescriptors(Comment.class);
@@ -379,8 +379,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         container.refresh();
         this.review.setDiffCount(container.size());
         reviewEditor.setItem(new BeanItem<Review>(this.review), newEntity);
-
-        enter();
     }
 
     @Override
@@ -389,7 +387,9 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
     @Override
     public void enter() {
+        reviewStatusContainer.getQueryView().getQueryDefinition().setBatchSize(50);
         reviewStatusContainer.refresh();
+        commentContainer.getQueryView().getQueryDefinition().setBatchSize(50);
         commentContainer.refresh();
         entityManager.refresh(reviewStatus);
         completeButton.setEnabled(!reviewStatus.isCompleted() && reviewStatus.getProgress() == 100);
