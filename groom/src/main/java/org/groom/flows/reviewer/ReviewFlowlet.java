@@ -73,6 +73,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private Button completeButton;
     private Button reopenButton;
 
+    private boolean disableViewChange = false;
+
     @Override
     public String getFlowletKey() {
         return "review";
@@ -165,14 +167,18 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                 final String selectedPath = (String) fileDiffTable.getValue();
 
                 if (selectedPath != null) {
-                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>) fileDiffTable.getItem(selectedPath)).getBean();
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
+                            fileDiffTable.getItem(selectedPath)).getBean();
                     fileDiff.setReviewed(true);
                     ReviewDao.saveReviewStatus(entityManager, reviewStatus);
-                    final char status = fileDiff.getStatus();
-                    if (status == 'A' || status == 'M') {
-                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-                        view.setFileDiff(review, fileDiff, 0);
+                    final ReviewFileDiffFlowlet view;
+                    if (disableViewChange) {
+                        view = getViewSheet().getFlowlet(ReviewFileDiffFlowlet.class);
+                    } else {
+                        view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
                     }
+
+                    view.setFileDiff(review, fileDiff, 0);
                 }
             }
         });
@@ -273,19 +279,23 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     }
 
     public void next() {
+        disableViewChange = true;
         final String selectedPath = (String) fileDiffTable.getValue();
         final String nextPath = (String) fileDiffTable.nextItemId(selectedPath);
         if (nextPath != null) {
             fileDiffTable.select(nextPath);
         }
+        disableViewChange = false;
     }
 
     public void previous() {
+        disableViewChange = true;
         final String selectedPath = (String) fileDiffTable.getValue();
         final String prevPath = (String) fileDiffTable.prevItemId(selectedPath);
         if (prevPath != null) {
             fileDiffTable.select(prevPath);
         }
+        disableViewChange = false;
     }
 
     /**

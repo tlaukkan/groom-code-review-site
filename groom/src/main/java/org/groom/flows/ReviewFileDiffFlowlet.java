@@ -139,32 +139,31 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.addSelectionChangeListener(selectionChangeListener);
         gridLayout.addComponent(editor, 0, 0);
 
-        final HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        gridLayout.addComponent(buttonLayout, 0, 1);
+        if (getViewSheet().getFlowlet(ReviewFlowlet.class) != null) {
+            final HorizontalLayout buttonLayout = new HorizontalLayout();
+            buttonLayout.setSpacing(true);
+            gridLayout.addComponent(buttonLayout, 0, 1);
 
-        final Button previousButton = new Button(getSite().localize("button-previous"));
-        buttonLayout.addComponent(previousButton);
-        previousButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                getViewSheet().back();
-                view.previous();
-            }
-        });
+            final Button previousButton = new Button(getSite().localize("button-previous"));
+            buttonLayout.addComponent(previousButton);
+            previousButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                    view.previous();
+                }
+            });
 
-        final Button nextButton = new Button(getSite().localize("button-next"));
-        buttonLayout.addComponent(nextButton);
-        nextButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                getViewSheet().back();
-                view.next();
-            }
-        });
-
+            final Button nextButton = new Button(getSite().localize("button-next"));
+            buttonLayout.addComponent(nextButton);
+            nextButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                    view.next();
+                }
+            });
+        }
     }
 
     private void addComment(Comment comment) {
