@@ -66,10 +66,10 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>biz.eelis.translation.TranslationSiteUI</mainClass>
+                            <mainClass>org.groom.GroomSiteUI</mainClass>
                         </manifest>
                     </archive>
-                    <finalName>translation-site-jetty</finalName>
+                    <finalName>groom-jetty</finalName>
                 </configuration>
             </plugin>
 

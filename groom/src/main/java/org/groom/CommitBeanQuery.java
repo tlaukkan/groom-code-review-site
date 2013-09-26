@@ -47,12 +47,12 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
     @Override
     public int size() {
         // "git rev-list --count master"
-        final String result = Shell.execute("git rev-list --count " + range + " --");
+        final String result = Shell.execute("git rev-list " + range + " -- | wc -l");
         if (result.length() == 0) {
             return 0;
         }
         try {
-            return Integer.parseInt(result);
+            return Integer.parseInt(result.trim());
         } catch (final NumberFormatException e) {
             return 0;
         }
@@ -71,9 +71,9 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
         final String[] lines = result.split("\n");
         final ArrayList<Commit> commits = new ArrayList<Commit>();
         for (final String line : lines) {
-            if (line.length() < 8 || line.charAt(7) != '|') {
+            /*if (line.length() < 8 || line.charAt(7) != '|') {
                 continue;
-            }
+            }*/
             final String[] parts = line.split("\\|");
 
             final String hash;
