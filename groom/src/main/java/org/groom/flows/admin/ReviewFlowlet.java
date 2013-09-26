@@ -143,7 +143,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         table.setMultiSelect(false);
         table.setImmediate(true);
 
-        table.addValueChangeListener(new Property.ValueChangeListener() {
+        /*table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 final String selectedPath = (String) table.getValue();
@@ -157,7 +157,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                     }
                 }
             }
-        });
+        });*/
 
         gridLayout.addComponent(table, 1, 0);
 

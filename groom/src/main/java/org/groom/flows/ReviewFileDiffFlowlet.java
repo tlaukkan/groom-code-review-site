@@ -171,7 +171,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
                     final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                    view.previous();
+                    view.previous(path);
                 }
             });
 
@@ -181,7 +181,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
                     final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                    view.next();
+                    view.next(path);
                 }
             });
         }

@@ -136,10 +136,9 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
             }
         });
 
-        final Button removeButton = getSite().getButton("remove");
+        /*final Button removeButton = getSite().getButton("remove");
         buttonLayout.addComponent(removeButton);
         removeButton.addClickListener(new ClickListener() {
-            /** Serial version UID. */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -147,7 +146,7 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
                 container.removeItem(grid.getSelectedItemId());
                 container.commit();
             }
-        });
+        });*/
 
         final Company company = getSite().getSiteContext().getObject(Company.class);
         container.removeDefaultFilters();
