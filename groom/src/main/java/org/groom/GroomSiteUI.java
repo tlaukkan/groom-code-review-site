@@ -156,7 +156,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("dashboard", null, null, new ViewVersion(0, "master", "Dashboard", "",
-                "This is dashboard view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
+                "This is dashboard view.", GroomView.class.getCanonicalName(), new String[]{"user", "administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Dashboard Viewlet", "This is Dashboard viewlet.", null,
                         DashboardViewlet.class.getCanonicalName())

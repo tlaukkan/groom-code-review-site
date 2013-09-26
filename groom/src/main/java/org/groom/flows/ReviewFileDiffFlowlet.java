@@ -27,7 +27,10 @@ import org.vaadin.aceeditor.client.AceMarker;
 import org.vaadin.aceeditor.client.AceRange;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.grid.Grid;
+import org.vaadin.addons.sitekit.model.Company;
 import org.vaadin.addons.sitekit.model.User;
+import org.vaadin.addons.sitekit.util.EmailUtil;
+import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -117,6 +120,24 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                                             0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
                                     ReviewDao.saveComment(entityManager, comment);
                                     addComment(comment);
+                                    final Company company = getSite().getSiteContext().getObject(Company.class);
+                                    final Thread emailThread = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
+                                                    blame.getAuthorEmail(), company.getSupportEmailAddress(),
+                                                    "You received comment on review '" + review.getTitle() + "'",
+                                                    "Reviewer: " + reviewStatus.getReviewer().getFirstName()
+                                                            + " " + reviewStatus.getReviewer().getLastName() + "\n" +
+                                                            "Commit: " + blame.getHash() + "\n" +
+                                                            "File: " + fileDiff.getPath() + "\n" +
+                                                            "Original Line: " + blame.getOriginalLine() + "\n" +
+                                                            "Diff line: " + cursorLine + "\n" +
+                                                            blame.getType() + ":" + blame.getLine() + "\n" +
+                                                            "Message: " + message);
+                                        }
+                                    });
+                                    emailThread.start();
                                 }
                             }
 

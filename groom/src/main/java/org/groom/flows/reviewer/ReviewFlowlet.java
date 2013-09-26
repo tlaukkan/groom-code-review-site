@@ -21,6 +21,7 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 import org.groom.FileDiffBeanQuery;
 import org.groom.GroomFields;
 import org.groom.dao.ReviewDao;
@@ -183,7 +184,12 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             }
         });
 
-        gridLayout.addComponent(fileDiffTable, 1, 0, 1, 1);
+        Panel fileDiffPanel = new Panel("Diffs");
+        fileDiffPanel.setStyleName(Reindeer.PANEL_LIGHT);
+        fileDiffPanel.setSizeFull();
+        fileDiffPanel.setContent(fileDiffTable);
+
+        gridLayout.addComponent(fileDiffPanel, 1, 0, 1, 1);
 
         reviewStatusContainer = new LazyEntityContainer<ReviewStatus>(entityManager, true, false, false, ReviewStatus.class, 1000,
         new String[] {"reviewer.emailAddress"},
@@ -197,7 +203,13 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         reviewerStatusesTable.setColumnCollapsed("created", true);
         reviewerStatusesTable.setColumnCollapsed("modified", true);
         reviewerStatusesTable.setSelectable(false);
-        gridLayout.addComponent(grid, 0, 1);
+
+        Panel reviewerPanel = new Panel("Reviewers");
+        reviewerPanel.setStyleName(Reindeer.PANEL_LIGHT);
+        reviewerPanel.setSizeFull();
+        reviewerPanel.setContent(grid);
+
+        gridLayout.addComponent(reviewerPanel, 0, 1);
 
         commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 1000,
                 new String[] {"path", "line"},
@@ -206,13 +218,19 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         ContainerUtil.addContainerProperties(commentContainer, commentFieldDescriptors);
         final Table commentTable = new FormattingTable();
         Grid commentGrid = new Grid(commentTable, commentContainer);
-        commentGrid.setHeight(200, Unit.PIXELS);
+        commentGrid.setSizeFull();
         commentGrid.setFields(commentFieldDescriptors);
         commentTable.setImmediate(true);
         commentTable.setColumnCollapsed("commentId", false);
         commentTable.setColumnCollapsed("created", true);
         commentTable.setColumnCollapsed("committer", true);
-        gridLayout.addComponent(commentGrid, 0, 2, 1, 2);
+
+        Panel commentPanel = new Panel("Review Comments");
+        commentPanel.setStyleName(Reindeer.PANEL_LIGHT);
+        commentPanel.setHeight(200, Unit.PIXELS);
+        commentPanel.setContent(commentTable);
+
+        gridLayout.addComponent(commentPanel, 0, 2, 1, 2);
 
         commentTable.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
