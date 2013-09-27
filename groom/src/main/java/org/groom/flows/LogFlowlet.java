@@ -95,7 +95,7 @@ public final class LogFlowlet extends AbstractFlowlet {
                 }
                 for (int i = 0; i < value.length(); i++) {
                     final char c = value.charAt(i);
-                    if (!(Character.isLetter(c) || Character.isDigit(c) || "-.".indexOf(c) != -1)) {
+                    if (!(Character.isLetter(c) || Character.isDigit(c) || "-./".indexOf(c) != -1)) {
                         throw new InvalidValueException("" + c);
                     }
                 }
