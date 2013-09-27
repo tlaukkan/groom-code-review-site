@@ -265,8 +265,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         if (scrollToRow < 0) {
             scrollToRow = 0;
         }
-        editor.scrollToRow(scrollToRow);
         editor.setCursorRowCol(i, 0);
+        editor.scrollToRow(scrollToRow);
     }
 
     private void addComment(Comment comment) {
@@ -288,6 +288,9 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
         editor = new AceEditor();
+        editor.setThemePath("/static/ace");
+        editor.setModePath("/static/ace");
+        editor.setWorkerPath("/static/ace");
         editor.setSizeFull();
         editor.setImmediate(true);
         editor.addSelectionChangeListener(selectionChangeListener);

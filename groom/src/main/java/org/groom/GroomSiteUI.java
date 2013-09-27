@@ -110,7 +110,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
 
     @Override
     protected Site constructSite(final VaadinRequest request) {
-        setPollInterval(150);
+        //setPollInterval(150);
         final ContentProvider contentProvider = this;
 
         final LocalizationProvider localizationProvider =

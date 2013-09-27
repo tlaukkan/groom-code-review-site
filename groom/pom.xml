@@ -88,6 +88,13 @@
                         <module>org.groom.GroomWidgetset</module>
                     </modules>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-client-compiler</artifactId>
+                        <version>${vaadin.version}</version>
+                    </dependency>
+                 </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -119,7 +126,7 @@
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>aceeditor</artifactId>
-            <version>0.8.7</version>
+            <version>0.8.8</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
