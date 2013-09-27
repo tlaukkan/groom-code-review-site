@@ -154,7 +154,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     }
                     for (int i = cursorLine; i >= 0; i--) {
                         if (i == 0) {
-                            scrollToRow(0);
+                            final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                            view.previous(path);
                             break;
                         }
                         if (blames.get(i).getType() == LineChangeType.NONE) {
@@ -182,7 +183,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     }
                     for (int i = cursorLine; i < blames.size(); i++) {
                         if (i == blames.size() - 1) {
-                            scrollToRow(i);
+                            final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                            view.next(path);
                             break;
                         }
                         if (blames.get(i).getType() != LineChangeType.NONE) {
