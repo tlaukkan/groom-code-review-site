@@ -13,7 +13,40 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class BlameReader {
-    public static final List<BlameLine> read(final String path, final String sinceHash,
+    public static final List<BlameLine> readBlameLines(final String path, char status, String sinceHash, String untilHash) {
+        if (status != 'A'&& status != 'M') {
+            return new ArrayList<BlameLine>();
+        }
+        final List<BlameLine> blames = BlameReader.read(path, sinceHash, untilHash, false);
+        final List<BlameLine> reverseBlames;
+        if (status == 'A') {
+            reverseBlames = new ArrayList<BlameLine>();
+        } else {
+            reverseBlames = BlameReader.read(path, sinceHash, untilHash, true);
+        }
+
+        // Inserting deletes among forward blames
+        for (final BlameLine reverseBlame : reverseBlames) {
+            if (reverseBlame.getType() == LineChangeType.DELETED) {
+                boolean inserted = false;
+                for (int i = 0; i < blames.size(); i++) {
+                    final BlameLine forwardBlame = blames.get(i);
+                    if ((forwardBlame.getType() == LineChangeType.NONE || forwardBlame.getType() == LineChangeType.DELETED)
+                            && forwardBlame.getOriginalLine() >= reverseBlame.getOriginalLine()) {
+                        blames.add(i, reverseBlame);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    blames.add(reverseBlame);
+                }
+            }
+        }
+        return blames;
+    }
+
+    private static final List<BlameLine> read(final String path, final String sinceHash,
                                              final String untilHash, boolean reverse) {
         final Map<String, String> hashAuthorNameMap = new HashMap<String, String>();
         final Map<String, String> hashAuthorEmailMap = new HashMap<String, String>();

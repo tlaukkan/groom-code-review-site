@@ -66,14 +66,14 @@ public class ReviewDao {
 
     public static List<ReviewStatus> getReviewStatuses(final EntityManager entityManager, final Review review) {
         final Query query =
-                entityManager.createQuery("select e from ReviewStatus as e where e.review=:review");
+                entityManager.createQuery("select e from ReviewStatus as e where e.review=:review order by e.reviewer.firstName, e.reviewer.lastName");
         query.setParameter("review", review);
         return query.getResultList();
     }
 
     public static List<Comment> getComments(final EntityManager entityManager, final Review review) {
         final Query query =
-                entityManager.createQuery("select e from Comment as e where e.review=:review order by e.line");
+                entityManager.createQuery("select e from Comment as e where e.review=:review order by e.path, e.line");
         query.setParameter("review", review);
         return query.getResultList();
     }

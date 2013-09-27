@@ -299,32 +299,11 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         this.fileDiff = fileDiff;
         this.path = fileDiff.getPath();
 
-        blames = BlameReader.read(path, review.getSinceHash(), review.getUntilHash(), false);
-        final List<BlameLine> reverseBlames;
-        if (fileDiff.getStatus() == 'A') {
-            reverseBlames = new ArrayList<BlameLine>();
-        } else {
-            reverseBlames = BlameReader.read(path, review.getSinceHash(), review.getUntilHash(), true);
-        }
+        final char status = fileDiff.getStatus();
+        final String sinceHash = review.getSinceHash();
+        final String untilHash = review.getUntilHash();
 
-        // Inserting deletes among forward blames
-        for (final BlameLine reverseBlame : reverseBlames) {
-            if (reverseBlame.getType() == LineChangeType.DELETED) {
-                boolean inserted = false;
-                for (int i = 0; i < blames.size(); i++) {
-                    final BlameLine forwardBlame = blames.get(i);
-                    if ((forwardBlame.getType() == LineChangeType.NONE || forwardBlame.getType() == LineChangeType.DELETED)
-                            && forwardBlame.getOriginalLine() >= reverseBlame.getOriginalLine()) {
-                        blames.add(i, reverseBlame);
-                        inserted = true;
-                        break;
-                    }
-                }
-                if (!inserted) {
-                    blames.add(reverseBlame);
-                }
-            }
-        }
+        blames = BlameReader.readBlameLines(path, status, sinceHash, untilHash);
 
         if (path.endsWith(".java")) {
             editor.setMode(AceMode.java);
@@ -420,4 +399,5 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
     }
+
 }
