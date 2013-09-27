@@ -33,6 +33,8 @@ import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.model.Company;
+import org.vaadin.addons.sitekit.model.User;
+import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
 import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import java.text.SimpleDateFormat;
@@ -273,6 +275,8 @@ public final class LogFlowlet extends AbstractFlowlet {
         review.setSinceHash(sinceHash);
         review.setUntilHash(untilHash);
         review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
+        review.setAuthor(((SecurityProviderSessionImpl)
+                getSite().getSecurityProvider()).getUserFromSession());
         final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
         reviewView.edit(review, true);
     }

@@ -125,6 +125,11 @@ public final class GroomFields {
                 100, null, String.class, null,
                 true, false, false));
         GroomFields.add(Review.class, new FieldDescriptor(
+                "author", "Author",
+                TextField.class, ObjectToStringFormatter.class,
+                200, null, User.class, null,
+                true, true, false));
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "path", "Path",
                 TextField.class, null,
                 250, null, String.class, "",

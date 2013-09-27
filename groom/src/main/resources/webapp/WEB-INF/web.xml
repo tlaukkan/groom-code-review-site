@@ -20,6 +20,14 @@
             <param-value>org.groom.GroomWidgetset</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>Report</servlet-name>
+        <servlet-class>org.groom.report.ReportServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Report</servlet-name>
+        <url-pattern>/report</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Vaadin Application Servlet</servlet-name>
         <url-pattern>/groom/*</url-pattern>

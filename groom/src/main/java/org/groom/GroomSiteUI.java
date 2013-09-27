@@ -229,6 +229,10 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
 
     }
 
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
+
     /** The entity manager factory for test. */
     private static EntityManagerFactory entityManagerFactory;
 

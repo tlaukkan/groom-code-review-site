@@ -17,6 +17,7 @@ package org.groom.model;
 
 import org.vaadin.addons.sitekit.model.Company;
 import org.vaadin.addons.sitekit.model.Group;
+import org.vaadin.addons.sitekit.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -47,6 +48,11 @@ public final class Review implements Serializable {
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
     private Group reviewGroup;
+
+    /** Author. */
+    @JoinColumn(nullable = false)
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
+    private User author;
 
     /** Content. */
     @Column(length = 2048, nullable = false)
@@ -89,10 +95,11 @@ public final class Review implements Serializable {
         super();
     }
 
-    public Review(Company owner, Group reviewGroup, String path, String sinceHash, String untilHash,
+    public Review(Company owner, Group reviewGroup, User author, String path, String sinceHash, String untilHash,
                   String title, int diffCount, Date created, Date modified) {
         this.owner = owner;
         this.reviewGroup = reviewGroup;
+        this.author = author;
         this.path = path;
         this.sinceHash = sinceHash;
         this.untilHash = untilHash;
@@ -128,6 +135,14 @@ public final class Review implements Serializable {
      */
     public void setOwner(final Company owner) {
         this.owner = owner;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public static long getSerialVersionUID() {

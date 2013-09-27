@@ -18,6 +18,17 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ReviewDao {
+    public static Review getReview(final EntityManager entityManager, final String reviewId) {
+        final Query query =
+                entityManager.createQuery("select e from Review as e where e.reviewId=:reviewId");
+        query.setParameter("reviewId", reviewId);
+        final List<Review> reviews = query.getResultList();
+        if (reviews.size() == 0) {
+            return null;
+        }
+        return reviews.get(0);
+    }
+
     public static void saveReviewStatus(final EntityManager entityManager, final ReviewStatus reviewStatus) {
         entityManager.getTransaction().begin();
         try {
@@ -51,6 +62,13 @@ public class ReviewDao {
             throw t;
         }
         entityManager.getTransaction().commit();
+    }
+
+    public static List<ReviewStatus> getReviewStatuses(final EntityManager entityManager, final Review review) {
+        final Query query =
+                entityManager.createQuery("select e from ReviewStatus as e where e.review=:review");
+        query.setParameter("review", review);
+        return query.getResultList();
     }
 
     public static List<Comment> getComments(final EntityManager entityManager, final Review review) {
