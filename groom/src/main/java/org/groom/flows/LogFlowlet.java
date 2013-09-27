@@ -23,7 +23,9 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.groom.CommitBeanQuery;
+import org.groom.dao.ReviewDao;
 import org.groom.flows.admin.ReviewFlowlet;
+import org.groom.flows.admin.ReviewRangeDialog;
 import org.groom.model.Commit;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
@@ -123,6 +125,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         container.addContainerProperty("committer", String.class, null, true, false);
         container.addContainerProperty("authorDate", Date.class, null, true, false);
         container.addContainerProperty("author", String.class, null, true, false);
+        container.addContainerProperty("tags", String.class, null, true, false);
         container.addContainerProperty("subject", String.class, null, true, false);
 
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -149,6 +152,7 @@ public final class LogFlowlet extends AbstractFlowlet {
                 "committer",
                 "authorDate",
                 "author",
+                "tags",
                 "subject"});
 
         table.setColumnWidth("hash", 50);
@@ -156,6 +160,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         table.setColumnWidth("committer", 100);
         table.setColumnWidth("authorDate", 120);
         table.setColumnWidth("author", 100);
+        table.setColumnWidth("tags", 100);
 
         table.setColumnHeaders(new String[]{
                 getSite().localize("field-hash"),
@@ -163,6 +168,7 @@ public final class LogFlowlet extends AbstractFlowlet {
                 getSite().localize("field-committer"),
                 getSite().localize("field-author-date"),
                 getSite().localize("field-author"),
+                getSite().localize("field-tags"),
                 getSite().localize("field-subject")
         });
 
@@ -208,30 +214,43 @@ public final class LogFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 final Object[] selection = ((Set) table.getValue()).toArray();
-                final String hashOne = (String) selection[0];
-                final String hashTwo = (String) selection[1];
-                final Commit commitOne = ((NestingBeanItem<Commit>)container.getItem(hashOne)).getBean();
-                final Commit commitTwo = ((NestingBeanItem<Commit>)container.getItem(hashTwo)).getBean();
+                if (selection != null && selection.length == 2) {
+                    final String hashOne = (String) selection[0];
+                    final String hashTwo = (String) selection[1];
+                    final Commit commitOne = ((NestingBeanItem<Commit>)container.getItem(hashOne)).getBean();
+                    final Commit commitTwo = ((NestingBeanItem<Commit>)container.getItem(hashTwo)).getBean();
 
-                final Commit sinceCommit;
-                final Commit untilCommit;
-                if (commitOne.getCommitterDate().getTime() > commitTwo.getCommitterDate().getTime()) {
-                    sinceCommit = commitTwo;
-                    untilCommit = commitOne;
+                    final Commit sinceCommit;
+                    final Commit untilCommit;
+                    if (commitOne.getCommitterDate().getTime() > commitTwo.getCommitterDate().getTime()) {
+                        sinceCommit = commitTwo;
+                        untilCommit = commitOne;
+                    } else {
+                        sinceCommit = commitOne;
+                        untilCommit = commitTwo;
+                    }
+                    createReview(sinceCommit.getHash(), untilCommit.getHash());
                 } else {
-                    sinceCommit = commitOne;
-                    untilCommit = commitTwo;
+                    final ReviewRangeDialog dialog = new ReviewRangeDialog(
+                            new ReviewRangeDialog.DialogListener() {
+                        @Override
+                        public void onOk(String sinceHash, String untilHash) {
+                            if (sinceHash.length() > 0 && untilHash.length() > 0) {
+                                createReview(sinceHash, untilHash);
+                            }
+                        }
+
+                        @Override
+                        public void onCancel() {
+                        }
+                    }, ((selection != null && selection.length == 1) ?
+                            (String) selection[0] : ""), "");
+                    dialog.setCaption("Please enter final comment.");
+                    UI.getCurrent().addWindow(dialog);
+                    dialog.getSinceField().focus();
                 }
 
-                final Review review = new Review();
-                review.setCreated(new Date());
-                review.setModified(review.getCreated());
-                review.setPath(PropertiesUtil.getProperty("groom", "repository-path"));
-                review.setSinceHash(sinceCommit.getHash());
-                review.setUntilHash(untilCommit.getHash());
-                review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
-                final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
-                reviewView.edit(review, true);
+
             }
         });
 
@@ -239,10 +258,23 @@ public final class LogFlowlet extends AbstractFlowlet {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 final Set selection = (Set) table.getValue();
-                addReviewButton.setEnabled(selection != null && selection.size() == 2);
+                addReviewButton.setEnabled(selection != null && (
+                        selection.size() == 1 || selection.size() == 2));
             }
         });
 
+    }
+
+    private void createReview(String sinceHash, String untilHash) {
+        final Review review = new Review();
+        review.setCreated(new Date());
+        review.setModified(review.getCreated());
+        review.setPath(PropertiesUtil.getProperty("groom", "repository-path"));
+        review.setSinceHash(sinceHash);
+        review.setUntilHash(untilHash);
+        review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
+        final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+        reviewView.edit(review, true);
     }
 
     @Override

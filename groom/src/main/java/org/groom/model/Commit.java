@@ -16,13 +16,15 @@ public class Commit {
     private String author;
     private String hash;
     private String subject;
+    private String tags;
 
-    public Commit(Date committerDate, String committer, Date authorDate, String author, String hash, String subject) {
+    public Commit(Date committerDate, String committer, Date authorDate, String author, String hash, String tags, String subject) {
         this.committerDate = committerDate;
         this.committer = committer;
         this.authorDate = authorDate;
         this.author = author;
         this.hash = hash;
+        this.tags = tags;
         this.subject = subject;
     }
 
@@ -64,6 +66,14 @@ public class Commit {
 
     public void setHash(String hash) {
         this.hash = hash;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public String getSubject() {

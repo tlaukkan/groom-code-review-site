@@ -53,11 +53,11 @@ public final class Review implements Serializable {
     private String path;
 
     /** Since hash. */
-    @Column(length = 7, nullable = false)
+    @Column(length = 100, nullable = false)
     private String sinceHash;
 
     /** Until hash. */
-    @Column(length = 7, nullable = false)
+    @Column(length = 100, nullable = false)
     private String untilHash;
 
     /** Until hash. */

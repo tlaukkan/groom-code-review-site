@@ -75,7 +75,7 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
 
         final String result = Shell.execute(
                 "git log --skip=" + startIndex
-                        + " --max-count=" + count + " --pretty=format:\"%h|%ad|%cd|%an|%cn|%s%d\" --date=iso " + range + " --");
+                        + " --max-count=" + count + " --pretty=format:\"%h|%ad|%cd|%an|%cn|%d|%s\" --date=iso " + range + " --");
 
         final String[] lines = result.split("\n");
         final ArrayList<Commit> commits = new ArrayList<Commit>();
@@ -123,14 +123,21 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
                 committer = "";
             }
 
-            final String subject;
+            final String tags;
             if (parts.length >= 6) {
-                subject = parts[5];
+                tags = parts[5].replace(" ","").replace("(","").replace(")","");
+            } else {
+                tags = "";
+            }
+
+            final String subject;
+            if (parts.length >= 7) {
+                subject = parts[6];
             } else {
                 subject = "";
             }
 
-            commits.add(new Commit(authorDate, author, committerDate, committer, hash, subject));
+            commits.add(new Commit(authorDate, author, committerDate, committer, hash, tags, subject));
         }
 
         return commits;
