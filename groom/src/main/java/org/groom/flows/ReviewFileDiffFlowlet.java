@@ -84,8 +84,6 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         return line;
     }
 
-    int lastCursor = 0;
-
     @Override
     public void initialize() {
         entityManager = getSite().getSiteContext().getObject(EntityManager.class);
@@ -94,63 +92,13 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         gridLayout.setSpacing(true);
         gridLayout.setSizeFull();
         gridLayout.setColumnExpandRatio(0, 1f);
-        gridLayout.setRowExpandRatio(0, 1f);
+        gridLayout.setRowExpandRatio(1, 1f);
         setViewContent(gridLayout);
 
         selectionChangeListener = new AceEditor.SelectionChangeListener() {
             @Override
             public void selectionChanged(AceEditor.SelectionChangeEvent e) {
-                int cursor = e.getSelection().getCursorPosition();
-                if (lastCursor != cursor && fileDiff.getReviewStatus() != null) {
-                    lastCursor = cursor;
-                    final int cursorLine = findLine(editor.getValue(), cursor);
-                    final BlameLine blame = blames.get(cursorLine);
 
-                    final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
-                        @Override
-                        public void onOk(final String message) {
-                            final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
-                            final Review review = reviewStatus.getReview();
-                            final Date date = new Date();
-                            if (message.trim().length() > 0) {
-                                final Comment comment = new Comment(review, reviewStatus.getReviewer(),
-                                        blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
-                                        0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
-                                ReviewDao.saveComment(entityManager, comment);
-                                addComment(comment);
-                                final Company company = getSite().getSiteContext().getObject(Company.class);
-                                final Thread emailThread = new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
-                                                blame.getAuthorEmail(), company.getSupportEmailAddress(),
-                                                "You received comment on review '" + review.getTitle() + "'",
-                                                "Reviewer: " + reviewStatus.getReviewer().getFirstName()
-                                                        + " " + reviewStatus.getReviewer().getLastName() + "\n" +
-                                                        "Commit: " + blame.getHash() + "\n" +
-                                                        "File: " + fileDiff.getPath() + "\n" +
-                                                        "Original Line: " + blame.getOriginalLine() + "\n" +
-                                                        "Diff line: " + cursorLine + "\n" +
-                                                        blame.getType() + ":" + blame.getLine() + "\n" +
-                                                        "Message: " + message);
-                                    }
-                                });
-                                emailThread.start();
-                            }
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            //To change body of implemented methods use File | Settings | File Templates.
-                        }
-                    });
-                    int cursorPosition = editor.getCursorPosition();
-                    commentDialog.setCaption("Please enter groom text for " + blame.getAuthorName()
-                            + " at line: " + (cursorLine + 1));
-                    UI.getCurrent().addWindow(commentDialog);
-                    commentDialog.getTextArea().focus();
-
-                }
             }
         };
 
@@ -159,9 +107,10 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         if (getViewSheet().getFlowlet(ReviewFlowlet.class) != null) {
             final HorizontalLayout buttonLayout = new HorizontalLayout();
             buttonLayout.setSpacing(true);
-            gridLayout.addComponent(buttonLayout, 0, 1);
+            gridLayout.addComponent(buttonLayout, 0, 0);
 
-            final Button previousButton = new Button(getSite().localize("button-previous"));
+            final Button previousButton = new Button(getSite().localize("button-previous-diff"));
+            previousButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(previousButton);
             previousButton.addClickListener(new Button.ClickListener() {
                 @Override
@@ -171,7 +120,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                 }
             });
 
-            final Button nextButton = new Button(getSite().localize("button-next"));
+            final Button nextButton = new Button(getSite().localize("button-next-diff"));
+            nextButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(nextButton);
             nextButton.addClickListener(new Button.ClickListener() {
                 @Override
@@ -180,7 +130,141 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     view.next(path);
                 }
             });
+
+            final Button scrollToPreviousChangeButton = new Button(getSite().localize("button-scroll-to-previous-change"));
+            scrollToPreviousChangeButton.setHtmlContentAllowed(true);
+            buttonLayout.addComponent(scrollToPreviousChangeButton);
+            scrollToPreviousChangeButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    int cursor = editor.getSelection().getCursorPosition();
+
+                    int cursorLine = findLine(editor.getValue(), cursor);
+                    for (int i = cursorLine; i >= 0; i--) {
+                        cursorLine = i;
+                        if (blames.get(i).getType() == LineChangeType.NONE) {
+                            break;
+                        }
+                    }
+                    for (int i = cursorLine; i >= 0; i--) {
+                        cursorLine = i;
+                        if (i == 0 | blames.get(i).getType() != LineChangeType.NONE) {
+                            break;
+                        }
+                    }
+                    for (int i = cursorLine; i >= 0; i--) {
+                        if (i == 0) {
+                            scrollToRow(0);
+                            break;
+                        }
+                        if (blames.get(i).getType() == LineChangeType.NONE) {
+                            scrollToRow(i + 1);
+                            break;
+                        }
+                    }
+                }
+            });
+
+            final Button scrollToNextChangeButton = new Button(getSite().localize("button-scroll-to-next-change"));
+            scrollToNextChangeButton.setHtmlContentAllowed(true);
+            buttonLayout.addComponent(scrollToNextChangeButton);
+            scrollToNextChangeButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    int cursor = editor.getSelection().getCursorPosition();
+
+                    int cursorLine = findLine(editor.getValue(), cursor);
+                    for (int i = cursorLine; i < blames.size(); i++) {
+                        cursorLine = i;
+                        if (blames.get(i).getType() == LineChangeType.NONE) {
+                            break;
+                        }
+                    }
+                    for (int i = cursorLine; i < blames.size(); i++) {
+                        if (i == blames.size() - 1) {
+                            scrollToRow(i);
+                            break;
+                        }
+                        if (blames.get(i).getType() != LineChangeType.NONE) {
+                            scrollToRow(i);
+                            break;
+                        }
+                    }
+                }
+            });
+
+            final Button groomButton = getSite().getButton("groom");
+            groomButton.setHtmlContentAllowed(true);
+            buttonLayout.addComponent(groomButton);
+            groomButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    if (editor.getSelection() == null || editor.getSelection().getCursorPosition() < 0) {
+                        return;
+                    }
+                    int cursor = editor.getSelection().getCursorPosition();
+                    if (fileDiff.getReviewStatus() != null) {
+                        final int cursorLine = findLine(editor.getValue(), cursor);
+                        final BlameLine blame = blames.get(cursorLine);
+
+                        final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
+                            @Override
+                            public void onOk(final String message) {
+                                final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
+                                final Review review = reviewStatus.getReview();
+                                final Date date = new Date();
+                                if (message.trim().length() > 0) {
+                                    final Comment comment = new Comment(review, reviewStatus.getReviewer(),
+                                            blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
+                                            0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
+                                    ReviewDao.saveComment(entityManager, comment);
+                                    addComment(comment);
+                                    final Company company = getSite().getSiteContext().getObject(Company.class);
+                                    final Thread emailThread = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
+                                                    blame.getAuthorEmail(), company.getSupportEmailAddress(),
+                                                    "You received comment on review '" + review.getTitle() + "'",
+                                                    "Reviewer: " + reviewStatus.getReviewer().getFirstName()
+                                                            + " " + reviewStatus.getReviewer().getLastName() + "\n" +
+                                                            "Commit: " + blame.getHash() + "\n" +
+                                                            "File: " + fileDiff.getPath() + "\n" +
+                                                            "Original Line: " + blame.getOriginalLine() + "\n" +
+                                                            "Diff line: " + cursorLine + "\n" +
+                                                            blame.getType() + ":" + blame.getLine() + "\n" +
+                                                            "Message: " + message);
+                                        }
+                                    });
+                                    emailThread.start();
+                                }
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                //To change body of implemented methods use File | Settings | File Templates.
+                            }
+                        });
+                        int cursorPosition = editor.getCursorPosition();
+                        commentDialog.setCaption("Please enter groom text for " + blame.getAuthorName()
+                                + " at line: " + (cursorLine + 1));
+                        UI.getCurrent().addWindow(commentDialog);
+                        commentDialog.getTextArea().focus();
+
+                    }
+                }
+            });
+
         }
+    }
+
+    private void scrollToRow(int i) {
+        int scrollToRow = i - 3;
+        if (scrollToRow < 0) {
+            scrollToRow = 0;
+        }
+        editor.scrollToRow(scrollToRow);
+        editor.setCursorRowCol(i, 0);
     }
 
     private void addComment(Comment comment) {
@@ -325,11 +409,10 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         if (toLine != 0) {
             editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
         }
-        gridLayout.addComponent(editor, 0, 0);
+        gridLayout.addComponent(editor, 0, 1);
         if (toLine != 0) {
             editor.scrollToRow(toLine);
         }
-        lastCursor = editor.getCursorPosition();
 
     }
 }
