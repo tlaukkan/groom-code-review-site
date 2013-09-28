@@ -55,6 +55,7 @@ import org.vaadin.addons.sitekit.viewlet.anonymous.EmailValidationViewlet;
 import org.vaadin.addons.sitekit.viewlet.anonymous.ImageViewlet;
 import org.vaadin.addons.sitekit.viewlet.anonymous.NavigationViewlet;
 import org.vaadin.addons.sitekit.viewlet.anonymous.login.LoginFlowViewlet;
+import org.vaadin.addons.sitekit.viewlet.user.AccountFlowViewlet;
 import org.vaadin.addons.sitekit.web.BareSiteFields;
 
 import javax.persistence.EntityManager;
@@ -196,6 +197,13 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                         "content", "Flowlet Sheet", "This is flow sheet.", null,
                         CustomerFlowViewlet.class.getCanonicalName())
                 ))));
+        viewDescriptors.add(new ViewDescriptor("customers", null, null, new ViewVersion(
+                0, "master", "Customers", "customers", "This is customers page.",
+                FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
+                Arrays.asList(new ViewletDescriptor(
+                        "content", "Flowlet Sheet", "This is flow sheet.", null,
+                        CustomerFlowViewlet.class.getCanonicalName())
+                ))));
         viewDescriptors.add(new ViewDescriptor("companies", null, null, new ViewVersion(
                 0, "master", "Companies", "companies", "This is companies page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
@@ -221,8 +229,26 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                                 EmailValidationViewlet.class.getCanonicalName())
                 ))));
 
+        viewDescriptors.add(new ViewDescriptor("account", null, null, new ViewVersion(
+                0, "master", "Account SiteView", "account page", "This is account page.",
+                FixedWidthView.class.getCanonicalName(), new String[]{"user"},
+                Arrays.asList(
+                        new ViewletDescriptor(
+                                "content", "Flowlet Sheet", "This is flow sheet.", null,
+                                AccountFlowViewlet.class.getCanonicalName())
+                ))));
+
+        viewDescriptors.add(new ViewDescriptor("validate", null, null, new ViewVersion(
+                0, "master", "Email Validation", "email validation page", "This is email validation page.",
+                FixedWidthView.class.getCanonicalName(), new String[]{"anonymous"},
+                Arrays.asList(
+                        new ViewletDescriptor(
+                                "content", "Email Validation", "This is email validation flowlet.", null,
+                                EmailValidationViewlet.class.getCanonicalName())
+                ))));
+
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
-                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;users;groups;companies;login", true));
+                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;account;users;groups;customers;companies;login", true));
 
         return new SiteDescriptor("Test site.", "test site", "This is a test site.",
                 navigationDescriptor, viewDescriptors);
