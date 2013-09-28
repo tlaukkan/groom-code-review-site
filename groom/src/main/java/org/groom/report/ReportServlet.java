@@ -74,9 +74,13 @@ public class ReportServlet extends HttpServlet {
 
         final List<Comment> comments = ReviewDao.getComments(entityManager, review);
         for (final Comment comment : comments) {
-            out.println("Comment by " + comment.getReviewer().getFirstName() + " " + comment.getReviewer().getLastName()
-                    + " for " + comment.getAuthor() + " '" + comment.getMessage()+ "' on '" + comment.getPath()
-                    + "' at " +comment.getLine() + " of commit " + comment.getHash() + ".");
+            out.println(comment.getPath());
+            out.println("Line: " +comment.getLine());
+            out.println("Commit: " + comment.getHash());
+            out.println("Reviewer: " + comment.getReviewer().getFirstName() + " " + comment.getReviewer().getLastName());
+            out.println("Change author: " + comment.getAuthor());
+            out.println("Message: " + comment.getMessage());
+            out.println();
         }
 
         out.println();
@@ -95,7 +99,7 @@ public class ReportServlet extends HttpServlet {
         for (int i = 0; i < lines.length; i++) {
             final char status = lines[i].charAt(0);
             final String path = lines[i].substring(1).trim();
-            out.println("DIFF: " + path);
+            out.println(status + " " + path);
             out.println();
             final List<BlameLine> blames = BlameReader.readBlameLines(path, status, review.getSinceHash(), review.getUntilHash());
             boolean lastLineWasChange = false;
