@@ -19,6 +19,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -137,7 +138,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                 return super.formatPropertyValue(rowId, colId, property);
             }
         };
-
+        fileDiffTable.setNullSelectionAllowed(false);
         fileDiffTable.setSizeFull();
         fileDiffTable.setContainerDataSource(container);
         fileDiffTable.setVisibleColumns(new Object[]{
@@ -161,10 +162,10 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         fileDiffTable.setMultiSelect(false);
         fileDiffTable.setImmediate(true);
 
-        fileDiffTable.addValueChangeListener(new Property.ValueChangeListener() {
+        fileDiffTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                final String selectedPath = (String) fileDiffTable.getValue();
+            public void itemClick(ItemClickEvent event) {
+                final String selectedPath = (String)  event.getItemId();
 
                 if (selectedPath != null) {
                     final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
@@ -313,6 +314,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         ContainerUtil.addContainerProperties(commentContainer, commentFieldDescriptors);
         final Table commentTable = new FormattingTable();
         Grid commentGrid = new Grid(commentTable, commentContainer);
+        commentTable.setNullSelectionAllowed(false);
         commentGrid.setSizeFull();
         commentGrid.setFields(commentFieldDescriptors);
         commentTable.setImmediate(true);
@@ -327,10 +329,10 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         gridLayout.addComponent(commentPanel, 0, 2, 1, 2);
 
-        commentTable.addValueChangeListener(new Property.ValueChangeListener() {
+        commentTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
-            public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-                final String commentId = (String) commentTable.getValue();
+            public void itemClick(ItemClickEvent event) {
+                final String commentId = (String) event.getItemId();
 
                 if (commentId != null) {
                     final Comment comment = ((NestingBeanItem<Comment>) commentTable.getItem(commentId)).getBean();

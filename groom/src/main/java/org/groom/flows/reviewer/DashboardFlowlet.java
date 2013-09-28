@@ -19,6 +19,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.Or;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -105,6 +106,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
 
+        table.setNullSelectionAllowed(false);
         table.setColumnCollapsed("modified", true);
         table.setColumnCollapsed("reviewId", true);
         table.setColumnCollapsed("path", true);
@@ -115,7 +117,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
 
         gridLayout.addComponent(grid, 0, 1);
 
-        table.addValueChangeListener(new Property.ValueChangeListener() {
+        /*table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
                 if (grid.getSelectedItemId() != null) {
@@ -125,6 +127,17 @@ public final class DashboardFlowlet extends AbstractFlowlet {
                     getViewSheet().forward(ReviewFlowlet.class);
                     table.setValue(null);
                 }
+            }
+        });*/
+
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                final Review entity = container.getEntity(event.getItemId());
+                final ReviewFlowlet reviewView = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                reviewView.edit(entity, false);
+                getViewSheet().forward(ReviewFlowlet.class);
+                //table.setValue(null);
             }
         });
 

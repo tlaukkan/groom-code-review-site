@@ -95,12 +95,12 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         gridLayout.setRowExpandRatio(1, 1f);
         setViewContent(gridLayout);
 
-        selectionChangeListener = new AceEditor.SelectionChangeListener() {
+        /*selectionChangeListener = new AceEditor.SelectionChangeListener() {
             @Override
             public void selectionChanged(AceEditor.SelectionChangeEvent e) {
 
             }
-        };
+        };*/
 
         //gridLayout.addComponent(editor, 0, 0);
 
@@ -311,7 +311,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.setWorkerPath("/static/ace");
         editor.setSizeFull();
         editor.setImmediate(true);
-        editor.addSelectionChangeListener(selectionChangeListener);
+        //editor.addSelectionChangeListener(selectionChangeListener);
 
         this.review = review;
         this.fileDiff = fileDiff;
@@ -413,9 +413,9 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }*/
         gridLayout.addComponent(editor, 0, 1);
         if (toLine != 0) {
-            //editor.setCursorRowCol(toLine, 0);
+            editor.setCursorRowCol(toLine, 0);
             //editor.scrollToRow(toLine);
-            scrollToRow(toLine);
+            //scrollToRow(toLine);
         }
 
     }
