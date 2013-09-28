@@ -195,6 +195,24 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                 }
             });
 
+            final Button scrollToCursorButton = new Button("Scroll to Cursor");
+            scrollToCursorButton.setHtmlContentAllowed(true);
+            buttonLayout.addComponent(scrollToCursorButton);
+            scrollToCursorButton.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent clickEvent) {
+                    if (editor.getSelection() == null || editor.getSelection().getCursorPosition() < 0) {
+                        return;
+                    }
+                    int cursor = editor.getSelection().getCursorPosition();
+                    if (fileDiff.getReviewStatus() != null) {
+                        final int cursorLine = findLine(editor.getValue(), cursor);
+                        scrollToRow(cursorLine);
+                    }
+                }
+            });
+
+
             final Button groomButton = getSite().getButton("groom");
             groomButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(groomButton);
@@ -390,12 +408,14 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             }
         }
 
-        if (toLine != 0) {
+        /*if (toLine != 0) {
             editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
-        }
+        }*/
         gridLayout.addComponent(editor, 0, 1);
         if (toLine != 0) {
-            editor.scrollToRow(toLine);
+            //editor.setCursorRowCol(toLine, 0);
+            //editor.scrollToRow(toLine);
+            scrollToRow(toLine);
         }
 
     }
