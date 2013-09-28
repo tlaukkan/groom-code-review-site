@@ -76,7 +76,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     private static int findLine(final String value, final int index) {
         int line = 0;
-        for( int i=0; i<index; i++ ) {
+        for( int i=0; i<Math.min(value.length(),index); i++ ) {
             if( value.charAt(i) == '\n' ) {
                 line++;
             }
@@ -95,12 +95,12 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         gridLayout.setRowExpandRatio(1, 1f);
         setViewContent(gridLayout);
 
-        /*selectionChangeListener = new AceEditor.SelectionChangeListener() {
+        selectionChangeListener = new AceEditor.SelectionChangeListener() {
             @Override
             public void selectionChanged(AceEditor.SelectionChangeEvent e) {
 
             }
-        };*/
+        };
 
         //gridLayout.addComponent(editor, 0, 0);
 
@@ -137,9 +137,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             scrollToPreviousChangeButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    int cursor = editor.getSelection().getCursorPosition();
+                    int cursorLine = getScrolledTowRow();
 
-                    int cursorLine = findLine(editor.getValue(), cursor);
                     for (int i = cursorLine; i >= 0; i--) {
                         cursorLine = i;
                         if (blames.get(i).getType() == LineChangeType.NONE) {
@@ -155,7 +154,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     for (int i = cursorLine; i >= 0; i--) {
                         if (i == 0) {
                             final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                            view.previous(path);
+                            //view.previous(path);
+                            scrollToRow(0);
                             break;
                         }
                         if (blames.get(i).getType() == LineChangeType.NONE) {
@@ -172,9 +172,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             scrollToNextChangeButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    int cursor = editor.getSelection().getCursorPosition();
+                    int cursorLine = getScrolledTowRow();
 
-                    int cursorLine = findLine(editor.getValue(), cursor);
                     for (int i = cursorLine; i < blames.size(); i++) {
                         cursorLine = i;
                         if (blames.get(i).getType() == LineChangeType.NONE) {
@@ -184,7 +183,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     for (int i = cursorLine; i < blames.size(); i++) {
                         if (i == blames.size() - 1) {
                             final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
-                            view.next(path);
+                            //view.next(path);
+                            scrollToRow(i);
                             break;
                         }
                         if (blames.get(i).getType() != LineChangeType.NONE) {
@@ -201,10 +201,10 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             scrollToCursorButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    if (editor.getSelection() == null || editor.getSelection().getCursorPosition() < 0) {
+                    if (editor.getSelection() == null || editor.getCursorPosition() < 0) {
                         return;
                     }
-                    int cursor = editor.getSelection().getCursorPosition();
+                    int cursor = editor.getCursorPosition();
                     if (fileDiff.getReviewStatus() != null) {
                         final int cursorLine = findLine(editor.getValue(), cursor);
                         scrollToRow(cursorLine);
@@ -219,10 +219,10 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             groomButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    if (editor.getSelection() == null || editor.getSelection().getCursorPosition() < 0) {
+                    if (editor.getSelection() == null || editor.getCursorPosition() < 0) {
                         return;
                     }
-                    int cursor = editor.getSelection().getCursorPosition();
+                    int cursor = editor.getCursorPosition();
                     if (fileDiff.getReviewStatus() != null) {
                         final int cursorLine = findLine(editor.getValue(), cursor);
                         final BlameLine blame = blames.get(cursorLine);
@@ -278,13 +278,20 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
     }
 
+    public int getScrolledTowRow() {
+        return scrolledTowRow;
+    }
+
+    private int scrolledTowRow = 0;
+
     private void scrollToRow(int i) {
         int scrollToRow = i - 3;
         if (scrollToRow < 0) {
             scrollToRow = 0;
         }
-        editor.setCursorRowCol(i, 0);
+        scrolledTowRow = i;
         editor.scrollToRow(scrollToRow);
+        editor.setCursorRowCol(i, 0);
     }
 
     private void addComment(Comment comment) {
@@ -311,7 +318,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor.setWorkerPath("/static/ace");
         editor.setSizeFull();
         editor.setImmediate(true);
-        //editor.addSelectionChangeListener(selectionChangeListener);
+        editor.addSelectionChangeListener(selectionChangeListener);
 
         this.review = review;
         this.fileDiff = fileDiff;
@@ -412,11 +419,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
         }*/
         gridLayout.addComponent(editor, 0, 1);
-        if (toLine != 0) {
-            editor.setCursorRowCol(toLine, 0);
-            //editor.scrollToRow(toLine);
-            //scrollToRow(toLine);
-        }
+        scrollToRow(toLine);
 
     }
 

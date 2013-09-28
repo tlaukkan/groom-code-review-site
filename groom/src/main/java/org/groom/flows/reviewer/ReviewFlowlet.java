@@ -168,23 +168,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                 final String selectedPath = (String)  event.getItemId();
 
                 if (selectedPath != null) {
-                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
-                            fileDiffTable.getItem(selectedPath)).getBean();
-                    fileDiff.setReviewed(true);
-                    ReviewDao.saveReviewStatus(entityManager, reviewStatus);
-                    final ReviewFileDiffFlowlet view;
-                    final char status = fileDiff.getStatus();
-                    if (status == 'A' || status == 'M') {
-                        if (disableViewChange) {
-                            view = getViewSheet().getFlowlet(ReviewFileDiffFlowlet.class);
-                        } else {
-                            view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
-
-                        }
-                        view.setFileDiff(review, fileDiff, 0);
-                    } else {
-                        fileDiffTable.refreshRowCache();
-                    }
+                    reviewFileDiff(selectedPath);
                 }
             }
         });
@@ -394,6 +378,26 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         });
     }
 
+    private void reviewFileDiff(String selectedPath) {
+        final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
+                fileDiffTable.getItem(selectedPath)).getBean();
+        fileDiff.setReviewed(true);
+        ReviewDao.saveReviewStatus(entityManager, reviewStatus);
+        final ReviewFileDiffFlowlet view;
+        final char status = fileDiff.getStatus();
+        if (status == 'A' || status == 'M') {
+            if (disableViewChange) {
+                view = getViewSheet().getFlowlet(ReviewFileDiffFlowlet.class);
+            } else {
+                view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+
+            }
+            view.setFileDiff(review, fileDiff, 0);
+        } else {
+            fileDiffTable.refreshRowCache();
+        }
+    }
+
     public void next(final String path) {
         final String selectedPath = path != null ? path : (String) fileDiffTable.getValue();
         final String nextPath = (String) fileDiffTable.nextItemId(selectedPath);
@@ -404,6 +408,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             if (status == 'A' || status == 'M') {
                 disableViewChange = true;
                 fileDiffTable.select(nextPath);
+                reviewFileDiff(nextPath);
                 disableViewChange = false;
             } else {
                 next(nextPath);
@@ -421,6 +426,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             if (status == 'A' || status == 'M') {
                 disableViewChange = true;
                 fileDiffTable.select(prevPath);
+                reviewFileDiff(prevPath);
                 disableViewChange = false;
             } else {
                 previous(prevPath);
