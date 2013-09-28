@@ -183,7 +183,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                         }
                         view.setFileDiff(review, fileDiff, 0);
                     } else {
-                        container.refresh();
+                        fileDiffTable.refreshRowCache();
                     }
                 }
             }
