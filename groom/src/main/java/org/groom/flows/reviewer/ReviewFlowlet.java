@@ -17,6 +17,7 @@ package org.groom.flows.reviewer;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
@@ -43,10 +44,7 @@ import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Review edit flow.
@@ -148,12 +146,13 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                 "path"
         });
 
-        //fileDiffTable.setColumnWidth("status", 20);
         //table.setColumnWidth("path", 500);
+        fileDiffTable.setColumnWidth("status", 15);
+        fileDiffTable.setColumnWidth("reviewed", 15);
 
         fileDiffTable.setColumnHeaders(new String[]{
-                getSite().localize("field-status"),
-                getSite().localize("field-reviewed"),
+                "",
+                "",
                 getSite().localize("field-path")
         });
 
@@ -186,6 +185,84 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                         container.refresh();
                     }
                 }
+            }
+        });
+
+        fileDiffTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                if (propertyId != null && propertyId.equals("status")) {
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
+                            source.getItem(itemId)).getBean();
+                    switch(fileDiff.getStatus()) {
+                        case 'A':
+                            return "added";
+                        case 'D':
+                            return "deleted";
+                        case 'M':
+                            return "modified";
+                        default:
+                            return "";
+                    }
+                } else if (propertyId != null && propertyId.equals("reviewed")) {
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
+                            source.getItem(itemId)).getBean();
+                    if (fileDiff.isReviewed()) {
+                        return "ok";
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        fileDiffTable.setConverter("status", new Converter<String, Character>() {
+            @Override
+            public Character convertToModel(String value, Class<? extends Character> targetType,
+                                            Locale locale) throws ConversionException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String convertToPresentation(Character value, Class<? extends String> targetType,
+                                                Locale locale) throws ConversionException {
+                return "";
+            }
+
+            @Override
+            public Class<Character> getModelType() {
+                return Character.class;
+            }
+
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
+            }
+        });
+
+        fileDiffTable.setConverter("reviewed", new Converter<String, Boolean>() {
+            @Override
+            public Boolean convertToModel(String value, Class<? extends Boolean> targetType,
+                                            Locale locale) throws ConversionException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String convertToPresentation(Boolean value, Class<? extends String> targetType,
+                                                Locale locale) throws ConversionException {
+                return "";
+            }
+
+            @Override
+            public Class<Boolean> getModelType() {
+                return Boolean.class;
+            }
+
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
             }
         });
 

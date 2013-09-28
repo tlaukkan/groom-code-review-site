@@ -17,7 +17,6 @@ h1 {
     background: rgb(249,249,249);
 }
 
-
 .marker-line-added {
     background-color: rgba(100,255,100,0.5);
     position: absolute;
@@ -28,3 +27,23 @@ h1 {
     position: absolute;
 }
 
+.v-table-cell-content-added {
+    background-image: url(icons/diff-status-icon-added.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+.v-table-cell-content-deleted {
+    background-image: url(icons/diff-status-icon-deleted.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+.v-table-cell-content-ok {
+    background-image: url(icons/diff-status-icon-ok.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+.v-table-cell-content-modified {
+}

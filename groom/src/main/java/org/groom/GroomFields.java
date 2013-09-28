@@ -159,7 +159,7 @@ public final class GroomFields {
                 CheckBox.class, null,
                 70, null, Boolean.class, false,
                 false, true, false));
-        GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 100, null, Group.class,
+        GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 200, null, Group.class,
                 null, false, true, true));
 
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
