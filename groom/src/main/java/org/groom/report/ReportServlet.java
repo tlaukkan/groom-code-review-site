@@ -79,6 +79,21 @@ public class ReportServlet extends HttpServlet {
             out.println("Commit: " + comment.getHash());
             out.println("Reviewer: " + comment.getReviewer().getFirstName() + " " + comment.getReviewer().getLastName());
             out.println("Change author: " + comment.getAuthor());
+            final String severity;
+            switch (comment.getSeverity()) {
+                case 1:
+                    severity = "+1";
+                    break;
+                case -1:
+                    severity = "Warning";
+                    break;
+                case -2:
+                    severity = "Red Flag";
+                    break;
+                default:
+                    severity = Integer.toString(comment.getSeverity());
+            }
+            out.println("Severity: " + severity);
             out.println("Message: " + comment.getMessage());
             out.println();
         }

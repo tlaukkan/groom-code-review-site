@@ -1,7 +1,9 @@
 package org.groom.flows;
 
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
+import org.groom.GroomSiteUI;
 
 /**
  * The comment dialog.
@@ -30,18 +32,42 @@ public class CommentDialog extends Window {
         buttonLayout.setSpacing(true);
         layout.addComponent(buttonLayout);
 
-        final Button okButton = new Button("OK");
-        okButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        okButton.addStyleName("default");
-        okButton.addClickListener(new Button.ClickListener() {
+        final Button giveKudoButton = new Button("Kudo");
+        giveKudoButton.setIcon(new ThemeResource(("icons/icon-kudo.png")));
+        giveKudoButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        giveKudoButton.addStyleName("default");
+        giveKudoButton.addClickListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
                 close(); // Close the sub-window
-                dialogListener.onOk(textArea.getValue());
+                dialogListener.onOk(textArea.getValue(), 1);
             }
         });
-        buttonLayout.addComponent(okButton);
+        buttonLayout.addComponent(giveKudoButton);
 
-        buttonLayout.addComponent(okButton);
+        final Button raiseWarning = new Button("Warning");
+        raiseWarning.setIcon(new ThemeResource(("icons/icon-warning.png")));
+        raiseWarning.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        raiseWarning.addStyleName("default");
+        raiseWarning.addClickListener(new Button.ClickListener() {
+            public void buttonClick(Button.ClickEvent event) {
+                close(); // Close the sub-window
+                dialogListener.onOk(textArea.getValue(), -1);
+            }
+        });
+        buttonLayout.addComponent(raiseWarning);
+
+        final Button raiseRedFlag = new Button("Red Flag");
+        raiseRedFlag.setIcon(new ThemeResource(("icons/icon-red-flag.png")));
+        raiseRedFlag.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        raiseRedFlag.addStyleName("default");
+        raiseRedFlag.addClickListener(new Button.ClickListener() {
+            public void buttonClick(Button.ClickEvent event) {
+                close(); // Close the sub-window
+                dialogListener.onOk(textArea.getValue(), -2);
+            }
+        });
+        buttonLayout.addComponent(raiseRedFlag);
+
         final Button cancelButton = new Button("Cancel");
         cancelButton.addClickListener(new Button.ClickListener() {
             public void buttonClick(Button.ClickEvent event) {
@@ -59,7 +85,7 @@ public class CommentDialog extends Window {
 
 
     public interface DialogListener {
-        void onOk(String message);
+        void onOk(String message, int severity);
         void onCancel();
     }
 }

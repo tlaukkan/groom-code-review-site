@@ -199,6 +199,11 @@ public final class GroomFields {
                 false, true, true));
 
         GroomFields.add(Comment.class, new FieldDescriptor(
+                "severity", "Severity",
+                TextField.class, null,
+                15, null, Integer.class, null,
+                true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, TimestampFormatter.class,
                 130, null, Date.class, null, true,

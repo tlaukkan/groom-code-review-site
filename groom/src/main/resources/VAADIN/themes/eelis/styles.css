@@ -58,3 +58,21 @@ h1 {
 
   .v-table-cell-content-path-modified {
   }
+
+.v-table-cell-content-kudo {
+    background-image: url(icons/icon-kudo.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+.v-table-cell-content-red-flag {
+    background-image: url(icons/icon-red-flag.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}
+
+.v-table-cell-content-warning {
+    background-image: url(icons/icon-warning.png);
+    background-repeat: no-repeat;
+    background-position:center;
+}

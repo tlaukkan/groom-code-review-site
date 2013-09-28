@@ -229,23 +229,40 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
                         final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
                             @Override
-                            public void onOk(final String message) {
+                            public void onOk(final String message, final int severity) {
                                 final ReviewStatus reviewStatus = fileDiff.getReviewStatus();
                                 final Review review = reviewStatus.getReview();
                                 final Date date = new Date();
                                 if (message.trim().length() > 0) {
                                     final Comment comment = new Comment(review, reviewStatus.getReviewer(),
                                             blame.getHash(), fileDiff.getPath(), blame.getFinalLine(), cursorLine,
-                                            0, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
+                                            severity, message, blame.getAuthorName(), blame.getCommitterName(), date, date);
                                     ReviewDao.saveComment(entityManager, comment);
                                     addComment(comment);
                                     final Company company = getSite().getSiteContext().getObject(Company.class);
                                     final Thread emailThread = new Thread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            String severity;
+                                            switch (comment.getSeverity()) {
+                                                case 1:
+                                                    severity = "Kudo";
+                                                    break;
+                                                case -1:
+                                                    severity = "Warning";
+                                                    break;
+                                                case -2:
+                                                    severity = "Red Flag";
+                                                    break;
+                                                default:
+                                                    severity = Integer.toString(comment.getSeverity());
+                                                    if (!severity.startsWith("-")) {
+                                                        severity = "+" + severity;
+                                                    }
+                                            }
                                             EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
                                                     blame.getAuthorEmail(), company.getSupportEmailAddress(),
-                                                    "You received comment on review '" + review.getTitle() + "'",
+                                                    severity + " from review '" + review.getTitle() + "'",
                                                     "Reviewer: " + reviewStatus.getReviewer().getFirstName()
                                                             + " " + reviewStatus.getReviewer().getLastName() + "\n" +
                                                             "Commit: " + blame.getHash() + "\n" +
@@ -295,11 +312,22 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     }
 
     private void addComment(Comment comment) {
+        final AceAnnotation.Type type;
+        switch (comment.getSeverity()) {
+            case -1:
+                type = AceAnnotation.Type.warning;
+                break;
+            case -2:
+                type = AceAnnotation.Type.error;
+                break;
+            default:
+                type = AceAnnotation.Type.info;
+        }
         editor.addRowAnnotation(new AceAnnotation(
                 "Groomed by reviewer: " + comment.getReviewer().getFirstName()
                         + " - " + comment.getReviewer().getLastName()
                         + " Message: " + comment.getMessage(),
-                AceAnnotation.Type.warning) , comment.getDiffLine());
+                type) , comment.getDiffLine());
     }
 
     @Override

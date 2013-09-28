@@ -143,7 +143,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         fileDiffTable.setContainerDataSource(container);
         fileDiffTable.setVisibleColumns(new Object[]{
                 "reviewed",
-                "status",
                 "path"
         });
 
@@ -152,7 +151,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         fileDiffTable.setColumnWidth("reviewed", 15);
 
         fileDiffTable.setColumnHeaders(new String[]{
-                "",
                 "",
                 getSite().localize("field-path")
         });
@@ -306,6 +304,52 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         commentTable.setColumnCollapsed("created", true);
         commentTable.setColumnCollapsed("committer", true);
 
+        commentTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                if (propertyId != null && propertyId.equals("severity")) {
+                    final Comment comment = ((NestingBeanItem<Comment>)
+                            source.getItem(itemId)).getBean();
+                    switch(comment.getSeverity()) {
+                        case 1:
+                            return "kudo";
+                        case -1:
+                            return "warning";
+                        case -2:
+                            return "red-flag";
+                        default:
+                            return "";
+                    }
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        commentTable.setConverter("severity", new Converter<String, Integer>() {
+            @Override
+            public Integer convertToModel(String value, Class<? extends Integer> targetType,
+                                          Locale locale) throws ConversionException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String convertToPresentation(Integer value, Class<? extends String> targetType,
+                                                Locale locale) throws ConversionException {
+                return "";
+            }
+
+            @Override
+            public Class<Integer> getModelType() {
+                return Integer.class;
+            }
+
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
+            }
+        });
+
         Panel commentPanel = new Panel("Review Comments");
         commentPanel.setStyleName(Reindeer.PANEL_LIGHT);
         commentPanel.setHeight(200, Unit.PIXELS);
@@ -343,7 +387,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                final CommentDialog commentDialog = new CommentDialog(new CommentDialog.DialogListener() {
+                final ReviewCommentDialog commentDialog = new ReviewCommentDialog(
+                        new ReviewCommentDialog.DialogListener() {
                     @Override
                     public void onOk(final String message) {
                         reviewStatus.setComment(message);
