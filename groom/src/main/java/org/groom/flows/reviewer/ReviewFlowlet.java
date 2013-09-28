@@ -141,8 +141,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         fileDiffTable.setSizeFull();
         fileDiffTable.setContainerDataSource(container);
         fileDiffTable.setVisibleColumns(new Object[]{
-                "status",
                 "reviewed",
+                "status",
                 "path"
         });
 
@@ -201,6 +201,19 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                             return "deleted";
                         case 'M':
                             return "modified";
+                        default:
+                            return "";
+                    }
+                } else if (propertyId != null && propertyId.equals("path")) {
+                    final FileDiff fileDiff = ((NestingBeanItem<FileDiff>)
+                            source.getItem(itemId)).getBean();
+                    switch(fileDiff.getStatus()) {
+                        case 'A':
+                            return "path-added";
+                        case 'D':
+                            return "path-deleted";
+                        case 'M':
+                            return "path-modified";
                         default:
                             return "";
                     }
