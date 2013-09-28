@@ -15,6 +15,7 @@
  */
 package org.groom.flows.admin;
 
+import com.vaadin.data.Property;
 import org.groom.GroomFields;
 import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
@@ -52,6 +53,8 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
     private LazyEntityContainer<Review> container;
     /** The grid. */
     private Grid grid;
+    /** The review button. */
+    private Button reviewButton;
 
     @Override
     public String getFlowletKey() {
@@ -133,6 +136,28 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
                 final Review entity = container.getEntity(grid.getSelectedItemId());
                 final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
                 reviewView.edit(entity, false);
+            }
+        });
+
+        table.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                editButton.setEnabled(table.getValue() != null);
+            }
+        });
+
+
+        reviewButton = new Button("Report");
+        reviewButton.setImmediate(true);
+        buttonLayout.addComponent(reviewButton);
+        reviewButton.addListener(new ClickListener() {
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                final Review entity = container.getEntity(grid.getSelectedItemId());
+                getUI().getPage().open("../report?reviewId=" + entity.getReviewId(), "_blank");
             }
         });
 

@@ -61,8 +61,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private Button saveButton;
     /** The discard button. */
     private Button discardButton;
-    /** The review button. */
-    private Button reviewButton;
+
     private LazyQueryContainer container;
 
     @Override
@@ -201,19 +200,6 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             @Override
             public void buttonClick(final ClickEvent event) {
                 reviewEditor.discard();
-            }
-        });
-
-        reviewButton = new Button("Report");
-        reviewButton.setImmediate(true);
-        buttonLayout.addComponent(reviewButton);
-        reviewButton.addListener(new ClickListener() {
-            /** Serial version UID. */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                getUI().getPage().open("../report?reviewId=" + entity.getReviewId(), "_blank");
             }
         });
 
