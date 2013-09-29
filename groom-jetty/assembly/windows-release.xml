@@ -8,6 +8,7 @@
   "
         >
     <id>windows-release</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>
     </formats>
@@ -19,6 +20,14 @@
         <fileSet>
             <outputDirectory>/</outputDirectory>
             <directory>src/windows/conf</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>META-INF</outputDirectory>
+            <directory>src/windows/META-INF</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>/database</outputDirectory>
+            <directory>../groom/database</directory>
         </fileSet>
         <fileSet>
             <outputDirectory>/</outputDirectory>

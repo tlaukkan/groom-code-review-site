@@ -19,6 +19,19 @@
             <param-name>widgetset</param-name>
             <param-value>org.groom.GroomWidgetset</param-value>
         </init-param>
+        <init-param>
+            <param-name>cacheControl</param-name>
+            <param-value>max-age=3600,public</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>cacheControl</param-name>
+            <param-value>max-age=3600,public</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
         <servlet-name>Report</servlet-name>

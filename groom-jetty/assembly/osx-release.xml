@@ -7,7 +7,7 @@
       http://maven.apache.org/xsd/assembly-1.1.2.xsd
   "
         >
-    <id>linux-release</id>
+    <id>osx-release</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <formats>
         <format>zip</format>
@@ -15,15 +15,15 @@
     <fileSets>
         <fileSet>
             <outputDirectory>/</outputDirectory>
-            <directory>src/linux/bin</directory>
+            <directory>src/osx/bin</directory>
         </fileSet>
         <fileSet>
             <outputDirectory>/</outputDirectory>
-            <directory>src/linux/conf</directory>
+            <directory>src/osx/conf</directory>
         </fileSet>
         <fileSet>
             <outputDirectory>META-INF</outputDirectory>
-            <directory>src/linux/META-INF</directory>
+            <directory>src/osx/META-INF</directory>
         </fileSet>
         <fileSet>
             <outputDirectory>/database</outputDirectory>
