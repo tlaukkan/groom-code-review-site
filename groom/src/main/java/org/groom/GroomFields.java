@@ -163,6 +163,11 @@ public final class GroomFields {
                 null, false, true, true));
 
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
+                "completed", "",
+                CheckBox.class, null,
+                15, null, Boolean.class, false,
+                false, true, false));
+        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, TimestampFormatter.class,
                 130, null, Date.class, null, true,
@@ -180,18 +185,13 @@ public final class GroomFields {
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "reviewer", "Reviewer",
                 TextField.class, null,
-                100, null, User.class, null,
+                200, null, User.class, null,
                 true, true, false));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "progress", "Progress",
                 TextField.class, null,
-                40, null, Integer.class, null,
+                30, null, Integer.class, null,
                 true, true, false));
-        GroomFields.add(ReviewStatus.class, new FieldDescriptor(
-                "completed", "Completed",
-                CheckBox.class, null,
-                40, null, Boolean.class, false,
-                false, true, false));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "comment", "Message",
                 TextField.class, null,
@@ -199,10 +199,15 @@ public final class GroomFields {
                 false, true, true));
 
         GroomFields.add(Comment.class, new FieldDescriptor(
-                "severity", "Severity",
+                "severity", "",
                 TextField.class, null,
                 15, null, Integer.class, null,
                 true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "message", "Message",
+                TextField.class, null,
+                -1, null, String.class, "",
+                false, true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, TimestampFormatter.class,
@@ -219,24 +224,19 @@ public final class GroomFields {
                 100, null, String.class, null,
                 true, false, false));
         GroomFields.add(Comment.class, new FieldDescriptor(
-                "reviewer", "Reviewer",
+                "author", "Change Author",
                 TextField.class, null,
-                100, null, User.class, null,
-                true, true, false));
-        GroomFields.add(Comment.class, new FieldDescriptor(
-                "author", "Author",
-                TextField.class, null,
-                50, null, String.class, "",
-                false, true, true));
-        GroomFields.add(Comment.class, new FieldDescriptor(
-                "committer", "Committer",
-                TextField.class, null,
-                50, null, String.class, "",
+                200, null, String.class, "",
                 false, true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "hash", "Hash",
                 TextField.class, null,
                 50, null, String.class, null,
+                true, true, false));
+        GroomFields.add(Comment.class, new FieldDescriptor(
+                "reviewer", "Reviewer",
+                TextField.class, null,
+                200, null, User.class, null,
                 true, true, false));
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "path", "path",
@@ -248,11 +248,6 @@ public final class GroomFields {
                 TextField.class, null,
                 30, null, Integer.class, null,
                 true, true, false));
-        GroomFields.add(Comment.class, new FieldDescriptor(
-                "message", "Message",
-                TextField.class, null,
-                -1, null, String.class, "",
-                false, true, true));
 
     }
 }

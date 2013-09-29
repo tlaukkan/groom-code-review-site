@@ -282,6 +282,47 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         reviewerStatusesTable.setColumnCollapsed("modified", true);
         reviewerStatusesTable.setSelectable(false);
 
+        reviewerStatusesTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                if (propertyId != null && propertyId.equals("completed")) {
+                    final ReviewStatus reviewStatus = ((NestingBeanItem<ReviewStatus>)
+                            source.getItem(itemId)).getBean();
+                    if (reviewStatus.isCompleted()) {
+                        return "ok";
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return "";
+                }
+            }
+        });
+
+        reviewerStatusesTable.setConverter("completed", new Converter<String, Boolean>() {
+            @Override
+            public Boolean convertToModel(String value, Class<? extends Boolean> targetType,
+                                          Locale locale) throws ConversionException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String convertToPresentation(Boolean value, Class<? extends String> targetType,
+                                                Locale locale) throws ConversionException {
+                return "";
+            }
+
+            @Override
+            public Class<Boolean> getModelType() {
+                return Boolean.class;
+            }
+
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
+            }
+        });
+
         Panel reviewerPanel = new Panel("Reviewers");
         reviewerPanel.setStyleName(Reindeer.PANEL_LIGHT);
         reviewerPanel.setSizeFull();
@@ -300,9 +341,13 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         commentGrid.setSizeFull();
         commentGrid.setFields(commentFieldDescriptors);
         commentTable.setImmediate(true);
-        commentTable.setColumnCollapsed("commentId", false);
+        commentTable.setColumnCollapsed("commentId", true);
         commentTable.setColumnCollapsed("created", true);
+        commentTable.setColumnCollapsed("modified", true);
         commentTable.setColumnCollapsed("committer", true);
+        commentTable.setColumnCollapsed("path", true);
+        commentTable.setColumnCollapsed("line", true);
+        commentTable.setColumnCollapsed("hash", true);
 
         commentTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
             @Override
