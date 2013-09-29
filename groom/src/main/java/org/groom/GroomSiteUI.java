@@ -157,21 +157,24 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                                 CompanyFooterViewlet.class.getCanonicalName())
                 ))));
 
-        viewDescriptors.add(new ViewDescriptor("dashboard", null, null, new ViewVersion(0, "master", "Dashboard", "",
+        viewDescriptors.add(new ViewDescriptor("dashboard", null, null, new ViewVersion(0,
+                "master", "Groom", "",
                 "This is dashboard view.", GroomView.class.getCanonicalName(), new String[]{"user", "administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Dashboard Viewlet", "This is Dashboard viewlet.", null,
                         DashboardViewlet.class.getCanonicalName())
                 ))));
 
-        viewDescriptors.add(new ViewDescriptor("log", null, null, new ViewVersion(0, "master", "Log", "",
+        viewDescriptors.add(new ViewDescriptor("log", null, null, new ViewVersion(
+                0, "master", "Groom / Commits", "",
                 "This is log view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Log Viewlet", "This is Log viewlet.", null,
                         LogFlowViewlet.class.getCanonicalName())
                 ))));
 
-        viewDescriptors.add(new ViewDescriptor("reviews", null, null, new ViewVersion(0, "master", "Reviews", "",
+        viewDescriptors.add(new ViewDescriptor("reviews", null, null, new ViewVersion(
+                0, "master", "Groom / Reviews", "",
                 "This is reviews view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Reviews Viewlet", "This is Reviews viewlet.", null,
@@ -179,35 +182,29 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("users", null, null, new ViewVersion(
-                0, "master", "Users", "", "This is users page.",
+                0, "master", "Groom / Users", "", "This is users page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Flowlet Sheet", "This is flow sheet.", null,
                         UserFlowViewlet.class.getCanonicalName())
                 ))));
         viewDescriptors.add(new ViewDescriptor("groups", null, null, new ViewVersion(
-                0, "master", "Groups", "", "This is groups page.",
+                0, "master", "Groom / Groups", "", "This is groups page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Flowlet Sheet", "This is flow sheet.", null,
                         GroupFlowViewlet.class.getCanonicalName())
                 ))));
         viewDescriptors.add(new ViewDescriptor("customers", null, null, new ViewVersion(
-                0, "master", "Customers", "customers", "This is customers page.",
+                0, "master", "Groom / Customers", "customers", "This is customers page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Flowlet Sheet", "This is flow sheet.", null,
                         CustomerFlowViewlet.class.getCanonicalName())
                 ))));
-        viewDescriptors.add(new ViewDescriptor("customers", null, null, new ViewVersion(
-                0, "master", "Customers", "customers", "This is customers page.",
-                FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
-                Arrays.asList(new ViewletDescriptor(
-                        "content", "Flowlet Sheet", "This is flow sheet.", null,
-                        CustomerFlowViewlet.class.getCanonicalName())
-                ))));
+
         viewDescriptors.add(new ViewDescriptor("companies", null, null, new ViewVersion(
-                0, "master", "Companies", "companies", "This is companies page.",
+                0, "master", "Groom / Companies", "companies", "This is companies page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
                 Arrays.asList(new ViewletDescriptor(
                         "content", "Flowlet Sheet", "This is flow sheet.", null,
@@ -215,7 +212,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("login", null, null, new ViewVersion(
-                0, "master", "Login SiteView", "login page", "This is login page.",
+                0, "master", "Groom / Login", "login page", "This is login page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"anonymous"},
                 Arrays.asList(
                         new ViewletDescriptor(
@@ -223,7 +220,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                                 LoginFlowViewlet.class.getCanonicalName())
                 ))));
         viewDescriptors.add(new ViewDescriptor("validate", null, null, new ViewVersion(
-                0, "master", "Email Validation", "email validation page", "This is email validation page.",
+                0, "master", "Groom / Email Validation", "email validation page", "This is email validation page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"anonymous"},
                 Arrays.asList(
                         new ViewletDescriptor(
@@ -232,21 +229,12 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         viewDescriptors.add(new ViewDescriptor("account", null, null, new ViewVersion(
-                0, "master", "Account SiteView", "account page", "This is account page.",
+                0, "master", "Groom / Account", "account page", "This is account page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"user"},
                 Arrays.asList(
                         new ViewletDescriptor(
                                 "content", "Flowlet Sheet", "This is flow sheet.", null,
                                 AccountFlowViewlet.class.getCanonicalName())
-                ))));
-
-        viewDescriptors.add(new ViewDescriptor("validate", null, null, new ViewVersion(
-                0, "master", "Email Validation", "email validation page", "This is email validation page.",
-                FixedWidthView.class.getCanonicalName(), new String[]{"anonymous"},
-                Arrays.asList(
-                        new ViewletDescriptor(
-                                "content", "Email Validation", "This is email validation flowlet.", null,
-                                EmailValidationViewlet.class.getCanonicalName())
                 ))));
 
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
