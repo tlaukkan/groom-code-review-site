@@ -86,13 +86,15 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
      * @throws Exception if exception occurs in jetty startup.
      */
     public static void main(final String[] args) throws Exception {
+        PropertiesUtil.setCategoryRedirection("bare-site", "groom");
         DOMConfigurator.configure("./log4j.xml");
         entityManagerFactory = PersistenceUtil.getEntityManagerFactory(PERSISTENCE_UNIT, PROPERTIES_CATEGORY);
 
         final String webappUrl = GroomSiteUI.class.getClassLoader()
                 .getResource("webapp/").toExternalForm();
 
-        LOGGER.info("SMTP host: " + PropertiesUtil.getProperty(PROPERTIES_CATEGORY, "smtp-host"));
+        LOGGER.info("Groom SMTP host: " + PropertiesUtil.getProperty(PROPERTIES_CATEGORY, "smtp-host"));
+        LOGGER.info("Bare site SMTP host: " + PropertiesUtil.getProperty("bare-site", "smtp-host"));
 
         final int port = Integer.parseInt(PropertiesUtil.getProperty(PROPERTIES_CATEGORY, "port"));
         final Server server = new Server(port);
