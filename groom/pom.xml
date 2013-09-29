@@ -5,8 +5,15 @@
     <groupId>org.groom</groupId>
     <artifactId>groom</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>${global.version}</version>
     <name>groom</name>
+
+    <parent>
+        <groupId>org.groom</groupId>
+        <artifactId>groom-root</artifactId>
+        <version>${global.version}</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

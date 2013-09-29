@@ -1,0 +1,3 @@
+#!/bin/sh -e
+# Copy this line to your rc.local or contribute proper init scripts :).
+/bin/su - groom -c /home/groom/jetty/start.sh

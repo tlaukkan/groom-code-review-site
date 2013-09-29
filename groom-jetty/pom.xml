@@ -5,8 +5,15 @@
     <groupId>org.groom</groupId>
     <artifactId>groom-jetty</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>${global.version}</version>
     <name>groom-jetty</name>
+
+    <parent>
+        <groupId>org.groom</groupId>
+        <artifactId>groom-root</artifactId>
+        <version>${global.version}</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,20 +33,12 @@
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.9.1</version>
-            </plugin>
-            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>-->
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -57,7 +56,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -72,9 +71,45 @@
                     <finalName>groom-jetty</finalName>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-distribution</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly/linux-release.xml</descriptor>
+                                <descriptor>assembly/windows-release.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <!--<resources>
+            <resource>
+                <directory>bin</directory>
+                <targetPath>${basedir}/target</targetPath>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>conf</directory>
+                <targetPath>${basedir}/target</targetPath>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+        </resources>-->
     </build>
+
 
     <dependencies>
         <dependency>
@@ -93,7 +128,7 @@
         <dependency>
             <groupId>org.groom</groupId>
             <artifactId>groom</artifactId>
-            <version>1.0.1</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
