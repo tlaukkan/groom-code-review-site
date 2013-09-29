@@ -15,6 +15,7 @@
  */
 package org.groom.flows;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import org.groom.BlameReader;
 import org.groom.dao.ReviewDao;
@@ -58,6 +59,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     private Review review;
     private AceEditor.SelectionChangeListener selectionChangeListener;
     private GridLayout gridLayout;
+    private Button groomButton;
 
     @Override
     public String getFlowletKey() {
@@ -110,6 +112,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             gridLayout.addComponent(buttonLayout, 0, 0);
 
             final Button previousButton = new Button(getSite().localize("button-previous-diff"));
+            previousButton.setClickShortcut(ShortcutAction.KeyCode.ARROW_LEFT);
             previousButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(previousButton);
             previousButton.addClickListener(new Button.ClickListener() {
@@ -121,6 +124,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             });
 
             final Button nextButton = new Button(getSite().localize("button-next-diff"));
+            nextButton.setClickShortcut(ShortcutAction.KeyCode.ARROW_RIGHT);
             nextButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(nextButton);
             nextButton.addClickListener(new Button.ClickListener() {
@@ -132,6 +136,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             });
 
             final Button scrollToPreviousChangeButton = new Button(getSite().localize("button-scroll-to-previous-change"));
+            scrollToPreviousChangeButton.setClickShortcut(ShortcutAction.KeyCode.ARROW_UP);
             scrollToPreviousChangeButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(scrollToPreviousChangeButton);
             scrollToPreviousChangeButton.addClickListener(new Button.ClickListener() {
@@ -167,6 +172,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             });
 
             final Button scrollToNextChangeButton = new Button(getSite().localize("button-scroll-to-next-change"));
+            scrollToNextChangeButton.setClickShortcut(ShortcutAction.KeyCode.ARROW_DOWN);
             scrollToNextChangeButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(scrollToNextChangeButton);
             scrollToNextChangeButton.addClickListener(new Button.ClickListener() {
@@ -213,7 +219,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             });
 
 
-            final Button groomButton = getSite().getButton("groom");
+            groomButton = getSite().getButton("groom");
+            groomButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
             groomButton.setHtmlContentAllowed(true);
             buttonLayout.addComponent(groomButton);
             groomButton.addClickListener(new Button.ClickListener() {
@@ -332,6 +339,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     @Override
     public void enter() {
+        groomButton.focus();
     }
 
     public void setFileDiff(final Review review, final FileDiff fileDiff, final int toLine) {
@@ -382,7 +390,8 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             builder.append(line.getLine());
         }
 
-        editor.setCaption(fileDiff.getPath());
+        editor.setCaption("Progress: " + fileDiff.getReviewStatus().getProgress() + "% - "
+                + "Path : " + fileDiff.getPath());
         editor.setValue(builder.toString());
         editor.setReadOnly(true);
         BlameLine lastLine = null;
