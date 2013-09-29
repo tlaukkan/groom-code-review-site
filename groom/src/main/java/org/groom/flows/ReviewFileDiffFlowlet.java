@@ -341,9 +341,11 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
         editor = new AceEditor();
-        editor.setThemePath("/static/ace");
-        editor.setModePath("/static/ace");
-        editor.setWorkerPath("/static/ace");
+
+        final Company company = getSite().getSiteContext().getObject(Company.class);
+        editor.setThemePath(company.getUrl() + "/../static/ace");
+        editor.setModePath(company.getUrl() + "/../static/ace");
+        editor.setWorkerPath(company.getUrl() + "/../static/ace");
         editor.setSizeFull();
         editor.setImmediate(true);
         editor.addSelectionChangeListener(selectionChangeListener);
