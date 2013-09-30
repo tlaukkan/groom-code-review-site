@@ -17,22 +17,21 @@ package org.groom;
 
 import com.vaadin.ui.CheckBox;
 import org.groom.model.Comment;
-import org.groom.model.Entry;
 import com.vaadin.data.Validator;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import org.groom.model.Repository;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
+import org.groom.validators.PathValidator;
+import org.groom.validators.UrlValidator;
 import org.vaadin.addons.sitekit.grid.FieldDescriptor;
 import org.vaadin.addons.sitekit.grid.field.GroupField;
 import org.vaadin.addons.sitekit.grid.field.TimestampField;
 import org.vaadin.addons.sitekit.grid.formatter.ObjectToStringFormatter;
 import org.vaadin.addons.sitekit.grid.formatter.TimestampFormatter;
-import org.vaadin.addons.sitekit.model.Customer;
 import org.vaadin.addons.sitekit.model.Group;
 import org.vaadin.addons.sitekit.model.User;
 import org.vaadin.addons.sitekit.site.LocalizationProvider;
-import org.vaadin.addons.sitekit.web.BareSiteFields;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,6 +108,32 @@ public final class GroomFields {
         }
         initialized = true;
 
+        GroomFields.add(Repository.class, new FieldDescriptor(
+                "repositoryId", "Repository ID",
+                TextField.class, null,
+                100, null, String.class, null,
+                true, false, false));
+        GroomFields.add(Repository.class, new FieldDescriptor(
+                "path", "Path",
+                TextField.class, null,
+                300, null, User.class, null,
+                false, true, true), new PathValidator());
+        GroomFields.add(Repository.class, new FieldDescriptor(
+                "url", "URL",
+                TextField.class,null,
+                300, null, User.class, null,
+                false, true, true), new UrlValidator());
+        GroomFields.add(Repository.class, new FieldDescriptor(
+                "created", "Created",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null, true,
+                true, false));
+        GroomFields.add(Repository.class, new FieldDescriptor(
+                "modified", "Modified",
+                TimestampField.class, TimestampFormatter.class,
+                130, null, Date.class, null,
+                true, true, false));
+
         GroomFields.add(Review.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, TimestampFormatter.class,
@@ -125,15 +150,15 @@ public final class GroomFields {
                 100, null, String.class, null,
                 true, false, false));
         GroomFields.add(Review.class, new FieldDescriptor(
+                "repository", "Repository",
+                TextField.class, ObjectToStringFormatter.class,
+                200, null, Repository.class, null,
+                true, true, false));
+        GroomFields.add(Review.class, new FieldDescriptor(
                 "author", "Author",
                 TextField.class, ObjectToStringFormatter.class,
                 200, null, User.class, null,
                 true, true, false));
-        GroomFields.add(Review.class, new FieldDescriptor(
-                "path", "Path",
-                TextField.class, null,
-                250, null, String.class, "",
-                true, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "sinceHash", "Since Hash",
                 TextField.class, null,

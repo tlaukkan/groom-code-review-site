@@ -23,26 +23,26 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import org.groom.CommitBeanQuery;
+import org.groom.Shell;
 import org.groom.dao.ReviewDao;
 import org.groom.flows.admin.ReviewFlowlet;
 import org.groom.flows.admin.ReviewRangeDialog;
 import org.groom.model.Commit;
+import org.groom.model.Repository;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
 import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
 import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.User;
 import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
-import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
+import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 /**
- * Entry list Flowlet.
+ * Repository list Flowlet.
  *
  * @author Tommi S.E. Laukkanen
  */
@@ -50,8 +50,12 @@ public final class LogFlowlet extends AbstractFlowlet {
 
     /** Serial version UID. */
     private static final long serialVersionUID = 1L;
-    private TextField since;
-    private TextField until;
+    private TextField sinceField;
+    private TextField untilField;
+    private EntityManager entityManager;
+    private ComboBox repositoryField;
+    private Repository repository;
+    private Map<String,Object> queryConfiguration;
 
     @Override
     public String getFlowletKey() {
@@ -70,6 +74,7 @@ public final class LogFlowlet extends AbstractFlowlet {
 
     @Override
     public void initialize() {
+        entityManager = getSite().getSiteContext().getObject(EntityManager.class);
 
         final GridLayout gridLayout = new GridLayout(1, 3);
         gridLayout.setSizeFull();
@@ -104,24 +109,43 @@ public final class LogFlowlet extends AbstractFlowlet {
             }
         };
 
-        since = new TextField(getSite().localize("field-since"));
-        since.setValue("master");
-        since.setValidationVisible(true);
-        since.addValidator(validator);
-        filterLayout.addComponent(since);
+        repositoryField = new ComboBox(getSite().localize("field-repository"));
+        repositoryField.setNullSelectionAllowed(false);
+        repositoryField.setTextInputAllowed(true);
+        repositoryField.setNewItemsAllowed(false);
+        repositoryField.setInvalidAllowed(false);
+        final List<Repository> repositories =
+                ReviewDao.getRepositories(entityManager, (Company) getSite().getSiteContext().getObject(Company.class));
 
-        until = new TextField(getSite().localize("field-until"));
-        until.setValidationVisible(true);
-        until.addValidator(validator);
-        filterLayout.addComponent(until);
+        for (final Repository repository : repositories) {
+            repositoryField.addItem(repository);
+            repositoryField.setItemCaption(repository, repository.getPath());
+            if (repositoryField.getItemIds().size() == 1) {
+                repositoryField.setValue(repository);
+            }
+        }
+        filterLayout.addComponent(repositoryField);
+
+        sinceField = new TextField(getSite().localize("field-since"));
+        sinceField.setValue("master");
+        sinceField.setValidationVisible(true);
+        sinceField.addValidator(validator);
+        filterLayout.addComponent(sinceField);
+
+        untilField = new TextField(getSite().localize("field-until"));
+        untilField.setValidationVisible(true);
+        untilField.addValidator(validator);
+        filterLayout.addComponent(untilField);
 
         final BeanQueryFactory<CommitBeanQuery> beanQueryFactory =
                 new BeanQueryFactory<CommitBeanQuery>(CommitBeanQuery.class);
+        queryConfiguration = new HashMap<String, Object>();
+        beanQueryFactory.setQueryConfiguration(queryConfiguration);
 
         final LazyQueryContainer container = new LazyQueryContainer(beanQueryFactory,"hash",
                 20, false);
 
-        container.addContainerFilter(new Compare.Equal("branch", since.getValue()));
+        container.addContainerFilter(new Compare.Equal("branch", sinceField.getValue()));
         container.addContainerProperty("hash", String.class, null, true, false);
         container.addContainerProperty("committerDate", Date.class, null, true, false);
         container.addContainerProperty("committer", String.class, null, true, false);
@@ -193,11 +217,14 @@ public final class LogFlowlet extends AbstractFlowlet {
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                if (since.isValid() && until.isValid()) {
-                    final StringBuilder range = new StringBuilder(since.getValue());
-                    if (until.getValue().length() > 0) {
+                repository = (Repository) repositoryField.getValue();
+
+                if (repository != null && sinceField.isValid() && untilField.isValid()) {
+                    queryConfiguration.put("repository", repository);
+                    final StringBuilder range = new StringBuilder(sinceField.getValue());
+                    if (untilField.getValue().length() > 0) {
                         range.append("..");
-                        range.append(until);
+                        range.append(untilField);
                     }
                     container.removeAllContainerFilters();
                     container.addContainerFilter(new Compare.Equal("range", range.toString()));
@@ -205,6 +232,20 @@ public final class LogFlowlet extends AbstractFlowlet {
                 }
             }
         });
+
+        final Button fetchButton = new Button("Fetch");
+        buttonLayout.addComponent(fetchButton);
+        fetchButton.addClickListener(new ClickListener() {
+            /** Serial version UID. */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                final Repository repository = (Repository) repositoryField.getValue();
+                Notification.show("Executed fetch. " + Shell.execute("git fetch", repository.getPath()));
+            }
+        });
+
 
         final Button addReviewButton = getSite().getButton("add-review");
         addReviewButton.setEnabled(false);
@@ -271,10 +312,10 @@ public final class LogFlowlet extends AbstractFlowlet {
         final Review review = new Review();
         review.setCreated(new Date());
         review.setModified(review.getCreated());
-        review.setPath(PropertiesUtil.getProperty("groom", "repository-path"));
         review.setSinceHash(sinceHash);
         review.setUntilHash(untilHash);
         review.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
+        review.setRepository(repository);
         review.setAuthor(((SecurityProviderSessionImpl)
                 getSite().getSecurityProvider()).getUserFromSession());
         final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);

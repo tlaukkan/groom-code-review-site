@@ -39,6 +39,8 @@ import org.vaadin.addons.sitekit.grid.ValidatingEditorStateListener;
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Review edit flow.
@@ -63,6 +65,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private Button discardButton;
 
     private LazyQueryContainer container;
+    private BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory;
+    private Map<String,Object> queryConfiguration;
 
     @Override
     public String getFlowletKey() {
@@ -101,8 +105,9 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         buttonLayout.setSpacing(true);
         gridLayout.addComponent(buttonLayout, 0, 1);
 
-        final BeanQueryFactory<FileDiffBeanQuery> beanQueryFactory =
-                new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
+        beanQueryFactory = new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
+        queryConfiguration = new HashMap<String, Object>();
+        beanQueryFactory.setQueryConfiguration(queryConfiguration);
 
         container = new LazyQueryContainer(beanQueryFactory,"path",
                 20, false);
@@ -212,6 +217,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
      */
     public void edit(final Review entity, final boolean newEntity) {
         this.entity = entity;
+        queryConfiguration.put("repository", entity.getRepository());
+
         container.addContainerFilter(new Compare.Equal("range", entity.getSinceHash() + ".." + entity.getUntilHash()));
         container.refresh();
         entity.setDiffCount(container.size());

@@ -102,7 +102,9 @@ public class ReportServlet extends HttpServlet {
         out.println("_File Changes_");
         out.println();
 
-        final String result = Shell.execute("git diff --name-status " + review.getSinceHash() + ".." + review.getUntilHash() + " -- | more");
+        final String result = Shell.execute(
+                "git diff --name-status " + review.getSinceHash() + ".." + review.getUntilHash() + " -- | more",
+                review.getRepository().getPath());
         out.println(result);
 
         out.println();
@@ -116,7 +118,8 @@ public class ReportServlet extends HttpServlet {
             final String path = lines[i].substring(1).trim();
             out.println(status + " " + path);
             out.println();
-            final List<BlameLine> blames = BlameReader.readBlameLines(path, status, review.getSinceHash(), review.getUntilHash());
+            final List<BlameLine> blames = BlameReader.readBlameLines(review.getRepository().getPath(),
+                    path, status, review.getSinceHash(), review.getUntilHash());
             boolean lastLineWasChange = false;
             for (final BlameLine blame : blames) {
                 if (blame.getType() != LineChangeType.NONE) {

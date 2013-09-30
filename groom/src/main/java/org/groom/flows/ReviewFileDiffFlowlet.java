@@ -366,7 +366,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         final String sinceHash = review.getSinceHash();
         final String untilHash = review.getUntilHash();
 
-        blames = BlameReader.readBlameLines(path, status, sinceHash, untilHash);
+        blames = BlameReader.readBlameLines(review.getRepository().getPath(), path, status, sinceHash, untilHash);
 
         if (path.endsWith(".java")) {
             editor.setMode(AceMode.java);

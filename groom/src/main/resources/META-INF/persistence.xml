@@ -10,6 +10,7 @@
 		<class>org.vaadin.addons.sitekit.model.GroupMember</class>
 		<class>org.vaadin.addons.sitekit.model.Privilege</class>
         <class>org.vaadin.addons.sitekit.model.SchemaVersion</class>
+        <class>org.groom.model.Repository</class>
         <class>org.groom.model.Review</class>
         <class>org.groom.model.ReviewStatus</class>
         <class>org.groom.model.Comment</class>

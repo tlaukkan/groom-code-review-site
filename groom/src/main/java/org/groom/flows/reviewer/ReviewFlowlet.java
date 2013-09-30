@@ -74,6 +74,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
     private Button reopenButton;
 
     private boolean disableViewChange = false;
+    private Map<String,Object> queryConfiguration;
 
     @Override
     public String getFlowletKey() {
@@ -117,6 +118,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
 
         beanQueryFactory = new BeanQueryFactory<FileDiffBeanQuery>(FileDiffBeanQuery.class);
+        queryConfiguration = new HashMap<String, Object>();
+        beanQueryFactory.setQueryConfiguration(queryConfiguration);
 
         container = new LazyQueryContainer(beanQueryFactory,"path",
                 20, false);
@@ -559,9 +562,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
             reviewStatusContainer.refresh();
         }
 
-        final Map<String, Object> queryConfiguration = new HashMap<String, Object>();
+        queryConfiguration.put("repository", review.getRepository());
         queryConfiguration.put("status", reviewStatus);
-        beanQueryFactory.setQueryConfiguration(queryConfiguration);
 
         container.addContainerFilter(new Compare.Equal("range", this.review.getSinceHash() + ".." + this.review.getUntilHash()));
         container.refresh();

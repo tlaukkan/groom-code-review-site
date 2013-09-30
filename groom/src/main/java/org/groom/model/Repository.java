@@ -31,20 +31,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Entry.
+ * Repository.
  *
  * @author Tommi S.E. Laukkanen
  */
 @Entity
-@Table(name = "entry")
-public final class Entry implements Serializable {
+@Table(name = "repository")
+public final class Repository implements Serializable {
     /** Java serialization version UID. */
     private static final long serialVersionUID = 1L;
 
     /** Unique UUID of the entity. */
     @Id
     @GeneratedValue(generator = "uuid")
-    private String entryId;
+    private String repositoryId;
 
     /** Owning company. */
     @JoinColumn(nullable = false)
@@ -56,28 +56,8 @@ public final class Entry implements Serializable {
     private String path;
 
     /** Content. */
-    @Column(length = 2, nullable = false)
-    private String language;
-
-    /** Content. */
-    @Column(length = 2, nullable = false)
-    private String country;
-
-    /** Content. */
     @Column(length = 1024, nullable = false)
-    private String basename;
-
-    /** Content. */
-    @Column(length = 1024, nullable = false)
-    private String key;
-
-    /** Content. */
-    @Column(length = 1024, nullable = false)
-    private String value;
-
-    /** Content. */
-    @Column(length = 1024, nullable = true)
-    private String author;
+    private String url;
 
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
@@ -92,7 +72,7 @@ public final class Entry implements Serializable {
     /**
      * The default constructor for JPA.
      */
-    public Entry() {
+    public Repository() {
         super();
     }
 
@@ -108,20 +88,6 @@ public final class Entry implements Serializable {
      */
     public void setPath(final String path) {
         this.path = path;
-    }
-
-    /**
-     * @return the basename
-     */
-    public String getBasename() {
-        return basename;
-    }
-
-    /**
-     * @param basename the basename
-     */
-    public void setBasename(final String basename) {
-        this.basename = basename;
     }
 
     /**
@@ -141,85 +107,23 @@ public final class Entry implements Serializable {
     /**
      * @return the entry ID
      */
-    public String getEntryId() {
-        return entryId;
+    public String getRepositoryId() {
+        return repositoryId;
     }
 
     /**
-     * @param entryId the entry ID
+     * @param repositoryId the entry ID
      */
-    public void setEntryId(final String entryId) {
-        this.entryId = entryId;
+    public void setRepositoryId(final String repositoryId) {
+        this.repositoryId = repositoryId;
     }
 
-    /**
-     * @return the language
-     */
-    public String getLanguage() {
-        return language;
+    public String getUrl() {
+        return url;
     }
 
-    /**
-     * @param language the language
-     */
-    public void setLanguage(final String language) {
-        this.language = language;
-    }
-
-    /**
-     * @return country
-     */
-    public String getCountry() {
-        return country;
-    }
-
-    /**
-     * @param country the country
-     */
-    public void setCountry(final String country) {
-        this.country = country;
-    }
-
-    /**
-     * @return the key
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * @param key the key
-     */
-    public void setKey(final String key) {
-        this.key = key;
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value
-     */
-    public void setValue(final String value) {
-        this.value = value;
-    }
-
-    /**
-     * @return the author
-     */
-    public String getAuthor() {
-        return author;
-    }
-
-    /**
-     * @param author the author
-     */
-    public void setAuthor(final String author) {
-        this.author = author;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     /**
@@ -252,17 +156,17 @@ public final class Entry implements Serializable {
 
     @Override
     public String toString() {
-        return country + "_" + language + ":" + key + "=" + value;
+        return path;
     }
 
     @Override
     public int hashCode() {
-        return entryId.hashCode();
+        return repositoryId.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return obj != null && obj instanceof Entry && entryId.equals(((Entry) obj).getEntryId());
+        return obj != null && obj instanceof Repository && repositoryId.equals(((Repository) obj).getRepositoryId());
     }
 
 }

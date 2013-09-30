@@ -4,6 +4,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
 import org.groom.model.Commit;
 import org.groom.model.FileDiff;
+import org.groom.model.Repository;
 import org.groom.model.ReviewStatus;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -27,11 +28,13 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
 
     private String range = null;
     private String[] lines;
+    private final Repository repository;
 
     public FileDiffBeanQuery(QueryDefinition definition,
                              Map<String, Object> queryConfiguration, Object[] sortPropertyIds,
                              boolean[] sortStates) {
         super(definition, queryConfiguration, sortPropertyIds, sortStates);
+        repository = (Repository) queryConfiguration.get("repository");
         for (final Container.Filter filter : definition.getFilters()) {
             if (filter instanceof Compare.Equal) {
                 final Compare.Equal equal = (Compare.Equal) filter;
@@ -49,12 +52,14 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
 
     @Override
     public int size() {
-        // "git rev-list --count master"
+        if (repository == null) {
+            return 0;
+        }
         if (lines == null) {
             if (range == null) {
                 return 0;
             }
-            final String result = Shell.execute("git diff --raw -w " + range + " -- | more");
+            final String result = Shell.execute("git diff --raw -w " + range + " -- | more", repository.getPath());
             if (result.length() == 0) {
                 return 0;
             }

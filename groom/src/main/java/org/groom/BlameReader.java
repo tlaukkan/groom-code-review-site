@@ -13,16 +13,16 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class BlameReader {
-    public static final List<BlameLine> readBlameLines(final String path, char status, String sinceHash, String untilHash) {
+    public static final List<BlameLine> readBlameLines(final String repositoryPath, final String path, char status, String sinceHash, String untilHash) {
         if (status != 'A'&& status != 'M') {
             return new ArrayList<BlameLine>();
         }
-        final List<BlameLine> blames = BlameReader.read(path, sinceHash, untilHash, false);
+        final List<BlameLine> blames = BlameReader.read(repositoryPath, path, sinceHash, untilHash, false);
         final List<BlameLine> reverseBlames;
         if (status == 'A') {
             reverseBlames = new ArrayList<BlameLine>();
         } else {
-            reverseBlames = BlameReader.read(path, sinceHash, untilHash, true);
+            reverseBlames = BlameReader.read(repositoryPath, path, sinceHash, untilHash, true);
         }
 
         // Inserting deletes among forward blames
@@ -46,7 +46,7 @@ public class BlameReader {
         return blames;
     }
 
-    private static final List<BlameLine> read(final String path, final String sinceHash,
+    private static final List<BlameLine> read(final String repositoryPath, final String path, final String sinceHash,
                                              final String untilHash, boolean reverse) {
         final Map<String, String> hashAuthorNameMap = new HashMap<String, String>();
         final Map<String, String> hashAuthorEmailMap = new HashMap<String, String>();
@@ -54,7 +54,7 @@ public class BlameReader {
         final Map<String, String> hashCommitterEmailMap = new HashMap<String, String>();
         final Map<String, String> hashSummaryMap = new HashMap<String, String>();
         final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
-                + " --p -w " + sinceHash + ".." + untilHash + " -- " + path );
+                + " --p -w " + sinceHash + ".." + untilHash + " -- " + path, repositoryPath);
         final Set<String> boundaryHashes = new HashSet<String>();
 
         final List<BlameLine> blameLines = new ArrayList<BlameLine>();

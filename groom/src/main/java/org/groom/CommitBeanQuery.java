@@ -3,6 +3,7 @@ package org.groom;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
 import org.groom.model.Commit;
+import org.groom.model.Repository;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -24,12 +25,14 @@ import java.util.Map;
  */
 public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
 
+    private final Repository repository;
     private String range = null;
 
     public CommitBeanQuery(QueryDefinition definition,
         Map<String, Object> queryConfiguration, Object[] sortPropertyIds,
         boolean[] sortStates) {
         super(definition, queryConfiguration, sortPropertyIds, sortStates);
+        repository = (Repository) getQueryConfiguration().get("repository");
         for (final Container.Filter filter : definition.getFilters()) {
             if (filter instanceof Compare.Equal) {
                 final Compare.Equal equal = (Compare.Equal) filter;
@@ -53,9 +56,9 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
             return 0;
         }
         if (PropertiesUtil.getProperty("groom", "os").equals("windows")) {
-            result = Shell.execute("git rev-list --count " + range + " --");
+            result = Shell.execute("git rev-list --count " + range + " --", repository.getPath());
         } else {
-            result = Shell.execute("git rev-list " + range + " -- | wc -l");
+            result = Shell.execute("git rev-list " + range + " -- | wc -l", repository.getPath());
         }
         if (result.length() == 0) {
             return 0;
@@ -75,7 +78,9 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
 
         final String result = Shell.execute(
                 "git log --skip=" + startIndex
-                        + " --max-count=" + count + " --pretty=format:\"%h|%ad|%cd|%an|%cn|%d|%s\" --date=iso " + range + " --");
+                        + " --max-count=" + count
+                        + " --pretty=format:\"%h|%ad|%cd|%an|%cn|%d|%s\" --date=iso " + range + " --",
+                repository.getPath());
 
         final String[] lines = result.split("\n");
         final ArrayList<Commit> commits = new ArrayList<Commit>();

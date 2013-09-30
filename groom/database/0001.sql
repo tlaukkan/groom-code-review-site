@@ -551,4 +551,7 @@ ALTER TABLE entry
 
 ALTER TABLE entry ADD COLUMN author character varying(1024);
 
+ALTER TABLE company ADD COLUMN url character varying(255);
+UPDATE COMPANY SET url = 'http://127.0.0.1:8083/groom';
+
 INSERT INTO schemaversion VALUES (NOW(), 'groom', '0001');

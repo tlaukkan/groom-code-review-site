@@ -16,20 +16,9 @@
 package org.groom;
 
 import org.apache.log4j.Logger;
-import org.groom.model.Entry;
 import org.groom.shell.SystemCommandExecutor;
-import org.vaadin.addons.sitekit.dao.CompanyDao;
-import org.vaadin.addons.sitekit.dao.UserDao;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.Group;
-import org.vaadin.addons.sitekit.model.User;
-import org.vaadin.addons.sitekit.util.EmailUtil;
 import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -46,7 +35,7 @@ public class Shell {
      *
      * @param cmd the shell command to execute
      */
-    public static String execute(final String cmd) {
+    public static String execute(final String cmd, final String path) {
         LOGGER.debug("Executing shell command: " + cmd);
         try {
 
@@ -61,20 +50,19 @@ public class Shell {
                 commands.add(cmd);
             }
 
-            SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
-            int resultCode = commandExecutor.executeCommand();
+            SystemCommandExecutor commandExecutor = new SystemCommandExecutor(path, commands);
+            commandExecutor.executeCommand();
 
-            StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
-            if (stderr.length() > 0) {
-                LOGGER.error(stderr);
+            StringBuilder errorOutput = commandExecutor.getErrorOutput();
+            if (errorOutput.length() > 0) {
+                LOGGER.error(errorOutput);
             }
-            StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
-            if (stdout == null) {
+            StringBuilder standardOutput = commandExecutor.getStandardOutput();
+            if (standardOutput == null) {
                 return "";
             }
-            //LOGGER.debug(stdout.toString());
-            //LOGGER.debug("Executed shell command: " + cmd);
-            return stdout.toString();
+
+            return standardOutput.toString();
         } catch (final Throwable t) {
             LOGGER.error("Error executing shell command: " + cmd, t);
             return "";

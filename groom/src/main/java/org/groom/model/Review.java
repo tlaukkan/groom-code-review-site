@@ -44,6 +44,11 @@ public final class Review implements Serializable {
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
     private Company owner;
 
+    /** Repository this review is related to. */
+    @JoinColumn(nullable = false)
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
+    private Repository repository;
+
     /** Reviewer group. */
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
@@ -53,10 +58,6 @@ public final class Review implements Serializable {
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
     private User author;
-
-    /** Content. */
-    @Column(length = 2048, nullable = false)
-    private String path;
 
     /** Since hash. */
     @Column(length = 100, nullable = false)
@@ -95,32 +96,18 @@ public final class Review implements Serializable {
         super();
     }
 
-    public Review(Company owner, Group reviewGroup, User author, String path, String sinceHash, String untilHash,
+    public Review(Company owner, final Repository repository, Group reviewGroup, User author, String sinceHash, String untilHash,
                   String title, int diffCount, Date created, Date modified) {
         this.owner = owner;
+        this.repository = repository;
         this.reviewGroup = reviewGroup;
         this.author = author;
-        this.path = path;
         this.sinceHash = sinceHash;
         this.untilHash = untilHash;
         this.title = title;
         this.diffCount = diffCount;
         this.created = created;
         this.modified = modified;
-    }
-
-    /**
-     * @return the path
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * @param path the path
-     */
-    public void setPath(final String path) {
-        this.path = path;
     }
 
     /**
@@ -135,6 +122,14 @@ public final class Review implements Serializable {
      */
     public void setOwner(final Company owner) {
         this.owner = owner;
+    }
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 
     public User getAuthor() {

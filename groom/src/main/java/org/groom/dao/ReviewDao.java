@@ -1,8 +1,10 @@
 package org.groom.dao;
 
 import org.groom.model.Comment;
+import org.groom.model.Repository;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
+import org.vaadin.addons.sitekit.model.Company;
 import org.vaadin.addons.sitekit.model.User;
 
 import javax.persistence.EntityManager;
@@ -18,6 +20,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ReviewDao {
+
+    public static List<Repository> getRepositories(final EntityManager entityManager, final Company owner) {
+        final Query query =
+                entityManager.createQuery("select e from Repository as e where e.owner=:owner order by e.path");
+        query.setParameter("owner", owner);
+        return query.getResultList();
+    }
+
     public static Review getReview(final EntityManager entityManager, final String reviewId) {
         final Query query =
                 entityManager.createQuery("select e from Review as e where e.reviewId=:reviewId");

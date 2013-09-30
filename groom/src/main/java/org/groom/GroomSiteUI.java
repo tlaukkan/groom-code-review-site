@@ -24,6 +24,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.groom.flows.LogFlowViewlet;
+import org.groom.flows.admin.RepositoryFlowViewlet;
 import org.groom.flows.admin.ReviewFlowViewlet;
 import org.groom.flows.reviewer.DashboardViewlet;
 import org.vaadin.addons.sitekit.dao.CompanyDao;
@@ -181,6 +182,14 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                         ReviewFlowViewlet.class.getCanonicalName())
                 ))));
 
+        viewDescriptors.add(new ViewDescriptor("repositories", null, null, new ViewVersion(
+                0, "master", "Groom / Repositories", "",
+                "This is repositories view.", GroomView.class.getCanonicalName(), new String[]{"administrator"},
+                Arrays.asList(new ViewletDescriptor(
+                        "content", "Repositories Viewlet", "This is Repositories viewlet.", null,
+                        RepositoryFlowViewlet.class.getCanonicalName())
+                ))));
+
         viewDescriptors.add(new ViewDescriptor("users", null, null, new ViewVersion(
                 0, "master", "Groom / Users", "", "This is users page.",
                 FixedWidthView.class.getCanonicalName(), new String[]{"administrator"},
@@ -238,7 +247,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
-                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;account;users;groups;customers;companies;login", true));
+                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;repositories;account;users;groups;customers;companies;login", true));
 
         return new SiteDescriptor("Test site.", "test site", "This is a test site.",
                 navigationDescriptor, viewDescriptors);
