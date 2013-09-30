@@ -243,6 +243,7 @@ public final class LogFlowlet extends AbstractFlowlet {
             public void buttonClick(final ClickEvent event) {
                 final Repository repository = (Repository) repositoryField.getValue();
                 Notification.show("Executed fetch. " + Shell.execute("git fetch", repository.getPath()));
+                refreshButton.click();
             }
         });
 

@@ -151,7 +151,8 @@ public final class RepositoriesFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 final Repository entity = container.getEntity(grid.getSelectedItemId());
-                Notification.show(Shell.execute("git clone " + entity.getUrl() + " " + entity.getPath(), ""));
+                Notification.show(Shell.execute("git clone --mirror " + entity.getUrl() + " " + entity.getPath(), ""),
+                        Notification.Type.TRAY_NOTIFICATION);
             }
         });
 
