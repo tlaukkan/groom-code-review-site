@@ -54,7 +54,7 @@ public class BlameReader {
         final Map<String, String> hashCommitterEmailMap = new HashMap<String, String>();
         final Map<String, String> hashSummaryMap = new HashMap<String, String>();
         final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
-                + " --p " + sinceHash + ".." + untilHash + " -- " + path );
+                + " --p -w " + sinceHash + ".." + untilHash + " -- " + path );
         final Set<String> boundaryHashes = new HashSet<String>();
 
         final List<BlameLine> blameLines = new ArrayList<BlameLine>();
