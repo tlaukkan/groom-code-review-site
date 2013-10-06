@@ -383,11 +383,22 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (final BlameLine line : blames) {
-            if (builder.length() > 0) {
+        for (int i = 0; i < blames.size(); i++) {
+            final BlameLine line = blames.get(i);
+            builder.append(line.getLine());
+            if (i < blames.size() - 1) {
                 builder.append('\n');
             }
-            builder.append(line.getLine());
+            /*switch (line.getType()) {
+                case ADDED:
+                    builder.append("[+]");
+                    break;
+                case DELETED:
+                    builder.append("[-]");
+                    break;
+                default:
+                    break;
+            }*/
         }
 
         editor.setCaption("Progress: " + fileDiff.getReviewStatus().getProgress() + "% - "
