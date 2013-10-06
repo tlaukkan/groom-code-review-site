@@ -526,31 +526,6 @@ ALTER TABLE user_ ADD EMAILADDRESSVALIDATED BOOLEAN;
 UPDATE user_ SET EMAILADDRESSVALIDATED = true;
 ALTER TABLE user_ ALTER COLUMN emailaddressvalidated SET NOT NULL;
 
-CREATE TABLE entry
-(
-  entryid character varying(255) NOT NULL,
-  country character varying(2) NOT NULL,
-  created timestamp without time zone NOT NULL,
-  key character varying(1024) NOT NULL,
-  language character varying(2) NOT NULL,
-  modified timestamp without time zone NOT NULL,
-  value character varying(1024) NOT NULL,
-  owner_companyid character varying(255) NOT NULL,
-  basename character varying(1024) NOT NULL,
-  path character varying(2048) NOT NULL,
-  CONSTRAINT entry_pkey PRIMARY KEY (entryid ),
-  CONSTRAINT fk_entry_owner_companyid FOREIGN KEY (owner_companyid)
-      REFERENCES company (companyid) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE entry
-  OWNER TO groom;
-
-ALTER TABLE entry ADD COLUMN author character varying(1024);
-
 ALTER TABLE company ADD COLUMN url character varying(255);
 UPDATE COMPANY SET url = 'http://127.0.0.1:8083/groom';
 

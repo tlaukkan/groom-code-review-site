@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Implementation-Title: Groom Code Review Site
-Implementation-Version: 1.0.2.osx
+Implementation-Version: 1.0.4.osx
 Vaadin-Package-Version: 1
 Built-By: tlaukkan
 Build-Jdk: 1.7.0_25
