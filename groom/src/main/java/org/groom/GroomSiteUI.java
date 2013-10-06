@@ -105,6 +105,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
         context.setDescriptor(webappUrl + "/WEB-INF/web.xml");
         context.setResourceBase(webappUrl);
         context.setParentLoaderPriority(true);
+        context.getSessionHandler().getSessionManager().setSessionCookie("GROOMSESSIONID");
 
         server.setHandler(context);
         server.start();
