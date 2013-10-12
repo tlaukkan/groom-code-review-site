@@ -157,7 +157,8 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 final Review entity = container.getEntity(grid.getSelectedItemId());
-                getUI().getPage().open("../report?reviewId=" + entity.getReviewId(), "_blank");
+                final Company company = getSite().getSiteContext().getObject(Company.class);
+                getUI().getPage().open(company.getUrl() + "/report?reviewId=" + entity.getReviewId(), "_blank");
             }
         });
 

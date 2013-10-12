@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 cd /home/groom/jetty
-java -jar groom-jetty.jar 2>&1 >groom.log &
+java -jar groom-jetty.jar > groom.log 2>&1
