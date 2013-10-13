@@ -22,6 +22,14 @@ public class BlameReader {
             return new ArrayList<BlameLine>();
         }
         final List<BlameLine> blames = BlameReader.read(repositoryPath, path, sinceHash, untilHash, false);
+        final Map<Integer, String> originalLines = new HashMap<Integer, String>();
+        for (int i = 0; i < blames.size(); i++) {
+            final BlameLine forwardBlame = blames.get(i);
+            if (forwardBlame.getType() == LineChangeType.NONE) {
+                originalLines.put(forwardBlame.getOriginalLine(), forwardBlame.getLine());
+            }
+        }
+
         final List<BlameLine> reverseBlames;
         if (status == 'A') {
             reverseBlames = new ArrayList<BlameLine>();
@@ -32,6 +40,18 @@ public class BlameReader {
         // Inserting deletes among forward blames
         for (final BlameLine reverseBlame : reverseBlames) {
             if (reverseBlame.getType() == LineChangeType.DELETED) {
+                if (originalLines.containsKey(reverseBlame.getOriginalLine())) {
+                    if (originalLines.get(reverseBlame.getOriginalLine()).equals(reverseBlame.getLine())) {
+                        LOGGER.warn("Reverse blame incorrectly reported deleted line: " +
+                                reverseBlame.getOriginalLine() + ": " + reverseBlame.getLine());
+                    } else {
+                        LOGGER.error("Forward and reverse blame reported different original line: " +
+                                reverseBlame.getOriginalLine()
+                                + ": F=" + originalLines.get(reverseBlame.getOriginalLine())
+                                + " R=" + reverseBlame.getLine());
+                    }
+                    continue; // Forward blames already listed this original line as being not changed.
+                }
                 boolean inserted = false;
                 for (int i = 0; i < blames.size(); i++) {
                     final BlameLine forwardBlame = blames.get(i);
@@ -61,6 +81,7 @@ public class BlameReader {
             final Map<String, String> hashCommitterNameMap = new HashMap<String, String>();
             final Map<String, String> hashCommitterEmailMap = new HashMap<String, String>();
             final Map<String, String> hashSummaryMap = new HashMap<String, String>();
+            final Map<String, String> reversePreviousHashMap = new HashMap<String, String>();
 
             // If review is against git special empty tree then define --root and only until hash
             final String result;
@@ -78,6 +99,7 @@ public class BlameReader {
             for (int i = 0; i < lines.length; i++) {
                 String[] parts = lines[i].split(" ");
                 final String hash = parts[0];
+                String previousHash = null;
                 final int originalLineNumber = Integer.parseInt(parts[1]);
                 final int finalLineNumber = Integer.parseInt(parts[2]);
                 if (parts.length == 4 && !hashAuthorNameMap.containsKey(hash)) {
@@ -96,20 +118,56 @@ public class BlameReader {
                     if (lines[i].equals("boundary")) {
                         boundaryHashes.add(hash);
                     }
+                    if (lines[i].startsWith("previous")) {
+                        String[] previousParts = lines[i].split(" ");
+                        previousHash = previousParts[1];
+                    }
                     i++;
                 }
                 final LineChangeType type;
-                if (reverse && !hash.equals(untilHash)) {
+                if (reverse && !hash.startsWith(untilHash)) {
                     type = LineChangeType.DELETED;
                 } else if (!reverse && !boundaryHashes.contains(hash)) {
                     type = LineChangeType.ADDED;
                 } else {
                     type = LineChangeType.NONE;
                 }
-                blameLines.add(new BlameLine(hash, originalLineNumber, finalLineNumber,
-                        hashAuthorNameMap.get(hash), hashAuthorEmailMap.get(hash),
-                        hashCommitterNameMap.get(hash), hashCommitterEmailMap.get(hash),lines[i].substring(1),
-                        hashSummaryMap.get(hash), type));
+                final String actualHash;
+                if (reverse && previousHash != null) {
+                    actualHash = previousHash;
+                    reversePreviousHashMap.put(hash, previousHash);
+                } else {
+                    if (reversePreviousHashMap.containsKey(hash)) {
+                        actualHash = reversePreviousHashMap.get(hash);
+                    } else {
+                        actualHash = hash;
+                    }
+                }
+                if (!hashAuthorNameMap.containsKey(actualHash)) {
+                    final String commitDetails[] =
+                            Shell.execute("git show -s --format=\"%an%n%aE%n%cn%n%cE%n%s\" " + actualHash,
+                            repositoryPath).split("\n");
+                    if (commitDetails.length == 5) {
+                        hashAuthorNameMap.put(actualHash, commitDetails[0]);
+                        hashAuthorEmailMap.put(actualHash, commitDetails[1]);
+                        hashCommitterNameMap.put(actualHash, commitDetails[2]);
+                        hashCommitterEmailMap.put(actualHash, commitDetails[3]);
+                        hashSummaryMap.put(actualHash, commitDetails[4]);
+                    } else {
+                        hashAuthorNameMap.put(actualHash, "?");
+                        hashAuthorEmailMap.put(actualHash, "?");
+                        hashCommitterNameMap.put(actualHash, "?");
+                        hashCommitterEmailMap.put(actualHash, "?");
+                        hashSummaryMap.put(actualHash, "?");
+                    }
+                }
+                blameLines.add(new BlameLine(actualHash,
+                        (!reverse ? originalLineNumber : finalLineNumber),
+                        (!reverse ? finalLineNumber : originalLineNumber),
+                        hashAuthorNameMap.get(actualHash), hashAuthorEmailMap.get(actualHash),
+                        hashCommitterNameMap.get(actualHash), hashCommitterEmailMap.get(actualHash),
+                        lines[i].substring(1),
+                        hashSummaryMap.get(actualHash), type));
             }
 
             return blameLines;
