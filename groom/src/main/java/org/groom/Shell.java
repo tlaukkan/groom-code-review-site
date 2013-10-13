@@ -15,6 +15,10 @@
  */
 package org.groom;
 
+import com.vaadin.server.Page;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.Position;
+import com.vaadin.ui.Notification;
 import org.apache.log4j.Logger;
 import org.groom.shell.SystemCommandExecutor;
 import org.vaadin.addons.sitekit.util.PropertiesUtil;
@@ -39,6 +43,8 @@ public class Shell {
         LOGGER.debug("Executing shell command: " + cmd);
         try {
 
+            Notification.show(cmd, Notification.Type.TRAY_NOTIFICATION);
+
             List<String> commands = new ArrayList<String>();
             if (PropertiesUtil.getProperty("groom", "os").equals("windows")) {
                 commands.add("cmd");
@@ -56,6 +62,13 @@ public class Shell {
             StringBuilder errorOutput = commandExecutor.getErrorOutput();
             if (errorOutput.length() > 0) {
                 LOGGER.error(errorOutput);
+                {
+                    final Notification notification = new Notification("Shell",
+                            errorOutput.toString(), Notification.Type.WARNING_MESSAGE);
+                    notification.setDelayMsec(5000);
+                    notification.setPosition(Position.BOTTOM_RIGHT);
+                    notification.show(Page.getCurrent());
+                }
             }
             StringBuilder standardOutput = commandExecutor.getStandardOutput();
             if (standardOutput == null) {

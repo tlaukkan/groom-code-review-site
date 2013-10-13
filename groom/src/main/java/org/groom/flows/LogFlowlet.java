@@ -143,7 +143,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         beanQueryFactory.setQueryConfiguration(queryConfiguration);
 
         final LazyQueryContainer container = new LazyQueryContainer(beanQueryFactory,"hash",
-                20, false);
+                200, false);
 
         container.addContainerFilter(new Compare.Equal("branch", sinceField.getValue()));
         container.addContainerProperty("hash", String.class, null, true, false);
@@ -287,8 +287,8 @@ public final class LogFlowlet extends AbstractFlowlet {
                         @Override
                         public void onCancel() {
                         }
-                    }, ((selection != null && selection.length == 1) ?
-                            (String) selection[0] : ""), "");
+                    }, ((selection != null && selection.length == 1) ? "4b825dc642cb6eb9a060e54bf8d69288fbee4904" : ""),
+                       ((selection != null && selection.length == 1) ? (String) selection[0] : ""));
                     dialog.setCaption("Please enter final comment.");
                     UI.getCurrent().addWindow(dialog);
                     dialog.getSinceField().focus();

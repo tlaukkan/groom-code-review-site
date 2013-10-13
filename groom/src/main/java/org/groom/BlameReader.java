@@ -52,21 +52,32 @@ public class BlameReader {
 
     private static final List<BlameLine> read(final String repositoryPath, final String path, final String sinceHash,
                                              final String untilHash, boolean reverse) {
+
+
+
         try {
             final Map<String, String> hashAuthorNameMap = new HashMap<String, String>();
             final Map<String, String> hashAuthorEmailMap = new HashMap<String, String>();
             final Map<String, String> hashCommitterNameMap = new HashMap<String, String>();
             final Map<String, String> hashCommitterEmailMap = new HashMap<String, String>();
             final Map<String, String> hashSummaryMap = new HashMap<String, String>();
-            final String result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
-                    + " --p -w " + sinceHash + ".." + untilHash + " -- " + path, repositoryPath);
+
+            // If review is against git special empty tree then define --root and only until hash
+            final String result;
+            if ("4b825dc642cb6eb9a060e54bf8d69288fbee4904".startsWith(sinceHash)) {
+                result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
+                        + " --root --p -w " + untilHash + " -- " + path, repositoryPath);
+            } else {
+                result = Shell.execute("git blame " + (reverse ? " --reverse" : "")
+                        + " --p -w " + sinceHash + ".." + untilHash + " -- " + path, repositoryPath);
+            }
             final Set<String> boundaryHashes = new HashSet<String>();
 
             final List<BlameLine> blameLines = new ArrayList<BlameLine>();
             final String[] lines = result.split("\n");
             for (int i = 0; i < lines.length; i++) {
                 String[] parts = lines[i].split(" ");
-                final String hash = parts[0].substring(0, 7);
+                final String hash = parts[0];
                 final int originalLineNumber = Integer.parseInt(parts[1]);
                 final int finalLineNumber = Integer.parseInt(parts[2]);
                 if (parts.length == 4 && !hashAuthorNameMap.containsKey(hash)) {

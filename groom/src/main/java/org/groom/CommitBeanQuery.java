@@ -79,7 +79,7 @@ public class CommitBeanQuery extends AbstractBeanQuery<Commit> {
         final String result = Shell.execute(
                 "git log --skip=" + startIndex
                         + " --max-count=" + count
-                        + " --pretty=format:\"%h|%ad|%cd|%an|%cn|%d|%s\" --date=iso " + range + " --",
+                        + " --pretty=format:\"%H|%ad|%cd|%an|%cn|%d|%s\" --date=iso " + range + " --",
                 repository.getPath());
 
         final String[] lines = result.split("\n");

@@ -248,7 +248,7 @@ public final class GroomSiteUI extends AbstractSiteUI implements ContentProvider
                 ))));
 
         final NavigationDescriptor navigationDescriptor = new NavigationDescriptor("navigation", null, null,
-                new NavigationVersion(0, "dashboard", "dashboard;log;reviews;repositories;account;users;groups;customers;companies;login", true));
+                new NavigationVersion(0, "dashboard", "dashboard;reviews;log;repositories;account;users;groups;customers;companies;login", true));
 
         return new SiteDescriptor("Test site.", "test site", "This is a test site.",
                 navigationDescriptor, viewDescriptors);

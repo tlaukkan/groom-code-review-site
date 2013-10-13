@@ -219,7 +219,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         this.entity = entity;
         queryConfiguration.put("repository", entity.getRepository());
 
-        container.addContainerFilter(new Compare.Equal("range", entity.getSinceHash() + ".." + entity.getUntilHash()));
+        container.addContainerFilter(new Compare.Equal("range", entity.getSinceHash() + " " + entity.getUntilHash()));
         container.refresh();
         entity.setDiffCount(container.size());
         reviewEditor.setItem(new BeanItem<Review>(entity), newEntity);

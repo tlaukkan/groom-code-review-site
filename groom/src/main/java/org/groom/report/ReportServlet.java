@@ -103,7 +103,7 @@ public class ReportServlet extends HttpServlet {
         out.println();
 
         final String result = Shell.execute(
-                "git diff --name-status " + review.getSinceHash() + ".." + review.getUntilHash() + " -- | more",
+                "git diff -l --name-status " + review.getSinceHash() + " " + review.getUntilHash() + " -- | more",
                 review.getRepository().getPath());
         out.println(result);
 

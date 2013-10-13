@@ -59,7 +59,7 @@ public class FileDiffBeanQuery extends AbstractBeanQuery<FileDiff> {
             if (range == null) {
                 return 0;
             }
-            final String result = Shell.execute("git diff --raw -w " + range + " -- | more", repository.getPath());
+            final String result = Shell.execute("git diff --raw -l -w " + range + " -- | more", repository.getPath());
             if (result.length() == 0) {
                 return 0;
             }
