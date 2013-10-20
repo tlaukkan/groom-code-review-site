@@ -4,7 +4,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <properties>
-        <global.version>1.0.7</global.version>
+        <global.version>1.0.8</global.version>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
