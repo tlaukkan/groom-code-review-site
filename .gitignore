@@ -1,3 +1,4 @@
-.idea/
-target/
-gwt-unitCache/
+.idea
+target
+gwt-unitCache
+*.iml
