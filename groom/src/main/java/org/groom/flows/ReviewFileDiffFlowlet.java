@@ -268,7 +268,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                                                     }
                                             }
                                             EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
-                                                    blame.getAuthorEmail(), company.getSupportEmailAddress(),
+                                                    blame.getAuthorEmail(), reviewStatus.getReviewer().getEmailAddress(),
                                                     severity + " from review '" + review.getTitle() + "'",
                                                     "Reviewer: " + reviewStatus.getReviewer().getFirstName()
                                                             + " " + reviewStatus.getReviewer().getLastName() + "\n" +
