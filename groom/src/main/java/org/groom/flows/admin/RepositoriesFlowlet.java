@@ -19,17 +19,17 @@ import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.FieldDescriptor;
+import org.bubblecloud.ilves.component.grid.FilterDescriptor;
+import org.bubblecloud.ilves.component.grid.FormattingTable;
+import org.bubblecloud.ilves.component.grid.Grid;
+import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.GroomFields;
-import org.groom.Shell;
+import org.groom.shell.Shell;
 import org.groom.model.Repository;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.FieldDescriptor;
-import org.vaadin.addons.sitekit.grid.FilterDescriptor;
-import org.vaadin.addons.sitekit.grid.FormattingTable;
-import org.vaadin.addons.sitekit.grid.Grid;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -110,7 +110,7 @@ public final class RepositoriesFlowlet extends AbstractFlowlet {
                 repository.setCreated(new Date());
                 repository.setModified(repository.getCreated());
                 repository.setOwner((Company) getSite().getSiteContext().getObject(Company.class));
-                final RepositoryFlowlet repositoryView = getViewSheet().forward(RepositoryFlowlet.class);
+                final RepositoryFlowlet repositoryView = getFlow().forward(RepositoryFlowlet.class);
                 repositoryView.edit(repository, true);
             }
         });
@@ -124,7 +124,7 @@ public final class RepositoriesFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 final Repository entity = container.getEntity(grid.getSelectedItemId());
-                final RepositoryFlowlet repositoryView = getViewSheet().forward(RepositoryFlowlet.class);
+                final RepositoryFlowlet repositoryView = getFlow().forward(RepositoryFlowlet.class);
                 repositoryView.edit(entity, false);
             }
         });

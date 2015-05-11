@@ -17,7 +17,11 @@ package org.groom.flows;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
-import org.groom.BlameReader;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.util.EmailUtil;
+import org.bubblecloud.ilves.util.PropertiesUtil;
+import org.groom.shell.BlameReader;
 import org.groom.dao.ReviewDao;
 import org.groom.flows.reviewer.ReviewFlowlet;
 import org.groom.model.*;
@@ -26,15 +30,8 @@ import org.vaadin.aceeditor.AceMode;
 import org.vaadin.aceeditor.client.AceAnnotation;
 import org.vaadin.aceeditor.client.AceMarker;
 import org.vaadin.aceeditor.client.AceRange;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.Grid;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.User;
-import org.vaadin.addons.sitekit.util.EmailUtil;
-import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -106,7 +103,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
         //gridLayout.addComponent(editor, 0, 0);
 
-        if (getViewSheet().getFlowlet(ReviewFlowlet.class) != null) {
+        if (getFlow().getFlowlet(ReviewFlowlet.class) != null) {
             final HorizontalLayout buttonLayout = new HorizontalLayout();
             buttonLayout.setSpacing(true);
             gridLayout.addComponent(buttonLayout, 0, 0);
@@ -118,7 +115,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             previousButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                    final ReviewFlowlet view = getFlow().getFlowlet(ReviewFlowlet.class);
                     view.previous(path);
                 }
             });
@@ -130,7 +127,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
             nextButton.addClickListener(new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent clickEvent) {
-                    final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                    final ReviewFlowlet view = getFlow().getFlowlet(ReviewFlowlet.class);
                     view.next(path);
                 }
             });
@@ -158,7 +155,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     }
                     for (int i = cursorLine; i >= 0; i--) {
                         if (i == 0) {
-                            final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                            final ReviewFlowlet view = getFlow().getFlowlet(ReviewFlowlet.class);
                             //view.previous(path);
                             scrollToRow(0);
                             break;
@@ -188,7 +185,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                     }
                     for (int i = cursorLine; i < blames.size(); i++) {
                         if (i == blames.size() - 1) {
-                            final ReviewFlowlet view = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                            final ReviewFlowlet view = getFlow().getFlowlet(ReviewFlowlet.class);
                             //view.next(path);
                             scrollToRow(i);
                             break;

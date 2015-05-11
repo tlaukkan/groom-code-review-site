@@ -1,5 +1,5 @@
-CREATE TABLE comment (
-    commentid character varying(255) NOT NULL,
+CREATE TABLE reviewcomment (
+    reviewcommentid character varying(255) NOT NULL,
     author character varying(128) NOT NULL,
     committer character varying(128) NOT NULL,
     created timestamp without time zone NOT NULL,
@@ -13,7 +13,6 @@ CREATE TABLE comment (
     review_reviewid character varying(255) NOT NULL,
     reviewer_userid character varying(255) NOT NULL
 );
-ALTER TABLE public.comment OWNER TO groom;
 
 CREATE TABLE review (
     reviewid character varying(255) NOT NULL,
@@ -29,11 +28,10 @@ CREATE TABLE review (
     owner_companyid character varying(255) NOT NULL,
     reviewgroup_groupid character varying(255) NOT NULL
 );
-ALTER TABLE public.review OWNER TO groom;
 
 CREATE TABLE review_status (
     reviewstatusid character varying(255) NOT NULL,
-    comment character varying(2048) NOT NULL,
+    reviewcomment character varying(2048) NOT NULL,
     completed boolean NOT NULL,
     coverage text NOT NULL,
     created timestamp without time zone NOT NULL,
@@ -42,10 +40,9 @@ CREATE TABLE review_status (
     review_reviewid character varying(255) NOT NULL,
     reviewer_userid character varying(255) NOT NULL
 );
-ALTER TABLE public.review_status OWNER TO groom;
 
-ALTER TABLE ONLY comment
-    ADD CONSTRAINT comment_pkey PRIMARY KEY (commentid);
+ALTER TABLE ONLY reviewcomment
+    ADD CONSTRAINT reviewcomment_pkey PRIMARY KEY (reviewcommentid);
 
 ALTER TABLE ONLY review
     ADD CONSTRAINT review_pkey PRIMARY KEY (reviewid);
@@ -53,11 +50,11 @@ ALTER TABLE ONLY review
 ALTER TABLE ONLY review_status
     ADD CONSTRAINT review_status_pkey PRIMARY KEY (reviewstatusid);
 
-ALTER TABLE ONLY comment
-    ADD CONSTRAINT fk_comment_review_reviewid FOREIGN KEY (review_reviewid) REFERENCES review(reviewid);
+ALTER TABLE ONLY reviewcomment
+    ADD CONSTRAINT fk_reviewcomment_review_reviewid FOREIGN KEY (review_reviewid) REFERENCES review(reviewid);
 
-ALTER TABLE ONLY comment
-    ADD CONSTRAINT fk_comment_reviewer_userid FOREIGN KEY (reviewer_userid) REFERENCES user_(userid);
+ALTER TABLE ONLY reviewcomment
+    ADD CONSTRAINT fk_reviewcomment_reviewer_userid FOREIGN KEY (reviewer_userid) REFERENCES user_(userid);
 
 ALTER TABLE ONLY review
     ADD CONSTRAINT fk_review_author_userid FOREIGN KEY (author_userid) REFERENCES user_(userid);
@@ -74,4 +71,3 @@ ALTER TABLE ONLY review_status
 ALTER TABLE ONLY review_status
     ADD CONSTRAINT fk_review_status_reviewer_userid FOREIGN KEY (reviewer_userid) REFERENCES user_(userid);
 
-INSERT INTO schemaversion VALUES (NOW(), 'groom', '0002');

@@ -24,10 +24,17 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
-import org.groom.FileDiffBeanQuery;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.FieldDescriptor;
+import org.bubblecloud.ilves.component.grid.FormattingTable;
+import org.bubblecloud.ilves.component.grid.ValidatingEditor;
+import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
+import org.bubblecloud.ilves.model.User;
+import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
+import org.bubblecloud.ilves.util.ContainerUtil;
+import org.groom.shell.FileDiffBeanQuery;
 import org.groom.GroomFields;
 import org.groom.dao.ReviewDao;
-import org.groom.flows.CommentDialog;
 import org.groom.flows.ReviewFileDiffFlowlet;
 import org.groom.model.Comment;
 import org.groom.model.FileDiff;
@@ -37,11 +44,6 @@ import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.*;
-import org.vaadin.addons.sitekit.model.User;
-import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
-import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
@@ -278,7 +280,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         final List<FieldDescriptor> fieldDescriptors = GroomFields.getFieldDescriptors(ReviewStatus.class);
         ContainerUtil.addContainerProperties(reviewStatusContainer, fieldDescriptors);
         final Table reviewerStatusesTable = new FormattingTable();
-        Grid grid = new Grid(reviewerStatusesTable, reviewStatusContainer);
+        org.bubblecloud.ilves.component.grid.Grid grid = new org.bubblecloud.ilves.component.grid.Grid(reviewerStatusesTable, reviewStatusContainer);
         grid.setFields(fieldDescriptors);
         reviewerStatusesTable.setColumnCollapsed("reviewStatusId", true);
         reviewerStatusesTable.setColumnCollapsed("created", true);
@@ -339,7 +341,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         final List<FieldDescriptor> commentFieldDescriptors = GroomFields.getFieldDescriptors(Comment.class);
         ContainerUtil.addContainerProperties(commentContainer, commentFieldDescriptors);
         final Table commentTable = new FormattingTable();
-        Grid commentGrid = new Grid(commentTable, commentContainer);
+        org.bubblecloud.ilves.component.grid.Grid commentGrid = new org.bubblecloud.ilves.component.grid.Grid(commentTable, commentContainer);
         commentTable.setNullSelectionAllowed(false);
         commentGrid.setSizeFull();
         commentGrid.setFields(commentFieldDescriptors);
@@ -418,7 +420,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                     ReviewDao.saveReviewStatus(entityManager, reviewStatus);
                     final char status = fileDiff.getStatus();
                     if (status == 'A' || status == 'M') {
-                        final ReviewFileDiffFlowlet view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                        final ReviewFileDiffFlowlet view = getFlow().forward(ReviewFileDiffFlowlet.class);
                         view.setFileDiff(review, fileDiff, comment.getDiffLine());
                     }
 
@@ -480,9 +482,9 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         final char status = fileDiff.getStatus();
         if (status == 'A' || status == 'M') {
             if (disableViewChange) {
-                view = getViewSheet().getFlowlet(ReviewFileDiffFlowlet.class);
+                view = getFlow().getFlowlet(ReviewFileDiffFlowlet.class);
             } else {
-                view = getViewSheet().forward(ReviewFileDiffFlowlet.class);
+                view = getFlow().forward(ReviewFileDiffFlowlet.class);
 
             }
             view.setFileDiff(review, fileDiff, 0);

@@ -3,7 +3,6 @@ package org.groom.flows;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
-import org.groom.GroomSiteUI;
 
 /**
  * The comment dialog.

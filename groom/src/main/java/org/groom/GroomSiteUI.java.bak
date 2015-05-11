@@ -21,6 +21,8 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.bubblecloud.ilves.site.ViewDescriptor;
+import org.bubblecloud.ilves.site.ViewletDescriptor;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.groom.flows.LogFlowViewlet;

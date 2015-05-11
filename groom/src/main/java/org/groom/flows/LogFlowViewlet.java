@@ -15,9 +15,9 @@
  */
 package org.groom.flows;
 
+import org.bubblecloud.ilves.component.flow.AbstractFlowViewlet;
+import org.bubblecloud.ilves.component.flow.Flowlet;
 import org.groom.flows.admin.ReviewFlowlet;
-import org.vaadin.addons.sitekit.flow.AbstractFlowViewlet;
-import org.vaadin.addons.sitekit.flow.Flowlet;
 
 /**
  * Repository management Flow.

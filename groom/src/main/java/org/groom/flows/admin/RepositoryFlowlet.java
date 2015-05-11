@@ -21,11 +21,12 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.ValidatingEditor;
+import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
+import org.bubblecloud.ilves.model.Company;
 import org.groom.GroomFields;
 import org.groom.model.Repository;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.*;
-import org.vaadin.addons.sitekit.model.Company;
 
 import javax.persistence.EntityManager;
 

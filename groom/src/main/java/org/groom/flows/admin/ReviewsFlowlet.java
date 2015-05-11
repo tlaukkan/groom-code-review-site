@@ -16,6 +16,13 @@
 package org.groom.flows.admin;
 
 import com.vaadin.data.Property;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.FieldDescriptor;
+import org.bubblecloud.ilves.component.grid.FilterDescriptor;
+import org.bubblecloud.ilves.component.grid.FormattingTable;
+import org.bubblecloud.ilves.component.grid.Grid;
+import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.GroomFields;
 import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
@@ -27,14 +34,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.FieldDescriptor;
-import org.vaadin.addons.sitekit.grid.FilterDescriptor;
-import org.vaadin.addons.sitekit.grid.FormattingTable;
-import org.vaadin.addons.sitekit.grid.Grid;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.util.ContainerUtil;
-
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
@@ -134,7 +133,7 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 final Review entity = container.getEntity(grid.getSelectedItemId());
-                final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+                final ReviewFlowlet reviewView = getFlow().forward(ReviewFlowlet.class);
                 reviewView.edit(entity, false);
             }
         });

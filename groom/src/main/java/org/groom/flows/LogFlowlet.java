@@ -22,8 +22,11 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import org.groom.CommitBeanQuery;
-import org.groom.Shell;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
+import org.groom.shell.CommitBeanQuery;
+import org.groom.shell.Shell;
 import org.groom.dao.ReviewDao;
 import org.groom.flows.admin.ReviewFlowlet;
 import org.groom.flows.admin.ReviewRangeDialog;
@@ -33,9 +36,6 @@ import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
@@ -319,7 +319,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         review.setRepository(repository);
         review.setAuthor(((SecurityProviderSessionImpl)
                 getSite().getSecurityProvider()).getUserFromSession());
-        final ReviewFlowlet reviewView = getViewSheet().forward(ReviewFlowlet.class);
+        final ReviewFlowlet reviewView = getFlow().forward(ReviewFlowlet.class);
         reviewView.edit(review, true);
     }
 

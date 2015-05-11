@@ -16,6 +16,12 @@
 package org.groom;
 
 import com.vaadin.ui.CheckBox;
+import org.bubblecloud.ilves.component.formatter.ObjectConverter;
+import org.bubblecloud.ilves.component.formatter.TimestampConverter;
+import org.bubblecloud.ilves.component.grid.HorizontalAlignment;
+import org.bubblecloud.ilves.model.Group;
+import org.bubblecloud.ilves.model.User;
+import org.bubblecloud.ilves.site.LocalizationProvider;
 import org.groom.model.Comment;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextField;
@@ -24,14 +30,10 @@ import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
 import org.groom.validators.PathValidator;
 import org.groom.validators.UrlValidator;
-import org.vaadin.addons.sitekit.grid.FieldDescriptor;
-import org.vaadin.addons.sitekit.grid.field.GroupField;
-import org.vaadin.addons.sitekit.grid.field.TimestampField;
-import org.vaadin.addons.sitekit.grid.formatter.ObjectToStringFormatter;
-import org.vaadin.addons.sitekit.grid.formatter.TimestampFormatter;
-import org.vaadin.addons.sitekit.model.Group;
-import org.vaadin.addons.sitekit.model.User;
-import org.vaadin.addons.sitekit.site.LocalizationProvider;
+
+import org.bubblecloud.ilves.component.grid.FieldDescriptor;
+import org.bubblecloud.ilves.component.field.GroupField;
+import org.bubblecloud.ilves.component.field.TimestampField;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,24 +126,22 @@ public final class GroomFields {
                 300, null, User.class, null,
                 false, true, true), new UrlValidator());
         GroomFields.add(Repository.class, new FieldDescriptor(
-                "created", "Created",
-                TimestampField.class, TimestampFormatter.class,
-                130, null, Date.class, null, true,
-                true, false));
+                "created", "Created", TimestampField.class, new TimestampConverter(), 150, null, Date.class, null, true,
+                true, true));
         GroomFields.add(Repository.class, new FieldDescriptor(
                 "modified", "Modified",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null,
                 true, true, false));
 
         GroomFields.add(Review.class, new FieldDescriptor(
                 "created", "Created",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null, true,
                 true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "modified", "Modified",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null,
                 true, true, true));
         GroomFields.add(Review.class, new FieldDescriptor(
@@ -151,12 +151,12 @@ public final class GroomFields {
                 true, false, false));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "repository", "Repository",
-                TextField.class, ObjectToStringFormatter.class,
+                TextField.class, new ObjectConverter(),
                 200, null, Repository.class, null,
                 true, true, false));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "author", "Author",
-                TextField.class, ObjectToStringFormatter.class,
+                TextField.class, new ObjectConverter(),
                 200, null, User.class, null,
                 true, true, false));
         GroomFields.add(Review.class, new FieldDescriptor(
@@ -194,12 +194,12 @@ public final class GroomFields {
                 false, true, false));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "created", "Created",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null, true,
                 true, true));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
                 "modified", "Modified",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null,
                 true, true, true));
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
@@ -235,12 +235,12 @@ public final class GroomFields {
                 false, true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "created", "Created",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null, true,
                 true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(
                 "modified", "Modified",
-                TimestampField.class, TimestampFormatter.class,
+                TimestampField.class, new TimestampConverter(),
                 130, null, Date.class, null,
                 true, true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(

@@ -1,6 +1,6 @@
 package org.groom.shell;
 
-import org.vaadin.addons.sitekit.util.PropertiesUtil;
+import org.bubblecloud.ilves.util.PropertiesUtil;
 
 import java.io.*;
 import java.util.List;

@@ -15,9 +15,9 @@
  */
 package org.groom.flows.reviewer;
 
+import org.bubblecloud.ilves.component.flow.AbstractFlowViewlet;
+import org.bubblecloud.ilves.component.flow.Flowlet;
 import org.groom.flows.ReviewFileDiffFlowlet;
-import org.vaadin.addons.sitekit.flow.AbstractFlowViewlet;
-import org.vaadin.addons.sitekit.flow.Flowlet;
 
 /**
  * Revie management Flow.

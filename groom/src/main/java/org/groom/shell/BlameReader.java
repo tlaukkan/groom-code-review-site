@@ -1,4 +1,4 @@
-package org.groom;
+package org.groom.shell;
 
 import org.apache.log4j.Logger;
 import org.groom.model.BlameLine;

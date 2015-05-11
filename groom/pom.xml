@@ -108,6 +108,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.6</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.0</version>
@@ -115,15 +125,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>1.8.0.10</version>
-            <scope>test</scope>
+            <groupId>org.bubblecloud.ilves</groupId>
+            <artifactId>ilves-vaadin</artifactId>
+            <version>4.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.vaadin.addons.sitekit</groupId>
-            <artifactId>vaadin-sitekit</artifactId>
-            <version>1.1.7</version>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -133,7 +147,7 @@
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>aceeditor</artifactId>
-            <version>0.8.8</version>
+            <version>0.8.13</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

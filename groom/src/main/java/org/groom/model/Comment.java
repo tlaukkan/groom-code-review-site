@@ -15,8 +15,7 @@
  */
 package org.groom.model;
 
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.User;
+import org.bubblecloud.ilves.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;

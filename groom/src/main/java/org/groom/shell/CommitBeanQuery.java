@@ -1,7 +1,8 @@
-package org.groom;
+package org.groom.shell;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
+import org.bubblecloud.ilves.util.PropertiesUtil;
 import org.groom.model.Commit;
 import org.groom.model.Repository;
 import org.joda.time.DateTime;
@@ -9,7 +10,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
-import org.vaadin.addons.sitekit.util.PropertiesUtil;
 
 import java.util.ArrayList;
 import java.util.Date;

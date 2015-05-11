@@ -1,13 +1,11 @@
 package org.groom.report;
 
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.UI;
-import org.groom.BlameReader;
-import org.groom.GroomSiteUI;
-import org.groom.Shell;
+import org.bubblecloud.ilves.site.DefaultSiteUI;
+import org.groom.shell.BlameReader;
+import org.groom.shell.Shell;
 import org.groom.dao.ReviewDao;
 import org.groom.model.*;
-import org.vaadin.addons.sitekit.site.AbstractSiteUI;
 
 import java.io.*;
 import java.util.List;
@@ -34,8 +32,7 @@ public class ReportServlet extends HttpServlet {
             return;
         }
 
-        final EntityManager entityManager = ((GroomSiteUI) GroomSiteUI.getCurrent()).getEntityManagerFactory()
-                .createEntityManager();
+        final EntityManager entityManager = DefaultSiteUI.getEntityManagerFactory().createEntityManager();
 
         final Review review = ReviewDao.getReview(entityManager, reviewId);
         if (review == null) {

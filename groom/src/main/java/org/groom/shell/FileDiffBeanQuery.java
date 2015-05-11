@@ -1,19 +1,14 @@
-package org.groom;
+package org.groom.shell;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
-import org.groom.model.Commit;
 import org.groom.model.FileDiff;
 import org.groom.model.Repository;
 import org.groom.model.ReviewStatus;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

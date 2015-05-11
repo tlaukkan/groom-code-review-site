@@ -16,31 +16,26 @@
 package org.groom.flows.reviewer;
 
 import com.vaadin.data.Container;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.FieldDescriptor;
+import org.bubblecloud.ilves.component.grid.FilterDescriptor;
+import org.bubblecloud.ilves.component.grid.FormattingTable;
+import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.model.Group;
+import org.bubblecloud.ilves.model.User;
+import org.bubblecloud.ilves.security.UserDao;
+import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
+import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.GroomFields;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
-import org.vaadin.addons.sitekit.dao.UserDao;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.FieldDescriptor;
-import org.vaadin.addons.sitekit.grid.FilterDescriptor;
-import org.vaadin.addons.sitekit.grid.FormattingTable;
-import org.vaadin.addons.sitekit.grid.Grid;
-import org.vaadin.addons.sitekit.model.Company;
-import org.vaadin.addons.sitekit.model.Group;
-import org.vaadin.addons.sitekit.model.User;
-import org.vaadin.addons.sitekit.site.SecurityProviderSessionImpl;
-import org.vaadin.addons.sitekit.util.ContainerUtil;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,7 +50,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
     /** The container. */
     private LazyEntityContainer<Review> container;
     /** The grid. */
-    private Grid grid;
+    private org.bubblecloud.ilves.component.grid.Grid grid;
 
     @Override
     public String getFlowletKey() {
@@ -101,7 +96,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
         gridLayout.addComponent(buttonLayout, 0, 0);
 
         final Table table = new FormattingTable();
-        grid = new Grid(table, container);
+        grid = new org.bubblecloud.ilves.component.grid.Grid(table, container);
         //grid.setWidth(550, Unit.PIXELS);
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
@@ -134,9 +129,9 @@ public final class DashboardFlowlet extends AbstractFlowlet {
             @Override
             public void itemClick(ItemClickEvent event) {
                 final Review entity = container.getEntity(event.getItemId());
-                final ReviewFlowlet reviewView = getViewSheet().getFlowlet(ReviewFlowlet.class);
+                final ReviewFlowlet reviewView = getFlow().getFlowlet(ReviewFlowlet.class);
                 reviewView.edit(entity, false);
-                getViewSheet().forward(ReviewFlowlet.class);
+                getFlow().forward(ReviewFlowlet.class);
                 //table.setValue(null);
             }
         });

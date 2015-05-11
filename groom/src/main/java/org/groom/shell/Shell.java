@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.shell;
 
 import com.vaadin.server.Page;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.apache.log4j.Logger;
-import org.groom.shell.SystemCommandExecutor;
-import org.vaadin.addons.sitekit.util.PropertiesUtil;
+import org.bubblecloud.ilves.util.PropertiesUtil;
 
 import java.util.*;
 

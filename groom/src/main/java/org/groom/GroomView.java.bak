@@ -17,13 +17,14 @@ package org.groom;
 
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.GridLayout;
+import org.bubblecloud.ilves.site.view.valo.DefaultValoView;
 import org.vaadin.addons.sitekit.site.AbstractSiteView;
 
 /**
  * Fixed width implementation of PageWindow.
  * @author Tommi S.E. Laukkanen
  */
-public final class GroomView extends AbstractSiteView {
+public final class GroomView extends DefaultValoView {
     /** Serial version UID. */
     private static final long serialVersionUID = 1L;
     /** The margin column expand ratio. */

@@ -16,7 +16,7 @@
 package org.groom.model;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
-import org.vaadin.addons.sitekit.model.User;
+import org.bubblecloud.ilves.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;

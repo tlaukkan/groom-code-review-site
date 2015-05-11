@@ -16,11 +16,6 @@
 package org.groom.flows.admin;
 
 import com.vaadin.data.Property;
-import org.groom.FileDiffBeanQuery;
-import org.groom.GroomFields;
-import org.groom.flows.ReviewFileDiffFlowlet;
-import org.groom.model.FileDiff;
-import org.groom.model.Review;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.Button;
@@ -29,12 +24,14 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
+import org.bubblecloud.ilves.component.grid.ValidatingEditor;
+import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
+import org.groom.shell.FileDiffBeanQuery;
+import org.groom.GroomFields;
+import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
-import org.vaadin.addons.lazyquerycontainer.NestingBeanItem;
-import org.vaadin.addons.sitekit.flow.AbstractFlowlet;
-import org.vaadin.addons.sitekit.grid.ValidatingEditor;
-import org.vaadin.addons.sitekit.grid.ValidatingEditorStateListener;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;

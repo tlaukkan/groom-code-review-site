@@ -1,4 +1,4 @@
-ALTER TABLE comment
+ALTER TABLE reviewcomment
    ALTER COLUMN hash TYPE character varying(100);
 
 
