@@ -43,9 +43,9 @@ public class IlvesMain {
     /** The properties file prefix.*/
     public static final String PROPERTIES_FILE_PREFIX = "site";
     /** The localization bundle. */
-    public static final String LOCALIZATION_BUNDLE_PREFIX = "custom-localization";
+    public static final String LOCALIZATION_BUNDLE_PREFIX = "groom-localization";
     /** The persistence unit to be used. */
-    public static final String PERSISTENCE_UNIT = "custom";
+    public static final String PERSISTENCE_UNIT = "groom";
 
     /**
      * Main method for Ilves seed project.
@@ -64,11 +64,9 @@ public class IlvesMain {
         Ilves.initializeModule(AuditModule.class);
         Ilves.initializeModule(CustomerModule.class);
         Ilves.initializeModule(ContentModule.class);
+        Ilves.initializeModule(ReviewModule.class);
 
-        /*Ilves.addRootPage(0, "custom", DefaultValoView.class);
-        Ilves.setPageComponent("custom", Slot.CONTENT, WelcomeComponent.class);
-        Ilves.setPageComponent("custom", Slot.FOOTER, CommentingComponent.class);
-        Ilves.setDefaultPage("custom");*/
+        Ilves.setDefaultPage("dashboard");
 
         // Start server.
         server.start();

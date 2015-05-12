@@ -337,7 +337,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
 
         commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 0,
                 new String[] {"path", "line"},
-                new boolean[] {true, true}, "commentId");
+                new boolean[] {true, true}, "reviewCommentId");
         final List<FieldDescriptor> commentFieldDescriptors = GroomFields.getFieldDescriptors(Comment.class);
         ContainerUtil.addContainerProperties(commentContainer, commentFieldDescriptors);
         final Table commentTable = new FormattingTable();
@@ -346,7 +346,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         commentGrid.setSizeFull();
         commentGrid.setFields(commentFieldDescriptors);
         commentTable.setImmediate(true);
-        commentTable.setColumnCollapsed("commentId", true);
+        commentTable.setColumnCollapsed("reviewCommentId", true);
         commentTable.setColumnCollapsed("created", true);
         commentTable.setColumnCollapsed("modified", true);
         commentTable.setColumnCollapsed("committer", true);
@@ -441,7 +441,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
                         new ReviewCommentDialog.DialogListener() {
                     @Override
                     public void onOk(final String message) {
-                        reviewStatus.setComment(message);
+                        reviewStatus.setReviewComment(message);
                         reviewStatus.setCompleted(true);
                         ReviewDao.saveReviewStatus(entityManager, reviewStatus);
                         enter();

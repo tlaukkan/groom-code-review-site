@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-    <display-name>resource bundle translation site</display-name>
-	<context-param>
-        <description>Vaadin production mode</description>
-        <param-name>productionMode</param-name>
-        <param-value>true</param-value>
-    </context-param>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+    <display-name>Ilves Application</display-name>
+
+    <servlet>
+        <servlet-name>Asset Servlet</servlet-name>
+        <servlet-class>org.bubblecloud.ilves.module.content.AssetServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Asset Servlet</servlet-name>
+        <url-pattern>/asset/*</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>Vaadin Application Servlet</servlet-name>
-        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+        <servlet-class>org.bubblecloud.ilves.site.SiteVaadinServlet</servlet-class>
         <init-param>
             <description>Vaadin UI class to start</description>
             <param-name>UI</param-name>
-            <param-value>org.groom.GroomSiteUI</param-value>
-        </init-param>
-        <init-param>
-            <description>Widget Set to Use</description>
-            <param-name>widgetset</param-name>
-            <param-value>org.groom.GroomWidgetset</param-value>
-        </init-param>
-        <init-param>
-            <param-name>cacheControl</param-name>
-            <param-value>max-age=3600,public</param-value>
+            <param-value>org.bubblecloud.ilves.site.DefaultSiteUI</param-value>
         </init-param>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Report</servlet-name>
+        <servlet-class>org.groom.report.ReportServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Report</servlet-name>
+        <url-pattern>/report</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>default</servlet-name>
         <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
@@ -33,22 +45,6 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>Report</servlet-name>
-        <servlet-class>org.groom.report.ReportServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Report</servlet-name>
-        <url-pattern>/report</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Vaadin Application Servlet</servlet-name>
-        <url-pattern>/groom/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Vaadin Application Servlet</servlet-name>
-        <url-pattern>/VAADIN/*</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>

@@ -16,6 +16,7 @@
 package org.groom;
 
 import com.vaadin.ui.CheckBox;
+import org.bubblecloud.ilves.component.field.UserField;
 import org.bubblecloud.ilves.component.formatter.ObjectConverter;
 import org.bubblecloud.ilves.component.formatter.TimestampConverter;
 import org.bubblecloud.ilves.component.grid.HorizontalAlignment;
@@ -101,10 +102,8 @@ public final class GroomFields {
 
     /**
      * Initialize field descriptors if not done yet.
-     * @param localizationProvider the localization provider
-     * @param locale the locale
      */
-    public static synchronized void initialize(final LocalizationProvider localizationProvider, final Locale locale) {
+    public static synchronized void initialize() {
         if (initialized) {
             return;
         }
@@ -151,12 +150,12 @@ public final class GroomFields {
                 true, false, false));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "repository", "Repository",
-                TextField.class, new ObjectConverter(),
+                RepositoryField.class, null,
                 200, null, Repository.class, null,
                 true, true, false));
         GroomFields.add(Review.class, new FieldDescriptor(
                 "author", "Author",
-                TextField.class, new ObjectConverter(),
+                UserField.class, null,
                 200, null, User.class, null,
                 true, true, false));
         GroomFields.add(Review.class, new FieldDescriptor(
@@ -184,7 +183,9 @@ public final class GroomFields {
                 CheckBox.class, null,
                 70, null, Boolean.class, false,
                 false, true, false));
-        GroomFields.add(Review.class, new FieldDescriptor("reviewGroup", "Review Group", GroupField.class, null, 200, null, Group.class,
+        GroomFields.add(Review.class, new FieldDescriptor(
+                "reviewGroup", "Review Group",
+                GroupField.class, null, 200, null, Group.class,
                 null, false, true, true));
 
         GroomFields.add(ReviewStatus.class, new FieldDescriptor(
@@ -244,7 +245,7 @@ public final class GroomFields {
                 130, null, Date.class, null,
                 true, true, true));
         GroomFields.add(Comment.class, new FieldDescriptor(
-                "commentId", "Comment ID",
+                "reviewCommentId", "Comment ID",
                 TextField.class, null,
                 100, null, String.class, null,
                 true, false, false));

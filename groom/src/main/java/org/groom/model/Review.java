@@ -16,11 +16,11 @@
 package org.groom.model;
 
 import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.model.Group;
 import org.bubblecloud.ilves.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.security.acl.Group;
 import java.util.Date;
 
 /**

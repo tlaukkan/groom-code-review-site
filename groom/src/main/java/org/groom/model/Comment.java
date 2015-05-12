@@ -27,7 +27,7 @@ import java.util.Date;
  * @author Tommi S.E. Laukkanen
  */
 @Entity
-@Table(name = "comment")
+@Table(name = "reviewcomment")
 public final class Comment implements Serializable {
     /** Java serialization version UID. */
     private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public final class Comment implements Serializable {
     /** Unique UUID of the entity. */
     @Id
     @GeneratedValue(generator = "uuid")
-    private String commentId;
+    private String reviewCommentId;
 
     /** Review this status belongs to. */
     @JoinColumn(nullable = false)
@@ -127,12 +127,12 @@ public final class Comment implements Serializable {
         this.path = path;
     }
 
-    public String getCommentId() {
-        return commentId;
+    public String getReviewCommentId() {
+        return reviewCommentId;
     }
 
-    public void setCommentId(String commentId) {
-        this.commentId = commentId;
+    public void setReviewCommentId(String reviewCommentId) {
+        this.reviewCommentId = reviewCommentId;
     }
 
     public Review getReview() {
@@ -237,18 +237,18 @@ public final class Comment implements Serializable {
 
     @Override
     public String toString() {
-        return "comment-" + commentId.toString();
+        return "comment-" + reviewCommentId.toString();
     }
 
     @Override
     public int hashCode() {
-        return commentId.hashCode();
+        return reviewCommentId.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
         return obj != null && obj instanceof Comment
-                && commentId.equals(((Comment) obj).getCommentId());
+                && reviewCommentId.equals(((Comment) obj).getReviewCommentId());
     }
 
 }

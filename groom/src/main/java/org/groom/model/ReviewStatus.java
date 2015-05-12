@@ -50,7 +50,7 @@ public final class ReviewStatus implements Serializable {
 
     /** Content. */
     @Column(length = 2048, nullable = false)
-    private String comment;
+    private String reviewComment;
 
     /** Completed. */
     @Column(nullable = false)
@@ -84,10 +84,10 @@ public final class ReviewStatus implements Serializable {
         super();
     }
 
-    public ReviewStatus(Review review, User reviewer, String comment, boolean completed, byte[] coverage, Date created, Date modified) {
+    public ReviewStatus(Review review, User reviewer, String reviewComment, boolean completed, byte[] coverage, Date created, Date modified) {
         this.review = review;
         this.reviewer = reviewer;
-        this.comment = comment;
+        this.reviewComment = reviewComment;
         this.completed = completed;
         this.coverage = HexBin.encode(coverage);
         this.created = created;
@@ -118,12 +118,12 @@ public final class ReviewStatus implements Serializable {
         this.reviewStatusId = reviewStatusId;
     }
 
-    public String getComment() {
-        return comment;
+    public String getReviewComment() {
+        return reviewComment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setReviewComment(String reviewComment) {
+        this.reviewComment = reviewComment;
     }
 
     public boolean isCompleted() {
