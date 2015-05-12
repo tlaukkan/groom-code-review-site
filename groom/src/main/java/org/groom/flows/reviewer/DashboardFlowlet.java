@@ -100,6 +100,7 @@ public final class DashboardFlowlet extends AbstractFlowlet {
         //grid.setWidth(550, Unit.PIXELS);
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
+        grid.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 200, Unit.PIXELS);
 
         table.setNullSelectionAllowed(false);
         table.setColumnCollapsed("modified", true);

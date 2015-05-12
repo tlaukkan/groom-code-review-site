@@ -17,7 +17,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>7.1.6</vaadin.version>
+        <vaadin.version>7.4.5</vaadin.version>
     </properties>
 
     <repositories>
@@ -95,18 +95,23 @@
                         <module>org.groom.GroomWidgetset</module>
                     </modules>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-client-compiler</artifactId>
-                        <version>${vaadin.version}</version>
-                    </dependency>
-                 </dependencies>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>5.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiler</artifactId>
+            <version>${vaadin.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

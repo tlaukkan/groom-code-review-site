@@ -23,7 +23,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
+import com.vaadin.ui.themes.ValoTheme;
 import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.component.grid.FieldDescriptor;
 import org.bubblecloud.ilves.component.grid.FormattingTable;
@@ -109,7 +109,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         reviewEditor = new ValidatingEditor(GroomFields.getFieldDescriptors(Review.class));
         reviewEditor.setCaption("Review");
         reviewEditor.addListener((ValidatingEditorStateListener) this);
-        reviewEditor.setWidth(400, Unit.PIXELS);
+        reviewEditor.setWidth(450, Unit.PIXELS);
         reviewEditor.setReadOnly(true);
 
         gridLayout.addComponent(reviewEditor, 0, 0);
@@ -152,8 +152,8 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         });
 
         //table.setColumnWidth("path", 500);
-        fileDiffTable.setColumnWidth("status", 15);
-        fileDiffTable.setColumnWidth("reviewed", 15);
+        fileDiffTable.setColumnWidth("status", 40);
+        fileDiffTable.setColumnWidth("reviewed", 40);
 
         fileDiffTable.setColumnHeaders(new String[]{
                 "",
@@ -268,7 +268,7 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         });
 
         Panel fileDiffPanel = new Panel("Diffs");
-        fileDiffPanel.setStyleName(Reindeer.PANEL_LIGHT);
+        fileDiffPanel.setStyleName(ValoTheme.PANEL_BORDERLESS);
         fileDiffPanel.setSizeFull();
         fileDiffPanel.setContent(fileDiffTable);
 
@@ -329,11 +329,11 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         });
 
         Panel reviewerPanel = new Panel("Reviewers");
-        reviewerPanel.setStyleName(Reindeer.PANEL_LIGHT);
-        reviewerPanel.setSizeFull();
+        reviewerPanel.setStyleName(ValoTheme.PANEL_BORDERLESS);
+        reviewerPanel.setHeight(300, Unit.PIXELS);
         reviewerPanel.setContent(grid);
 
-        gridLayout.addComponent(reviewerPanel, 0, 1);
+        gridLayout.addComponent(reviewerPanel, 0, 2);
 
         commentContainer = new LazyEntityContainer<Comment>(entityManager, true, false, false, Comment.class, 0,
                 new String[] {"path", "line"},
@@ -401,11 +401,11 @@ public final class ReviewFlowlet extends AbstractFlowlet implements ValidatingEd
         });
 
         Panel commentPanel = new Panel("Review Comments");
-        commentPanel.setStyleName(Reindeer.PANEL_LIGHT);
-        commentPanel.setHeight(200, Unit.PIXELS);
-        commentPanel.setContent(commentTable);
+        commentPanel.setStyleName(ValoTheme.PANEL_BORDERLESS);
+        commentPanel.setHeight(300, Unit.PIXELS);
+        commentPanel.setContent(commentGrid);
 
-        gridLayout.addComponent(commentPanel, 0, 2, 1, 2);
+        gridLayout.addComponent(commentPanel, 1, 2, 1, 2);
 
         commentTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override

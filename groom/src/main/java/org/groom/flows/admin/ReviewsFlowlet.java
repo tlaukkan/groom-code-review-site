@@ -16,6 +16,7 @@
 package org.groom.flows.admin;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.*;
 import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.component.grid.FieldDescriptor;
 import org.bubblecloud.ilves.component.grid.FilterDescriptor;
@@ -26,13 +27,8 @@ import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.GroomFields;
 import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.TextField;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -103,6 +99,8 @@ public final class ReviewsFlowlet extends AbstractFlowlet {
         grid = new Grid(table, container);
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
+        grid.setWidth(100, Unit.PERCENTAGE);
+        grid.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 235, Unit.PIXELS);
 
         table.setColumnCollapsed("reviewId", true);
 

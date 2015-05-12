@@ -94,6 +94,8 @@ public final class RepositoriesFlowlet extends AbstractFlowlet {
         grid = new Grid(table, container);
         grid.setFields(fieldDescriptors);
         grid.setFilters(filterDefinitions);
+        grid.setWidth(100, Unit.PERCENTAGE);
+        grid.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 235, Unit.PIXELS);
 
         table.setColumnCollapsed("repositoryId", true);
         gridLayout.addComponent(grid, 0, 1);

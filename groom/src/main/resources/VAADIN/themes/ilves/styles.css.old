@@ -37,27 +37,27 @@ h1 {
      background-image: url(icons/diff-status-icon-deleted.png);
      background-repeat: no-repeat;
      background-position:center;
- }
+}
 
- .v-table-cell-content-modified {
- }
+.v-table-cell-content-modified {
+}
 
- .v-table-cell-content-ok {
-     background-image: url(icons/diff-status-icon-ok.png);
-     background-repeat: no-repeat;
-     background-position:center;
- }
+.v-table-cell-content-ok {
+ background-image: url(icons/diff-status-icon-ok.png);
+ background-repeat: no-repeat;
+ background-position:center;
+}
 
- .v-table-cell-content-path-added {
-     color: limegreen;
- }
+.v-table-cell-content-path-added {
+ color: limegreen;
+}
 
- .v-table-cell-content-path-deleted {
-     color: red;
- }
+.v-table-cell-content-path-deleted {
+ color: red;
+}
 
-  .v-table-cell-content-path-modified {
-  }
+.v-table-cell-content-path-modified {
+}
 
 .v-table-cell-content-kudo {
     background-image: url(icons/icon-kudo.png);

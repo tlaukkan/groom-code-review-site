@@ -1,0 +1,71 @@
+@import "ilves.scss";
+
+.v-generated-body {
+  margin: auto;
+  max-width: 4000px;
+  background-color: #333;
+}
+
+.ilves {
+  @include ilves;
+
+  .marker-line-added {
+    background-color: rgba(100,255,100,0.5);
+    position: absolute;
+  }
+
+  .marker-line-deleted {
+    background-color: rgba(255,100,100,0.5);
+    position: absolute;
+  }
+
+  .v-table-cell-content-added {
+    background-image: url(icons/diff-status-icon-added.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+
+  .v-table-cell-content-deleted {
+    background-image: url(icons/diff-status-icon-deleted.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+
+  .v-table-cell-content-modified {
+  }
+
+  .v-table-cell-content-ok {
+    background-image: url(icons/diff-status-icon-ok.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+
+  .v-table-cell-content-path-added {
+    color: limegreen;
+  }
+
+  .v-table-cell-content-path-deleted {
+    color: red;
+  }
+
+  .v-table-cell-content-path-modified {
+  }
+
+  .v-table-cell-content-kudo {
+    background-image: url(icons/icon-kudo.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+
+  .v-table-cell-content-red-flag {
+    background-image: url(icons/icon-red-flag.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+
+  .v-table-cell-content-warning {
+    background-image: url(icons/icon-warning.png);
+    background-repeat: no-repeat;
+    background-position:center;
+  }
+}

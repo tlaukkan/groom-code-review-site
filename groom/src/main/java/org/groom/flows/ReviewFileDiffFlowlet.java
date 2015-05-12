@@ -19,6 +19,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.model.Company;
+import org.bubblecloud.ilves.site.DefaultSiteUI;
 import org.bubblecloud.ilves.util.EmailUtil;
 import org.bubblecloud.ilves.util.PropertiesUtil;
 import org.groom.shell.BlameReader;
@@ -57,6 +58,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
     private AceEditor.SelectionChangeListener selectionChangeListener;
     private GridLayout gridLayout;
     private Button groomButton;
+    private HorizontalLayout editorLayout;
 
     @Override
     public String getFlowletKey() {
@@ -341,11 +343,16 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
 
     public void setFileDiff(final Review review, final FileDiff fileDiff, final int toLine) {
 
-        if (editor != null) {
-            gridLayout.removeComponent(editor);
+        if (editorLayout != null) {
+            gridLayout.removeComponent(editorLayout);
         }
 
         editor = new AceEditor();
+        editorLayout = new HorizontalLayout();
+        editorLayout.setWidth(100, Unit.PERCENTAGE);
+        editorLayout.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 300, Unit.PIXELS);
+        editorLayout.addComponent(editor);
+
 
         final Company company = getSite().getSiteContext().getObject(Company.class);
         editor.setThemePath(company.getUrl() + "/../static/ace");
@@ -465,7 +472,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         /*if (toLine != 0) {
             editor.setSelectionRowCol(toLine, 0, toLine + 1, 0);
         }*/
-        gridLayout.addComponent(editor, 0, 1);
+        gridLayout.addComponent(editorLayout, 0, 1);
         scrollToRow(toLine);
 
     }
