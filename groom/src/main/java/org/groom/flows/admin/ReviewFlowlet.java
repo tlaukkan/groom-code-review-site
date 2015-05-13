@@ -28,7 +28,7 @@ import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.component.grid.ValidatingEditor;
 import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
 import org.groom.shell.FileDiffBeanQuery;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;

@@ -33,7 +33,7 @@ import org.bubblecloud.ilves.model.User;
 import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
 import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.shell.FileDiffBeanQuery;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.dao.ReviewDao;
 import org.groom.flows.ReviewFileDiffFlowlet;
 import org.groom.model.Comment;

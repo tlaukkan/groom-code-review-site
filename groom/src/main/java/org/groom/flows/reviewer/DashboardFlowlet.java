@@ -30,7 +30,7 @@ import org.bubblecloud.ilves.model.User;
 import org.bubblecloud.ilves.security.UserDao;
 import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
 import org.bubblecloud.ilves.util.ContainerUtil;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.model.Review;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 

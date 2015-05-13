@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.fields;
 
 import com.vaadin.ui.ComboBox;
 import org.bubblecloud.ilves.model.Company;

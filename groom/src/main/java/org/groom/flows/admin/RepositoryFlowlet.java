@@ -25,7 +25,7 @@ import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.component.grid.ValidatingEditor;
 import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
 import org.bubblecloud.ilves.model.Company;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.model.Repository;
 
 import javax.persistence.EntityManager;

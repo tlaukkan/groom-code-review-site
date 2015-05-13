@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.module;
 
 import org.bubblecloud.ilves.security.DefaultRoles;
 import org.bubblecloud.ilves.site.*;
 import org.bubblecloud.ilves.site.view.valo.DefaultValoView;
-import org.bubblecloud.ilves.ui.administrator.customer.CustomerFlowViewlet;
 import org.groom.flows.LogFlowViewlet;
 import org.groom.flows.admin.RepositoryFlowViewlet;
 import org.groom.flows.admin.ReviewFlowViewlet;
@@ -29,7 +28,7 @@ import org.groom.flows.reviewer.DashboardViewlet;
  *
  * @author Tommi S.E. Laukkanen
  */
-public class ReviewModule implements SiteModule {
+public class GroomModule implements SiteModule {
 
     @Override
     public void initialize() {

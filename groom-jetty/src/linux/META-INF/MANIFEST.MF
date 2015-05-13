@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: Groom Code Review Site
-Implementation-Version: 1.0.8.linux
-Vaadin-Package-Version: 1
-Built-By: tlaukkan
-Build-Jdk: 1.7.0_25
-Created-By: Apache Maven 3.1.0
-Archiver-Version: Plexus Archiver
-

@@ -24,7 +24,7 @@ import org.bubblecloud.ilves.component.grid.FormattingTable;
 import org.bubblecloud.ilves.component.grid.Grid;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.util.ContainerUtil;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.model.Review;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.ui.Button.ClickEvent;
@@ -32,7 +32,6 @@ import com.vaadin.ui.Button.ClickListener;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

@@ -45,8 +45,8 @@ public class IlvesDbDiff {
         // Configure logging.
         DOMConfigurator.configure("log4j.xml");
 
-        PropertiesUtil.setCategoryRedirection("site", IlvesMain.PROPERTIES_FILE_PREFIX);
-        final String diff = PersistenceUtil.diff(IlvesMain.PERSISTENCE_UNIT, IlvesMain.PROPERTIES_FILE_PREFIX);
+        PropertiesUtil.setCategoryRedirection("site", GroomMain.PROPERTIES_FILE_PREFIX);
+        final String diff = PersistenceUtil.diff(GroomMain.PERSISTENCE_UNIT, GroomMain.PROPERTIES_FILE_PREFIX);
         System.out.println(diff);
     }
 }

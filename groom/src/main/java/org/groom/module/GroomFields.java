@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom;
+package org.groom.module;
 
 import com.vaadin.ui.CheckBox;
 import org.bubblecloud.ilves.component.field.UserField;
-import org.bubblecloud.ilves.component.formatter.ObjectConverter;
 import org.bubblecloud.ilves.component.formatter.TimestampConverter;
-import org.bubblecloud.ilves.component.grid.HorizontalAlignment;
 import org.bubblecloud.ilves.model.Group;
 import org.bubblecloud.ilves.model.User;
-import org.bubblecloud.ilves.site.LocalizationProvider;
+import org.groom.fields.RepositoryField;
 import org.groom.model.Comment;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextField;
@@ -41,7 +39,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**

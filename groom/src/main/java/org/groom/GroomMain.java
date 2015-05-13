@@ -32,13 +32,14 @@ import org.bubblecloud.ilves.module.audit.AuditModule;
 import org.bubblecloud.ilves.module.content.ContentModule;
 import org.bubblecloud.ilves.module.customer.CustomerModule;
 import org.eclipse.jetty.server.Server;
+import org.groom.module.GroomModule;
 
 /**
  * Ilves seed project main class.
  *
  * @author Tommi S.E. Laukkanen
  */
-public class IlvesMain {
+public class GroomMain {
 
     /** The properties file prefix.*/
     public static final String PROPERTIES_FILE_PREFIX = "site";
@@ -64,7 +65,7 @@ public class IlvesMain {
         Ilves.initializeModule(AuditModule.class);
         Ilves.initializeModule(CustomerModule.class);
         Ilves.initializeModule(ContentModule.class);
-        Ilves.initializeModule(ReviewModule.class);
+        Ilves.initializeModule(GroomModule.class);
 
         Ilves.setDefaultPage("dashboard");
 

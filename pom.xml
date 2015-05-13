@@ -52,7 +52,6 @@
 
     <modules>
         <module>groom</module>
-        <module>groom-jetty</module>
     </modules>
 
 </project>

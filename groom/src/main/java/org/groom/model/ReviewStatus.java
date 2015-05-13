@@ -15,7 +15,7 @@
  */
 package org.groom.model;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+import org.apache.xerces.impl.dv.util.HexBin;
 import org.bubblecloud.ilves.model.User;
 
 import javax.persistence.*;

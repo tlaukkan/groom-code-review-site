@@ -26,7 +26,7 @@ import org.bubblecloud.ilves.component.grid.FormattingTable;
 import org.bubblecloud.ilves.component.grid.Grid;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.util.ContainerUtil;
-import org.groom.GroomFields;
+import org.groom.module.GroomFields;
 import org.groom.shell.Shell;
 import org.groom.model.Repository;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
