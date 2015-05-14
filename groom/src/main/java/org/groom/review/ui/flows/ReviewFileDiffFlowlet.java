@@ -347,7 +347,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
         editor = new AceEditor();
         editorLayout = new HorizontalLayout();
         editorLayout.setWidth(100, Unit.PERCENTAGE);
-        editorLayout.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 300, Unit.PIXELS);
+        editorLayout.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 350, Unit.PIXELS);
         editorLayout.addComponent(editor);
 
 

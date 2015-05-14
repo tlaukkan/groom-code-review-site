@@ -171,7 +171,7 @@ public final class LogFlowlet extends AbstractFlowlet {
         };
 
         table.setWidth(100, Unit.PERCENTAGE);
-        table.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 300, Unit.PIXELS);
+        table.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 350, Unit.PIXELS);
         table.setContainerDataSource(container);
         table.setVisibleColumns(new Object[] {
                 "hash",
