@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows;
+package org.groom.module.flows;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
@@ -28,8 +28,8 @@ import org.bubblecloud.ilves.site.SecurityProviderSessionImpl;
 import org.groom.shell.CommitBeanQuery;
 import org.groom.shell.Shell;
 import org.groom.dao.ReviewDao;
-import org.groom.flows.admin.ReviewFlowlet;
-import org.groom.flows.admin.ReviewRangeDialog;
+import org.groom.module.flows.admin.ReviewFlowlet;
+import org.groom.module.flows.admin.ReviewRangeDialog;
 import org.groom.model.Commit;
 import org.groom.model.Repository;
 import org.groom.model.Review;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows.reviewer;
+package org.groom.module.flows.reviewer;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;

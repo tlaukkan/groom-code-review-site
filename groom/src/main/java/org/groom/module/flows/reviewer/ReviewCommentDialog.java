@@ -1,4 +1,4 @@
-package org.groom.flows.reviewer;
+package org.groom.module.flows.reviewer;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;

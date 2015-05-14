@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows;
+package org.groom.module.flows;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.model.Company;
-import org.bubblecloud.ilves.site.DefaultSiteUI;
 import org.bubblecloud.ilves.util.EmailUtil;
-import org.bubblecloud.ilves.util.PropertiesUtil;
 import org.groom.shell.BlameReader;
 import org.groom.dao.ReviewDao;
-import org.groom.flows.reviewer.ReviewFlowlet;
+import org.groom.module.flows.reviewer.ReviewFlowlet;
 import org.groom.model.*;
 import org.vaadin.aceeditor.AceEditor;
 import org.vaadin.aceeditor.AceMode;
@@ -266,7 +264,7 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                                                         severity = "+" + severity;
                                                     }
                                             }
-                                            EmailUtil.send(PropertiesUtil.getProperty("groom", "smtp-host"),
+                                            EmailUtil.send(
                                                     blame.getAuthorEmail(), reviewStatus.getReviewer().getEmailAddress(),
                                                     severity + " from review '" + review.getTitle() + "'",
                                                     "Reviewer: " + reviewStatus.getReviewer().getFirstName()
@@ -283,7 +281,6 @@ public final class ReviewFileDiffFlowlet extends AbstractFlowlet {
                                 }
                             }
 
-                            @Override
                             public void onCancel() {
                                 //To change body of implemented methods use File | Settings | File Templates.
                             }

@@ -20,15 +20,15 @@ import org.bubblecloud.ilves.component.field.UserField;
 import org.bubblecloud.ilves.component.formatter.TimestampConverter;
 import org.bubblecloud.ilves.model.Group;
 import org.bubblecloud.ilves.model.User;
-import org.groom.fields.RepositoryField;
+import org.groom.module.fields.RepositoryField;
 import org.groom.model.Comment;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextField;
 import org.groom.model.Repository;
 import org.groom.model.Review;
 import org.groom.model.ReviewStatus;
-import org.groom.validators.PathValidator;
-import org.groom.validators.UrlValidator;
+import org.groom.module.validators.PathValidator;
+import org.groom.module.validators.UrlValidator;
 
 import org.bubblecloud.ilves.component.grid.FieldDescriptor;
 import org.bubblecloud.ilves.component.field.GroupField;

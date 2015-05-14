@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows.admin;
+package org.groom.module.flows.admin;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;

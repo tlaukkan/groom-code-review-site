@@ -1,4 +1,4 @@
-package org.groom.flows;
+package org.groom.module.flows;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.ThemeResource;

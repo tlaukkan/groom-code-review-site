@@ -1,4 +1,4 @@
-package org.groom.validators;
+package org.groom.module.validators;
 
 import com.vaadin.data.Validator;
 
@@ -9,7 +9,8 @@ import com.vaadin.data.Validator;
  * Time: 19:57
  * To change this template use File | Settings | File Templates.
  */
-public class UrlValidator implements Validator {
+public class PathValidator implements Validator {
+
 
     @Override
     public void validate(Object value) throws InvalidValueException {
@@ -19,10 +20,9 @@ public class UrlValidator implements Validator {
         }
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
-            if (!(Character.isLetter(c) || Character.isDigit(c) || "@/:.-_".indexOf(c) != -1)) {
+            if (!(Character.isLetter(c) || Character.isDigit(c))) {
                 throw new InvalidValueException("" + c);
             }
         }
-
     }
 }

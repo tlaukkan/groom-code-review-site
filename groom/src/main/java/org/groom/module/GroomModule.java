@@ -18,10 +18,10 @@ package org.groom.module;
 import org.bubblecloud.ilves.security.DefaultRoles;
 import org.bubblecloud.ilves.site.*;
 import org.bubblecloud.ilves.site.view.valo.DefaultValoView;
-import org.groom.flows.LogFlowViewlet;
-import org.groom.flows.admin.RepositoryFlowViewlet;
-import org.groom.flows.admin.ReviewFlowViewlet;
-import org.groom.flows.reviewer.DashboardViewlet;
+import org.groom.module.flows.LogFlowViewlet;
+import org.groom.module.flows.admin.RepositoryFlowViewlet;
+import org.groom.module.flows.admin.ReviewFlowViewlet;
+import org.groom.module.flows.reviewer.DashboardViewlet;
 
 /**
  * Customer module adds support for code reviews.
@@ -38,25 +38,29 @@ public class GroomModule implements SiteModule {
 
         final NavigationVersion navigationVersion = siteDescriptor.getNavigation().getProductionVersion();
 
-        navigationVersion.addChildPage("configuration", 0, "dashboard");
+        navigationVersion.addRootPage(0, "groom");
+        final ViewDescriptor groom = new ViewDescriptor("groom", "Groom", DefaultValoView.class);
+        siteDescriptor.getViewDescriptors().add(groom);
+
+        navigationVersion.addChildPage("groom", "groom", "dashboard");
         final ViewDescriptor dashboard = new ViewDescriptor("dashboard", "Dashboard", DefaultValoView.class);
         dashboard.setViewerRoles(DefaultRoles.ADMINISTRATOR, DefaultRoles.USER);
         dashboard.setViewletClass("content", DashboardViewlet.class);
         siteDescriptor.getViewDescriptors().add(dashboard);
 
-        navigationVersion.addChildPage("configuration", "dashboard", "log");
+        navigationVersion.addChildPage("groom", "dashboard", "log");
         final ViewDescriptor log = new ViewDescriptor("log", "Log", DefaultValoView.class);
         log.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         log.setViewletClass("content", LogFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(log);
 
-        navigationVersion.addChildPage("configuration", "log", "reviews");
+        navigationVersion.addChildPage("groom", "log", "reviews");
         final ViewDescriptor reviews = new ViewDescriptor("reviews", "Reviews", DefaultValoView.class);
         reviews.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         reviews.setViewletClass("content", ReviewFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(reviews);
 
-        navigationVersion.addChildPage("configuration", "reviews", "repositories");
+        navigationVersion.addChildPage("groom", "reviews", "repositories");
         final ViewDescriptor repositories = new ViewDescriptor("repositories", "Repositories", DefaultValoView.class);
         repositories.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         repositories.setViewletClass("content", RepositoryFlowViewlet.class);

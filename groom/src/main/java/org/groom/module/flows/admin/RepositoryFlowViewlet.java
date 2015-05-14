@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows;
+package org.groom.module.flows.admin;
 
 import org.bubblecloud.ilves.component.flow.AbstractFlowViewlet;
 import org.bubblecloud.ilves.component.flow.Flowlet;
-import org.groom.flows.admin.ReviewFlowlet;
-
 /**
- * Repository management Flow.
+ * Entry management Flow.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class LogFlowViewlet extends AbstractFlowViewlet {
+public final class RepositoryFlowViewlet extends AbstractFlowViewlet {
 
     /**
      * Serial version UID.
@@ -33,11 +31,11 @@ public final class LogFlowViewlet extends AbstractFlowViewlet {
 
     @Override
     protected void addFlowlets() {
-        final Flowlet logFlowlet = new LogFlowlet();
-        addFlowlet(logFlowlet);
-        final Flowlet reviewView = new ReviewFlowlet();
-        addFlowlet(reviewView);
-        setRootFlowlet(logFlowlet);
+        final Flowlet repositoriesFlowlet = new RepositoriesFlowlet();
+        addFlowlet(repositoriesFlowlet);
+        final Flowlet repositoryFlowlet = new RepositoryFlowlet();
+        addFlowlet(repositoryFlowlet);
+        setRootFlowlet(repositoriesFlowlet);
     }
 
 }

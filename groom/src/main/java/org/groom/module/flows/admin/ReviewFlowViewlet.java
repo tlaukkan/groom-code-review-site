@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows.reviewer;
+package org.groom.module.flows.admin;
 
 import org.bubblecloud.ilves.component.flow.AbstractFlowViewlet;
 import org.bubblecloud.ilves.component.flow.Flowlet;
-import org.groom.flows.ReviewFileDiffFlowlet;
+import org.groom.module.flows.ReviewFileDiffFlowlet;
 
 /**
  * Revie management Flow.
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class DashboardViewlet extends AbstractFlowViewlet {
+public final class ReviewFlowViewlet extends AbstractFlowViewlet {
 
     /**
      * Serial version UID.
@@ -33,7 +33,7 @@ public final class DashboardViewlet extends AbstractFlowViewlet {
 
     @Override
     protected void addFlowlets() {
-        final Flowlet entriesView = new DashboardFlowlet();
+        final Flowlet entriesView = new ReviewsFlowlet();
         addFlowlet(entriesView);
         final Flowlet reviewView = new ReviewFlowlet();
         addFlowlet(reviewView);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.flows.reviewer;
+package org.groom.module.flows.reviewer;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
@@ -35,7 +35,7 @@ import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.shell.FileDiffBeanQuery;
 import org.groom.module.GroomFields;
 import org.groom.dao.ReviewDao;
-import org.groom.flows.ReviewFileDiffFlowlet;
+import org.groom.module.flows.ReviewFileDiffFlowlet;
 import org.groom.model.Comment;
 import org.groom.model.FileDiff;
 import org.groom.model.Review;
