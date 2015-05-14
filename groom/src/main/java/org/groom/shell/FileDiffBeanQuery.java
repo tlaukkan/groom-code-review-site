@@ -2,9 +2,9 @@ package org.groom.shell;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
-import org.groom.model.FileDiff;
-import org.groom.model.Repository;
-import org.groom.model.ReviewStatus;
+import org.groom.review.model.FileDiff;
+import org.groom.review.model.Repository;
+import org.groom.review.model.ReviewStatus;
 import org.vaadin.addons.lazyquerycontainer.AbstractBeanQuery;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 

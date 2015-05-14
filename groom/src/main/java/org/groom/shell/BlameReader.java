@@ -1,8 +1,8 @@
 package org.groom.shell;
 
 import org.apache.log4j.Logger;
-import org.groom.model.BlameLine;
-import org.groom.model.LineChangeType;
+import org.groom.review.model.BlameLine;
+import org.groom.review.model.LineChangeType;
 
 import java.util.*;
 

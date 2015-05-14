@@ -34,7 +34,7 @@
 
     <servlet>
         <servlet-name>Report</servlet-name>
-        <servlet-class>org.groom.report.ReportServlet</servlet-class>
+        <servlet-class>org.groom.review.report.ReportServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Report</servlet-name>

@@ -26,13 +26,17 @@
  */
 package org.groom;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.bubblecloud.ilves.Ilves;
 import org.bubblecloud.ilves.module.audit.AuditModule;
 import org.bubblecloud.ilves.module.content.ContentModule;
 import org.bubblecloud.ilves.module.customer.CustomerModule;
+import org.bubblecloud.ilves.site.DefaultSiteUI;
 import org.eclipse.jetty.server.Server;
-import org.groom.module.GroomModule;
+import org.groom.review.ui.ReviewModule;
+import org.groom.translation.service.HootSynchronizer;
+import org.groom.translation.ui.TranslationModule;
 
 /**
  * Ilves seed project main class.
@@ -40,7 +44,8 @@ import org.groom.module.GroomModule;
  * @author Tommi S.E. Laukkanen
  */
 public class GroomMain {
-
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(GroomMain.class);
     /** The properties file prefix.*/
     public static final String PROPERTIES_FILE_PREFIX = "site";
     /** The localization bundle. */
@@ -65,12 +70,27 @@ public class GroomMain {
         Ilves.initializeModule(AuditModule.class);
         Ilves.initializeModule(CustomerModule.class);
         Ilves.initializeModule(ContentModule.class);
-        Ilves.initializeModule(GroomModule.class);
+        Ilves.initializeModule(ReviewModule.class);
+        Ilves.initializeModule(TranslationModule.class);
 
         Ilves.setDefaultPage("dashboard");
 
         // Start server.
         server.start();
+
+
+        final HootSynchronizer translationSynchronizer = new HootSynchronizer(
+                DefaultSiteUI.getEntityManagerFactory().createEntityManager());
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                try {
+                    translationSynchronizer.shutdown();
+                } catch (final Throwable t) {
+                    LOGGER.error("Error in synchronizer shutdown.", t);
+                }
+            }
+        });
 
         // Wait for exit of the Jetty server.
         server.join();
