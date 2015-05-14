@@ -39,35 +39,35 @@ public class ReviewModule implements SiteModule {
         final NavigationVersion navigationVersion = siteDescriptor.getNavigation().getProductionVersion();
 
         navigationVersion.addRootPage("login", "review");
-        final ViewDescriptor groom = new ViewDescriptor("review", "Groom", DefaultValoView.class);
+        final ViewDescriptor groom = new ViewDescriptor("review", DefaultValoView.class);
         groom.setViewerRoles(DefaultRoles.ADMINISTRATOR, DefaultRoles.USER);
         siteDescriptor.getViewDescriptors().add(groom);
 
         navigationVersion.addChildPage("review", "dashboard");
-        final ViewDescriptor dashboard = new ViewDescriptor("dashboard", "Dashboard", DefaultValoView.class);
+        final ViewDescriptor dashboard = new ViewDescriptor("dashboard", DefaultValoView.class);
         dashboard.setViewerRoles(DefaultRoles.ADMINISTRATOR, DefaultRoles.USER);
         dashboard.setViewletClass("content", DashboardViewlet.class);
         siteDescriptor.getViewDescriptors().add(dashboard);
 
         navigationVersion.addChildPage("review", "dashboard", "reviews");
-        final ViewDescriptor reviews = new ViewDescriptor("reviews", "Reviews", DefaultValoView.class);
+        final ViewDescriptor reviews = new ViewDescriptor("reviews", DefaultValoView.class);
         reviews.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         reviews.setViewletClass("content", ReviewFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(reviews);
 
         navigationVersion.addChildPage("review", "reviews", "log");
-        final ViewDescriptor log = new ViewDescriptor("log", "Log", DefaultValoView.class);
+        final ViewDescriptor log = new ViewDescriptor("log", DefaultValoView.class);
         log.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         log.setViewletClass("content", LogFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(log);
 
         navigationVersion.addRootPage(0, "administration");
-        final ViewDescriptor administration = new ViewDescriptor("administration", "Administration", DefaultValoView.class);
+        final ViewDescriptor administration = new ViewDescriptor("administration", DefaultValoView.class);
         administration.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         siteDescriptor.getViewDescriptors().add(administration);
 
         navigationVersion.addChildPage("administration", "repositories");
-        final ViewDescriptor repositories = new ViewDescriptor("repositories", "Repositories", DefaultValoView.class);
+        final ViewDescriptor repositories = new ViewDescriptor("repositories", DefaultValoView.class);
         repositories.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         repositories.setViewletClass("content", RepositoryFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(repositories);
