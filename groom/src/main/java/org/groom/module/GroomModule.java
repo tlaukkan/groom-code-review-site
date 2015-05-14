@@ -38,8 +38,9 @@ public class GroomModule implements SiteModule {
 
         final NavigationVersion navigationVersion = siteDescriptor.getNavigation().getProductionVersion();
 
-        navigationVersion.addRootPage(0, "groom");
+        navigationVersion.addRootPage("login", "groom");
         final ViewDescriptor groom = new ViewDescriptor("groom", "Groom", DefaultValoView.class);
+        groom.setViewerRoles(DefaultRoles.ADMINISTRATOR, DefaultRoles.USER);
         siteDescriptor.getViewDescriptors().add(groom);
 
         navigationVersion.addChildPage("groom", "groom", "dashboard");
