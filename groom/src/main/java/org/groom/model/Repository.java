@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.groom.review.model;
+package org.groom.model;
 
 import org.bubblecloud.ilves.model.Company;
 
@@ -58,6 +58,10 @@ public final class Repository implements Serializable {
     /** Content. */
     @Column(length = 1024, nullable = false)
     private String url;
+
+    /** Content. */
+    @Column(length = 4096, nullable = false)
+    private String bundlePrefixes;
 
     /** Created time of the event. */
     @Temporal(TemporalType.TIMESTAMP)
@@ -124,6 +128,14 @@ public final class Repository implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getBundlePrefixes() {
+        return bundlePrefixes;
+    }
+
+    public void setBundlePrefixes(String bundlePrefixes) {
+        this.bundlePrefixes = bundlePrefixes;
     }
 
     /**

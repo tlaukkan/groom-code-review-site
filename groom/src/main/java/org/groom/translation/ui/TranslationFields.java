@@ -30,12 +30,12 @@ import java.util.*;
  *
  * @author Tommi S.E. Laukkanen
  */
-public final class HootFields {
+public final class TranslationFields {
 
     /**
      * Private default constructor to disable construction.
      */
-    private HootFields() {
+    private TranslationFields() {
     }
 
     /**
@@ -90,63 +90,63 @@ public final class HootFields {
         }
         initialized = true;
 
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "entryId", "Entry ID",
                 TextField.class, null,
                 100, null, String.class, null,
                 true, false, false));
 
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "path", "Path",
                 TextField.class, null,
                 250, null, String.class, "",
                 true, true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "basename", "Basename",
                 TextField.class, null,
                 100, null, String.class, "",
                 true, true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "language", "Language",
                 TextField.class, null,
                 75, null, String.class, "",
                 true, true, false));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "country", "Country",
                 TextField.class, null,
                 75, null, String.class, "",
                 true, true, false));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "key", "Key",
                 TextField.class, null,
                 -1, null, String.class, "",
                 true, true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "value", "Value",
                 TextArea.class, null,
                 300, null, String.class, "",
                 false, true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "author", "Author",
                 TextField.class, null,
                 100, null, String.class, "",
                 true, true, false));
 
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "created", "Created",
                 TimestampField.class, new TimestampConverter(),
                 150, null, Date.class, null, true,
                 true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "modified", "Modified",
                 TimestampField.class, new TimestampConverter(),
                 150, null, Date.class, null,
                 true, true, true));
-        HootFields.add(Entry.class, new FieldDescriptor(
+        TranslationFields.add(Entry.class, new FieldDescriptor(
                 "deleted", "Deleted",
                 TimestampField.class, new TimestampConverter(),
                 150, null, Date.class, null,
-                true, true, true));
+                true, true, false));
 
     }
 }

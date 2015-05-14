@@ -3,7 +3,7 @@ package org.groom.review.dao;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.model.User;
 import org.groom.review.model.Comment;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 import org.groom.review.model.Review;
 import org.groom.review.model.ReviewStatus;
 

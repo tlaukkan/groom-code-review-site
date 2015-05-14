@@ -28,7 +28,7 @@ import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.util.ContainerUtil;
 import org.groom.review.ui.ReviewFields;
 import org.groom.shell.Shell;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 
 import javax.persistence.EntityManager;

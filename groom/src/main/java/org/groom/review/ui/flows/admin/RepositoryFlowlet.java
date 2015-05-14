@@ -26,7 +26,7 @@ import org.bubblecloud.ilves.component.grid.ValidatingEditor;
 import org.bubblecloud.ilves.component.grid.ValidatingEditorStateListener;
 import org.bubblecloud.ilves.model.Company;
 import org.groom.review.ui.ReviewFields;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 
 import javax.persistence.EntityManager;
 

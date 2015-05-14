@@ -31,7 +31,7 @@ public class TranslationModule implements SiteModule {
     public void initialize() {
         final SiteDescriptor siteDescriptor = DefaultSiteUI.getContentProvider().getSiteDescriptor();
 
-        HootFields.initialize();
+        TranslationFields.initialize();
 
         final NavigationVersion navigationVersion = siteDescriptor.getNavigation().getProductionVersion();
 

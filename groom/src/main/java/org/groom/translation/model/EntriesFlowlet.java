@@ -26,8 +26,8 @@ import org.bubblecloud.ilves.component.grid.FormattingTable;
 import org.bubblecloud.ilves.component.grid.Grid;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.util.ContainerUtil;
-import org.groom.translation.ui.HootFields;
-import org.groom.translation.service.HootSynchronizer;
+import org.groom.translation.ui.TranslationFields;
+import org.groom.translation.service.TranslationSynchronizer;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 
 import javax.persistence.EntityManager;
@@ -66,7 +66,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
     @Override
     public void initialize() {
-        final List<FieldDescriptor> fieldDescriptors = HootFields.getFieldDescriptors(Entry.class);
+        final List<FieldDescriptor> fieldDescriptors = TranslationFields.getFieldDescriptors(Entry.class);
 
         final List<FilterDescriptor> filterDefinitions = new ArrayList<FilterDescriptor>();
 
@@ -230,7 +230,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
             @Override
             public void buttonClick(final ClickEvent event) {
-                HootSynchronizer.startSynchronize();
+                TranslationSynchronizer.startSynchronize();
             }
         });
 

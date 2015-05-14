@@ -49,4 +49,18 @@
             <column name="deleted" type="timestamp(29, 6)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="tlaukkan (generated)" id="c8e501c1-be3b-4f47-8ada-40e34db9b6bc">
+        <addColumn tableName="repository">
+            <column name="bundleprefixes" type="varchar(4096)" defaultValue="src/main/resources/messages">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="tlaukkan (generated)" id="691e2fc1-4841-4175-ad2b-5396d400ca01">
+        <addColumn tableName="entry">
+            <column name="repository_repositoryid" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

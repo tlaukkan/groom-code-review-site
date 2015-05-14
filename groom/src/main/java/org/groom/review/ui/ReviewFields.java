@@ -24,7 +24,7 @@ import org.groom.review.ui.fields.RepositoryField;
 import org.groom.review.model.Comment;
 import com.vaadin.data.Validator;
 import com.vaadin.ui.TextField;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 import org.groom.review.model.Review;
 import org.groom.review.model.ReviewStatus;
 import org.groom.review.ui.validators.PathValidator;
@@ -118,6 +118,11 @@ public final class ReviewFields {
                 false, true, true), new PathValidator());
         ReviewFields.add(Repository.class, new FieldDescriptor(
                 "url", "URL",
+                TextField.class, null,
+                300, null, User.class, null,
+                false, true, true), new UrlValidator());
+        ReviewFields.add(Repository.class, new FieldDescriptor(
+                "bundlePrefixes", "Bundle Prefixes",
                 TextField.class, null,
                 300, null, User.class, null,
                 false, true, true), new UrlValidator());

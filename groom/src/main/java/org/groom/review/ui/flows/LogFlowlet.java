@@ -31,7 +31,7 @@ import org.groom.review.dao.ReviewDao;
 import org.groom.review.ui.flows.admin.ReviewFlowlet;
 import org.groom.review.ui.flows.admin.ReviewRangeDialog;
 import org.groom.review.model.Commit;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 import org.groom.review.model.Review;
 import org.vaadin.addons.lazyquerycontainer.BeanQueryFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;

@@ -35,7 +35,7 @@ import org.bubblecloud.ilves.module.customer.CustomerModule;
 import org.bubblecloud.ilves.site.DefaultSiteUI;
 import org.eclipse.jetty.server.Server;
 import org.groom.review.ui.ReviewModule;
-import org.groom.translation.service.HootSynchronizer;
+import org.groom.translation.service.TranslationSynchronizer;
 import org.groom.translation.ui.TranslationModule;
 
 /**
@@ -79,7 +79,7 @@ public class GroomMain {
         server.start();
 
 
-        final HootSynchronizer translationSynchronizer = new HootSynchronizer(
+        final TranslationSynchronizer translationSynchronizer = new TranslationSynchronizer(
                 DefaultSiteUI.getEntityManagerFactory().createEntityManager());
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

@@ -16,6 +16,7 @@
 package org.groom.translation.model;
 
 import org.bubblecloud.ilves.model.Company;
+import org.groom.model.Repository;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -41,6 +42,11 @@ public final class Entry implements Serializable {
     @JoinColumn(nullable = false)
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
     private Company owner;
+
+    /** Repository this translation is related to. */
+    @JoinColumn(nullable = false)
+    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, optional = false)
+    private Repository repository;
 
     /** Content. */
     @Column(length = 2048, nullable = false)
@@ -91,6 +97,14 @@ public final class Entry implements Serializable {
      */
     public Entry() {
         super();
+    }
+
+    public Repository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 
     /**

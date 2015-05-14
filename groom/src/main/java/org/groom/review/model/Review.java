@@ -18,6 +18,7 @@ package org.groom.review.model;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.model.Group;
 import org.bubblecloud.ilves.model.User;
+import org.groom.model.Repository;
 
 import javax.persistence.*;
 import java.io.Serializable;

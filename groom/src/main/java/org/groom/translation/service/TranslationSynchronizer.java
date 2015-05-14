@@ -23,6 +23,9 @@ import org.bubblecloud.ilves.security.CompanyDao;
 import org.bubblecloud.ilves.security.UserDao;
 import org.bubblecloud.ilves.util.EmailUtil;
 import org.bubblecloud.ilves.util.PropertiesUtil;
+import org.groom.model.Repository;
+import org.groom.review.dao.ReviewDao;
+import org.groom.shell.Shell;
 import org.groom.translation.model.Entry;
 
 import javax.persistence.EntityManager;
@@ -36,9 +39,9 @@ import java.util.*;
  *
  * @author Tommi S.E. Laukkanen
  */
-public class HootSynchronizer {
+public class TranslationSynchronizer {
     /** The logger. */
-    private static final Logger LOGGER = Logger.getLogger(HootSynchronizer.class);
+    private static final Logger LOGGER = Logger.getLogger(TranslationSynchronizer.class);
 
     /**
      * The entity manager.
@@ -56,7 +59,7 @@ public class HootSynchronizer {
     private static long lastTimeMillis;
 
     public static void startSynchronize() {
-        HootSynchronizer.lastTimeMillis = 0;
+        TranslationSynchronizer.lastTimeMillis = 0;
     }
 
     /**
@@ -65,7 +68,7 @@ public class HootSynchronizer {
      * @param entityManager the entity manager.
      */
 
-    public HootSynchronizer(final EntityManager entityManager) {
+    public TranslationSynchronizer(final EntityManager entityManager) {
         this.entityManager = entityManager;
 
         final long synchronizePeriodMillis = Long.parseLong(PropertiesUtil.getProperty("hoot",
@@ -106,20 +109,38 @@ public class HootSynchronizer {
     private void synchronize() {
         entityManager.clear();
 
-        try {
-            executeShellCommand(PropertiesUtil.getProperty("hoot", "pre-synchronize-command-hook"));
-        } catch (final Exception e) {
-            LOGGER.error("Error running pre synchronize hook.",e);
+        final List<Company> companies = CompanyDao.getCompanies(entityManager);
+        for (final Company company : companies) {
+            final List<Repository> repositories = ReviewDao.getRepositories(entityManager, company);
+            for (final Repository repository : repositories) {
+                synchronizeRepository(repository);
+            }
         }
 
-        final String bundleCharacterSet = PropertiesUtil.getProperty("hoot", "bundle-character-set");
-        final String[] prefixes = PropertiesUtil.getProperty("hoot", "bundle-path-prefixes").split(",");
+    }
 
-        for (final String prefixPart : prefixes) {
-            final String prefix = prefixPart.split(":")[1];
-            final String host = prefixPart.split(":")[0];
-            final Company company = CompanyDao.getCompany(entityManager, host);
-            final File baseBundle = new File(prefix + ".properties");
+    /**
+     * Synchronizes bundles and database for given repository.
+     */
+    private void synchronizeRepository(final Repository repository) {
+        final String absoluteRepositoryPathPrefix = PropertiesUtil.getProperty("groom", "repository-path") + "/translation";
+
+        final String relativeRepositoryPath = "translation/" + repository.getPath();
+
+        if (!new File(absoluteRepositoryPathPrefix).exists()) {
+            new File(absoluteRepositoryPathPrefix).mkdir();
+            LOGGER.info(Shell.execute("git clone " + repository.getUrl() + " " + repository.getPath(), "translation"));
+        }
+        LOGGER.info(Shell.execute("git fetch", relativeRepositoryPath));
+        LOGGER.info(Shell.execute("git reset --hard", relativeRepositoryPath));
+
+        final String absoluteRepositoryPath = absoluteRepositoryPathPrefix + "/" + repository.getPath();
+        final String bundleCharacterSet = PropertiesUtil.getProperty("hoot", "bundle-character-set");
+        final String[] prefixes = repository.getBundlePrefixes().split(",");
+
+        final Company company = repository.getOwner();
+        for (final String prefix : prefixes) {
+            final File baseBundle = new File(absoluteRepositoryPath + "/" + prefix + ".properties");
             if (!baseBundle.exists()) {
                 LOGGER.info("Base bundle does not exist: " + baseBundle.getAbsolutePath());
                 continue;
@@ -215,6 +236,7 @@ public class HootSynchronizer {
                                 if (!existingKeys.contains(key)) {
                                     final Entry entry = new Entry();
                                     entry.setOwner(company);
+                                    entry.setRepository(repository);
                                     entry.setPath(bundleDirectoryPath);
                                     entry.setBasename(baseName);
                                     entry.setLanguage(language);
@@ -272,7 +294,6 @@ public class HootSynchronizer {
                 }
             }
 
-            final String smtpHost = PropertiesUtil.getProperty("site", "smtp-host");
             for (final String locale : missingKeys.keySet()) {
                 final List<String> keySet = missingKeys.get(locale);
 
@@ -297,13 +318,8 @@ public class HootSynchronizer {
 
         }
 
-        try {
-            executeShellCommand(PropertiesUtil.getProperty("hoot", "post-synchronize-command-hook"));
-        } catch (final Exception e) {
-            LOGGER.error("Error running post synchronize hook.",e);
-
-        }
-
+        LOGGER.info(Shell.execute("git commit -a -m 'Translations.'", relativeRepositoryPath));
+        LOGGER.info(Shell.execute("git push origin master", relativeRepositoryPath));
     }
 
     /**

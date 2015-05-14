@@ -27,7 +27,7 @@ import com.vaadin.ui.Table;
 import org.bubblecloud.ilves.component.flow.AbstractFlowlet;
 import org.bubblecloud.ilves.component.grid.*;
 import org.bubblecloud.ilves.util.ContainerUtil;
-import org.groom.translation.ui.HootFields;
+import org.groom.translation.ui.TranslationFields;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
 
 import javax.persistence.EntityManager;
@@ -85,7 +85,7 @@ public final class EntryFlowlet extends AbstractFlowlet implements ValidatingEdi
         gridLayout.setRowExpandRatio(2, 1f);
         setViewContent(gridLayout);
 
-        entryEditor = new ValidatingEditor(HootFields.getFieldDescriptors(Entry.class));
+        entryEditor = new ValidatingEditor(TranslationFields.getFieldDescriptors(Entry.class));
         entryEditor.setCaption("Entry");
         entryEditor.addListener((ValidatingEditorStateListener) this);
         gridLayout.addComponent(entryEditor, 0, 0);
@@ -136,7 +136,7 @@ public final class EntryFlowlet extends AbstractFlowlet implements ValidatingEdi
             }
         });
 
-        final List<FieldDescriptor> fieldDescriptors = HootFields.getFieldDescriptors(Entry.class);
+        final List<FieldDescriptor> fieldDescriptors = TranslationFields.getFieldDescriptors(Entry.class);
 
         final List<FilterDescriptor> filterDefinitions = new ArrayList<FilterDescriptor>();
 

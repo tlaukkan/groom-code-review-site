@@ -4,7 +4,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.filter.Compare;
 import org.bubblecloud.ilves.util.PropertiesUtil;
 import org.groom.review.model.Commit;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

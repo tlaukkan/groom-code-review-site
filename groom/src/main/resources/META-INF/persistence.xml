@@ -17,7 +17,7 @@
 		<class>org.bubblecloud.ilves.model.AuditLogEntry</class>
 		<class>org.bubblecloud.ilves.module.content.Content</class>
 		<class>org.bubblecloud.ilves.module.content.Asset</class>
-        <class>org.groom.review.model.Repository</class>
+        <class>org.groom.model.Repository</class>
         <class>org.groom.review.model.Review</class>
         <class>org.groom.review.model.ReviewStatus</class>
         <class>org.groom.review.model.Comment</class>

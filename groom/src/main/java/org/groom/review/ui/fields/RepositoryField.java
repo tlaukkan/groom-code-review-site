@@ -18,7 +18,7 @@ package org.groom.review.ui.fields;
 import com.vaadin.ui.ComboBox;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.site.AbstractSiteUI;
-import org.groom.review.model.Repository;
+import org.groom.model.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
