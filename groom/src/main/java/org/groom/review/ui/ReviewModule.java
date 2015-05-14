@@ -49,19 +49,24 @@ public class ReviewModule implements SiteModule {
         dashboard.setViewletClass("content", DashboardViewlet.class);
         siteDescriptor.getViewDescriptors().add(dashboard);
 
-        navigationVersion.addChildPage("review", "dashboard", "log");
-        final ViewDescriptor log = new ViewDescriptor("log", "Log", DefaultValoView.class);
-        log.setViewerRoles(DefaultRoles.ADMINISTRATOR);
-        log.setViewletClass("content", LogFlowViewlet.class);
-        siteDescriptor.getViewDescriptors().add(log);
-
-        navigationVersion.addChildPage("review", "log", "reviews");
+        navigationVersion.addChildPage("review", "dashboard", "reviews");
         final ViewDescriptor reviews = new ViewDescriptor("reviews", "Reviews", DefaultValoView.class);
         reviews.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         reviews.setViewletClass("content", ReviewFlowViewlet.class);
         siteDescriptor.getViewDescriptors().add(reviews);
 
-        navigationVersion.addChildPage("review", "reviews", "repositories");
+        navigationVersion.addChildPage("review", "reviews", "log");
+        final ViewDescriptor log = new ViewDescriptor("log", "Log", DefaultValoView.class);
+        log.setViewerRoles(DefaultRoles.ADMINISTRATOR);
+        log.setViewletClass("content", LogFlowViewlet.class);
+        siteDescriptor.getViewDescriptors().add(log);
+
+        navigationVersion.addRootPage(0, "administration");
+        final ViewDescriptor administration = new ViewDescriptor("administration", "Administration", DefaultValoView.class);
+        administration.setViewerRoles(DefaultRoles.ADMINISTRATOR);
+        siteDescriptor.getViewDescriptors().add(administration);
+
+        navigationVersion.addChildPage("administration", "repositories");
         final ViewDescriptor repositories = new ViewDescriptor("repositories", "Repositories", DefaultValoView.class);
         repositories.setViewerRoles(DefaultRoles.ADMINISTRATOR);
         repositories.setViewletClass("content", RepositoryFlowViewlet.class);

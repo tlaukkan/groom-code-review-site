@@ -15,7 +15,9 @@
  */
 package org.groom.translation.model;
 
+import com.vaadin.data.Property;
 import com.vaadin.data.util.filter.Compare;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -26,6 +28,8 @@ import org.bubblecloud.ilves.component.grid.FormattingTable;
 import org.bubblecloud.ilves.component.grid.Grid;
 import org.bubblecloud.ilves.model.Company;
 import org.bubblecloud.ilves.util.ContainerUtil;
+import org.groom.model.Repository;
+import org.groom.review.dao.ReviewDao;
 import org.groom.translation.ui.TranslationFields;
 import org.groom.translation.service.TranslationSynchronizer;
 import org.vaadin.addons.lazyquerycontainer.LazyEntityContainer;
@@ -48,6 +52,8 @@ public final class EntriesFlowlet extends AbstractFlowlet {
     private LazyEntityContainer<Entry> container;
     /** The grid. */
     private Grid grid;
+    /** The repository field. */
+    private ComboBox repositoryField;
 
     @Override
     public String getFlowletKey() {
@@ -92,7 +98,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
 
         ContainerUtil.addContainerProperties(container, fieldDescriptors);
 
-        final GridLayout gridLayout = new GridLayout(1, 2);
+        final GridLayout gridLayout = new GridLayout(1, 3);
         gridLayout.setSizeFull();
         gridLayout.setMargin(false);
         gridLayout.setSpacing(true);
@@ -102,7 +108,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
         final HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         buttonLayout.setSizeUndefined();
-        gridLayout.addComponent(buttonLayout, 0, 0);
+        gridLayout.addComponent(buttonLayout, 0, 1);
 
         final Table table = new FormattingTable();
         grid = new Grid(table, container);
@@ -113,14 +119,13 @@ public final class EntriesFlowlet extends AbstractFlowlet {
         table.setColumnCollapsed("path", true);
         table.setColumnCollapsed("created", true);
         table.setColumnCollapsed("modified", true);
-        grid.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 250, Unit.PIXELS);
+        grid.setHeight(UI.getCurrent().getPage().getBrowserWindowHeight() - 350, Unit.PIXELS);
 
-        gridLayout.addComponent(grid, 0, 1);
+        gridLayout.addComponent(grid, 0, 2);
 
-        final Button addButton = getSite().getButton("add");
+        /*final Button addButton = getSite().getButton("add");
         buttonLayout.addComponent(addButton);
         addButton.addClickListener(new ClickListener() {
-            /** Serial version UID. */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -132,7 +137,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
                 final EntryFlowlet entryView = getFlow().forward(EntryFlowlet.class);
                 entryView.edit(entry, true);
             }
-        });
+        });*/
 
         final Button editButton = getSite().getButton("edit");
         buttonLayout.addComponent(editButton);
@@ -231,6 +236,7 @@ public final class EntriesFlowlet extends AbstractFlowlet {
             @Override
             public void buttonClick(final ClickEvent event) {
                 TranslationSynchronizer.startSynchronize();
+                Notification.show(getSite().localize("message-synchronization-started"));
             }
         });
 
@@ -239,6 +245,39 @@ public final class EntriesFlowlet extends AbstractFlowlet {
         container.addDefaultFilter(
                 new Compare.Equal("owner.companyId", company.getCompanyId()));
         grid.refresh();
+
+        repositoryField = new ComboBox(getSite().localize("field-repository"));
+        repositoryField.setNullSelectionAllowed(false);
+        repositoryField.setTextInputAllowed(true);
+        repositoryField.setNewItemsAllowed(false);
+        repositoryField.setInvalidAllowed(false);
+        repositoryField.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                container.removeDefaultFilters();
+                container.addDefaultFilter(
+                        new Compare.Equal("owner.companyId", company.getCompanyId()));
+                final Repository repository = (Repository) repositoryField.getValue();
+                if (repository != null) {
+                    container.addDefaultFilter(
+                            new Compare.Equal("repository.repositoryId", repository.getRepositoryId()));
+                }
+            }
+        });
+        final List<Repository> repositories =
+                ReviewDao.getRepositories(entityManager, (Company) getSite().getSiteContext().getObject(Company.class));
+
+        for (final Repository repository : repositories) {
+            repositoryField.addItem(repository);
+            repositoryField.setItemCaption(repository, repository.getPath());
+            if (repositoryField.getItemIds().size() == 1) {
+                repositoryField.setValue(repository);
+            }
+        }
+        final VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setMargin(new MarginInfo(false, false, true, false));
+        verticalLayout.addComponent(repositoryField);
+        gridLayout.addComponent(verticalLayout, 0, 0);
     }
 
     @Override

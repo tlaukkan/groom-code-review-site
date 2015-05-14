@@ -71,7 +71,7 @@ public class TranslationSynchronizer {
     public TranslationSynchronizer(final EntityManager entityManager) {
         this.entityManager = entityManager;
 
-        final long synchronizePeriodMillis = Long.parseLong(PropertiesUtil.getProperty("hoot",
+        final long synchronizePeriodMillis = Long.parseLong(PropertiesUtil.getProperty("groom",
                 "synchronize-period-millis"));
 
         thread = new Thread(new Runnable() {
@@ -132,10 +132,10 @@ public class TranslationSynchronizer {
             LOGGER.info(Shell.execute("git clone " + repository.getUrl() + " " + repository.getPath(), "translation"));
         }
         LOGGER.info(Shell.execute("git fetch", relativeRepositoryPath));
-        LOGGER.info(Shell.execute("git reset --hard", relativeRepositoryPath));
+        LOGGER.info(Shell.execute("git reset origin/master --hard", relativeRepositoryPath));
 
         final String absoluteRepositoryPath = absoluteRepositoryPathPrefix + "/" + repository.getPath();
-        final String bundleCharacterSet = PropertiesUtil.getProperty("hoot", "bundle-character-set");
+        final String bundleCharacterSet = PropertiesUtil.getProperty("groom", "bundle-character-set");
         final String[] prefixes = repository.getBundlePrefixes().split(",");
 
         final Company company = repository.getOwner();
