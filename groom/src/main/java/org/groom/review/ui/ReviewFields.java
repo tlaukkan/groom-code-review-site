@@ -125,7 +125,7 @@ public final class ReviewFields {
                 "bundlePrefixes", "Bundle Prefixes",
                 TextField.class, null,
                 300, null, User.class, null,
-                false, true, true), new UrlValidator());
+                false, true, true));
         ReviewFields.add(Repository.class, new FieldDescriptor(
                 "created", "Created", TimestampField.class, new TimestampConverter(), 150, null, Date.class, null, true,
                 true, true));
